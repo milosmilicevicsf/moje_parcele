@@ -19,3 +19,15 @@
 - Hint praznog stanja je prvo bio crtan na canvas-u i sekao se ispod dugmadi mape na telefonu;
   prebačen u HTML element (`#emptyHint`) da CSS prelama tekst.
 - Ostaje neverifikovano (kao i ranije): pravi GPS na telefonu i hladno otvaranje instalirane PWA bez mreže.
+
+# Plan 2: sopstveni servis za okolinu (preduslov za više korisnika)
+
+Nalaz: GeoSrbija sa datacentar IP-ja ne odgovara (TLS timeout), pa proxy za pretragu ne bi bio pouzdan —
+pretraga ostaje direktno iz pregledača. Overpass sa servera radi, ali traži `User-Agent`.
+
+- [ ] `lib/surroundings.js`: čista logika (validacija lat/lon u Srbiji, bbox, Overpass upit, ključ keša) — testabilna u Node-u
+- [ ] `app/api/surroundings/route.ts`: GET `?lat&lon` → keš (Cache API, 7 dana) → upstream `env.OVERPASS_URL` sa UA → `{elements,bbox,downloadedAt,source}`
+- [ ] Klijent: `config.js` → `SURROUNDINGS_URL='/api/surroundings'`; `fetchSurroundings` šalje samo lat/lon, upit više ne gradi klijent
+- [ ] Testovi za `lib/surroundings.js`
+- [ ] README: arhitektura, `OVERPASS_URL` env, rate limiting preko Cloudflare pravila
+- [ ] Verifikacija: `pnpm dev` → `/api/surroundings?lat=44.3374&lon=20.1589` vraća JSON; `pnpm lint`; pregledač
