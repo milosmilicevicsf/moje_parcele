@@ -1,0 +1,7 @@
+const R=6371008.8, rad=Math.PI/180;
+export function local(c,origin){return [(c[0]-origin[0])*rad*R*Math.cos(origin[1]*rad),(c[1]-origin[1])*rad*R];}
+export function unlocal(p,origin){return [origin[0]+p[0]/(rad*R*Math.cos(origin[1]*rad)),origin[1]+p[1]/(rad*R)];}
+export function inRing(p,ring){let inside=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
+export function boundary(position,polygons){let distance=Infinity,nearest=null;const inside=polygons.some(p=>inRing(position,p[0])&&!p.slice(1).some(r=>inRing(position,r)));for(const poly of polygons)for(const ring of poly)for(let i=0;i<ring.length;i++){const a=local(ring[i],position),b=local(ring[(i+1)%ring.length],position),dx=b[0]-a[0],dy=b[1]-a[1],l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,-(a[0]*dx+a[1]*dy)/l)):0,p=[a[0]+t*dx,a[1]+t*dy],d=Math.hypot(...p);if(d<distance){distance=d;nearest=unlocal(p,position);}}return{distance,nearest,inside};}
+export function bearing(a,b){const x=(b[0]-a[0])*rad,la=a[1]*rad,lb=b[1]*rad;return (Math.atan2(Math.sin(x)*Math.cos(lb),Math.cos(la)*Math.sin(lb)-Math.sin(la)*Math.cos(lb)*Math.cos(x))/rad+360)%360;}
+export function distance(a,b){const la=a[1]*rad,lb=b[1]*rad,dla=lb-la,dlo=(b[0]-a[0])*rad;const h=Math.sin(dla/2)**2+Math.cos(la)*Math.cos(lb)*Math.sin(dlo/2)**2;return 2*R*Math.asin(Math.sqrt(Math.min(1,h)));}
