@@ -11,6 +11,17 @@ export function utm34ToWgs84(east, north) {
   return [lon*180/Math.PI,lat*180/Math.PI];
 }
 
+// Forward UTM zone 34N (central meridian 21°E); input order is longitude, latitude.
+export function wgs84ToUtm34(lon, lat) {
+  const a = 6378137, e2 = 0.0066943799901413165, k = 0.9996, ep2 = e2 / (1 - e2);
+  const phi = lat * Math.PI / 180, dl = (lon - 21) * Math.PI / 180;
+  const n = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2), t = Math.tan(phi) ** 2, c = ep2 * Math.cos(phi) ** 2, A = Math.cos(phi) * dl;
+  const m = a * ((1 - e2/4 - 3*e2**2/64 - 5*e2**3/256) * phi - (3*e2/8 + 3*e2**2/32 + 45*e2**3/1024) * Math.sin(2*phi) + (15*e2**2/256 + 45*e2**3/1024) * Math.sin(4*phi) - (35*e2**3/3072) * Math.sin(6*phi));
+  const east = 500000 + k * n * (A + (1 - t + c) * A**3/6 + (5 - 18*t + t*t + 72*c - 58*ep2) * A**5/120);
+  const north = k * (m + n * Math.tan(phi) * (A*A/2 + (5 - t + 9*c + 4*c*c) * A**4/24 + (61 - 58*t + t*t + 600*c - 330*ep2) * A**6/720));
+  return [east, north];
+}
+
 const cy='абвгдђежзијклљмнњопрстћуфхцчџш', la=['a','b','v','g','d','dj','e','z','z','i','j','k','l','lj','m','n','nj','o','p','r','s','t','c','u','f','h','c','c','dz','s'];
 export function normalize(s) {
   return String(s).toLowerCase().replace(/[абвгдђежзијклљмнњопрстћуфхцчџш]/g,c=>la[cy.indexOf(c)]).replace(/đ/g,'dj').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9/]+/g,' ').trim().replace(/\s+/g,' ');
@@ -60,7 +71,7 @@ export function parcelGeometry(record) {
     let twice=0;ring.forEach((p,i)=>{const q=ring[(i+1)%ring.length];twice+=p[0]*q[1]-q[0]*p[1];});area+=(ri===0?1:-1)*Math.abs(twice)/2;
     ring.forEach((p,i)=>{const coords=polygons[pi][ri][i],key=coords.map(n=>n.toFixed(8)).join(',');if(!seen.has(key)){seen.add(key);points.push({name:'T'+(points.length+1),lon:coords[0],lat:coords[1],polygon:pi,ring:ri});}});
   }));
-  if(points.length>500)throw new Error('Parcela ima više od 500 tačaka. Automatsko čuvanje ove veličine nije podržano.');
+  // Preserve every boundary vertex; the former Maps pin limit does not apply to terrain polygons.
   return {polygons,projected,points,area};
 }
 export function escapeXml(s){return String(s).replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c]));}
