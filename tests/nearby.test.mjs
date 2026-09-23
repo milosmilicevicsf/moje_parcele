@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createNearbyLoader,nearbyFixState} from '../public/nearby-loader.js';
+import {createLocationTracker} from '../public/location-tracker.js';
 import {searchNearby} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
 import * as field from '../public/field-geo.js';
@@ -81,19 +82,19 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 });
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1})){
- const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,interval,time=Date.now();
+ const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},addEventListener(){},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ const scope={...geo,...field,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
-  SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({})},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},clearWatch(){}}},
+  SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,get queries(){return queries;},get strokes(){return strokes;},
+ return {element,labels,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -105,10 +106,12 @@ test('screenshot regression: 6306 m accuracy shows actionable guidance, then pre
  await app.emit(6306);assert.equal(app.queries,0);
  assert.match(app.element('gpsTitle').textContent,/nije dovoljno precizna/);
  assert.match(app.element('gpsDetail').textContent,/6\.3 km/);
- assert.match(app.element('emptyDetail').textContent,/Precise Location/);
+ assert.match(app.element('emptyDetail').textContent,/Ponovi lociranje/);
+ assert.equal(app.element('retryGps').hidden,false);
+ assert.equal(app.reads,1);app.element('retryGps').onclick();await flush();assert.equal(app.reads,2,'retry button requests a new uncached reading');
  assert.doesNotMatch(app.element('emptyTitle').textContent,/Učitavamo/);
  app.element('nearby').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
- await app.emit(8);assert.equal(app.queries,1);assert(app.labels.includes(fixture.record.title));assert(app.strokes>0);
+ await app.tick(1000);await app.emit(8);assert.equal(app.queries,1);assert(app.labels.includes(fixture.record.title));assert(app.strokes>0);
  assert.equal(app.element('emptyHint').hidden,true);assert.equal(app.element('mapMode').textContent,'Parcele u okolini');
  app.scope.fixture=structuredClone(fixture);app.run('show(fixture)');
  await app.tick(31000);await app.emit(5,[20.47,44.82]);assert.equal(app.queries,1,'manual selection remains selected');
@@ -128,7 +131,37 @@ test('location quality deterioration, staleness, denial and stopping GPS remain 
  assert.match(app.element('gpsTitle').textContent,/nije uživo/);
  await app.fail(1);assert.match(app.element('gpsTitle').textContent,/nije dozvoljena/);
  assert.match(app.element('emptyTitle').textContent,/nije dozvoljena/);
- const other=await appHarness();await other.emit(8);await other.emit(6306);
+ const other=await appHarness();await other.emit(8);await other.tick(1000);await other.emit(6306);
  assert.equal(other.queries,1);assert.match(other.element('gpsTitle').textContent,/nije dovoljno precizna/);
  other.element('gps').onclick();assert.match(other.element('gpsTitle').textContent,/nije uživo/);
+});
+
+// Synthetic UTM circle: more vertices than the legacy 500-pin Maps limit.
+function largeRecord(count=2000){
+ const ring=Array.from({length:count},(_,i)=>{const a=2*Math.PI*i/count;return [457350+50*Math.cos(a),4962840+50*Math.sin(a)];});
+ ring.push(ring[0]);
+ return {...fixture.record,uid:'synthetic-large',title:'Test large polygon',fullGeom:'POLYGON (('+ring.map(p=>p.join(' ')).join(',')+'))'};
+}
+test('large boundaries retain every vertex and survive export/import without simplification',()=>{
+ const record=largeRecord(),geometry=geo.parcelGeometry(record);
+ assert.equal(geometry.points.length,2000);assert.equal(geometry.polygons[0][0].length,2000);
+ assert(Math.abs(geometry.area-Math.PI*2500)<1);
+ assert.deepEqual(geo.parcelGeometry(JSON.parse(JSON.stringify(record))),geometry);
+});
+test('nearby renders large parcels; one malformed record does not block valid boundaries',async()=>{
+ const record=largeRecord();
+ const app=await appHarness(async()=>({records:[record,fixture.record,{...fixture.record,fullGeom:'POLYGON ((bad))'}],total:3}));
+ await app.emit(9);
+ assert(app.labels.includes(record.title));assert(app.labels.includes(fixture.record.title));
+ assert.equal(app.run('nearby.length'),2);
+ assert.equal(app.run('nearby[0].geometry.points.length'),2000);
+ assert.equal(app.element('emptyHint').hidden,true);
+ assert.match(app.run("$('message').textContent"),/nepotpun/);
+ app.run('show(nearby[0])');assert.equal(app.run('current.geometry.points.length'),2000);
+});
+test('unreadable geometries report a decoding failure instead of missing cadastral coverage',async()=>{
+ const app=await appHarness(async()=>({records:[{...fixture.record,fullGeom:'POLYGON ((bad))'}],total:1}));
+ await app.emit(9);
+ assert.match(app.element('emptyDetail').textContent,/nisu mogle da se pročitaju/);
+ assert.equal(app.element('nearby').disabled,false);
 });

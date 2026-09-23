@@ -9,3 +9,6 @@
 /* Keep loading/error guidance above the GPS card and clear of the zoom controls. */
 .empty-hint{inset:76px 72px 180px 18px;padding:0 12px}
 @media(max-width:760px){.empty-hint strong{font-size:14px}.empty-hint span{font-size:12px}}
+
+.gps-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+#retryGps{font-size:12px;background:#fffdf7;color:#244738}

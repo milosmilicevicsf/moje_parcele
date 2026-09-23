@@ -71,7 +71,7 @@ export function parcelGeometry(record) {
     let twice=0;ring.forEach((p,i)=>{const q=ring[(i+1)%ring.length];twice+=p[0]*q[1]-q[0]*p[1];});area+=(ri===0?1:-1)*Math.abs(twice)/2;
     ring.forEach((p,i)=>{const coords=polygons[pi][ri][i],key=coords.map(n=>n.toFixed(8)).join(',');if(!seen.has(key)){seen.add(key);points.push({name:'T'+(points.length+1),lon:coords[0],lat:coords[1],polygon:pi,ring:ri});}});
   }));
-  if(points.length>500)throw new Error('Parcela ima više od 500 tačaka. Automatsko čuvanje ove veličine nije podržano.');
+  // Preserve every boundary vertex; the former Maps pin limit does not apply to terrain polygons.
   return {polygons,projected,points,area};
 }
 export function escapeXml(s){return String(s).replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c]));}

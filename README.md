@@ -40,3 +40,8 @@ The original Sites/Cloudflare Worker packaging remains available as `pnpm dev:cl
 
 ## Nearby-location regression check (2026-09-23)
 Live requests around reference points in central Belgrade and Novi Beograd returned zero records with only layer 586. With layers 586 and 939, the same queries returned 118 and 17 total parcels; the Pepeljevac reference returned 63. `tests/fixtures/belgrade-parcel.json` preserves one layer-939 response for regression tests. These are reference query locations, not a user's GPS history. Tests cover a 6,306 m accuracy fix, automatic recovery to a precise fix, stale/pending requests, and accurate loading/empty/error messages. Actual iPhone location permissions and GPS reception still require device validation.
+
+## Recovering an imprecise browser location
+The app requests both a high-accuracy watch and a fresh one-shot reading (`maximumAge: 0`). If it receives no usable fix, it restarts acquisition twice at 35-second intervals; the watch remains available afterwards. “Ponovi lociranje” starts another user-requested acquisition. Going into the background suspends the watch, and returning resumes it if GPS was not manually stopped. Generation checks discard callbacks from old sessions, and timestamp checks discard out-of-order readings. A one-shot timeout does not hide a fresh accurate watch fix. Browser-reported accuracy and timestamps are preserved; these recovery steps cannot force a device to deliver a precise fix.
+
+Granice parcela u terenskoj mapi zadržavaju sve tačke, uključujući parcele sa više od 500 temena. Neispravna geometrija pojedinačnog rezultata ne prekida prikaz ostalih parcela; mapa prijavljuje nepotpun prikaz.
