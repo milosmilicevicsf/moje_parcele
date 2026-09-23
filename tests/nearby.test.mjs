@@ -7,6 +7,7 @@ import {createLocationTracker} from '../public/location-tracker.js';
 import {searchNearby} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
 import * as field from '../public/field-geo.js';
+import * as neighborhoods from '../public/parcel-neighborhood.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
 const fixture=JSON.parse(fs.readFileSync('tests/fixtures/belgrade-parcel.json','utf8'));
@@ -85,7 +86,7 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1})){
  const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
@@ -113,8 +114,9 @@ test('screenshot regression: 6306 m accuracy shows actionable guidance, then pre
  app.element('nearby').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
  await app.tick(1000);await app.emit(8);assert.equal(app.queries,1);assert(app.labels.includes(fixture.record.title));assert(app.strokes>0);
  assert.equal(app.element('emptyHint').hidden,true);assert.equal(app.element('mapMode').textContent,'Parcele u okolini');
- app.scope.fixture=structuredClone(fixture);app.run('show(fixture)');
- await app.tick(31000);await app.emit(5,[20.47,44.82]);assert.equal(app.queries,1,'manual selection remains selected');
+ app.scope.fixture=structuredClone(fixture);app.run('show(fixture)');await flush();
+ const afterOpen=app.queries;assert.equal(afterOpen,2,'manual open loads its own neighborhood');
+ await app.tick(31000);await app.emit(5,[20.47,44.82]);assert.equal(app.queries,afterOpen,'GPS updates cannot replace the remote neighborhood');
 });
 
 test('empty and failed queries stop the map loading message',async()=>{
@@ -228,4 +230,93 @@ test('a save completing after selection is cleared does not restore or replace a
  assert.equal(app.run('current'),null);assert.equal(app.element('save').disabled,false);
  app.run("show(nearby[0],false);pendingSave=saveCurrent();show(nearby[1],false);releaseSave({elements:[],bbox:[44,20,45,21]})");await app.run('pendingSave');
  assert.equal(app.run('current.record.title'),'B');
+});
+
+test('searching a remote parcel loads its neighbors without GPS and clearing stays in that area',async()=>{
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8'));
+ const neighbor=squareRecord('remote-neighbor',433050,4909700),calls=[];
+ const app=await appHarness(async(...args)=>{calls.push(args);return {records:[remote.record,neighbor],total:2};});
+ app.scope.liveSearch=async()=>[remote.record];
+ await app.run("searchParcel('1227/2','Pepeljevac','Lajkovac')");await flush();
+ const q=neighborhoods.parcelNeighborhoodQuery(geo.parcelGeometry(remote.record));
+ assert.deepEqual(calls[0],[...q.center,q.radius]);
+ assert.equal(app.run('current.record.title'),'1227/2');assert(app.labels.includes('remote-neighbor'));
+ const view=app.run('JSON.stringify(view)');app.element('clearSelection').onclick();
+ await app.emit(8,[20.46,44.82]);assert.equal(calls.length,1);
+ assert.equal(app.run('JSON.stringify(view)'),view,'GPS must not move a remote overview back to the phone');
+ tapAt(app,433065,4909715);assert.equal(app.run('current.record.title'),'remote-neighbor');
+});
+
+test('switching remote parcels or returning to GPS ignores late parcel-centered responses',async()=>{
+ const pending=[],app=await appHarness((...args)=>new Promise(resolve=>pending.push({args,resolve})));
+ app.scope.a={...fixture,record:squareRecord('A',433000,4909700)};
+ app.scope.b={...fixture,record:squareRecord('B',443000,4919700)};
+ app.run('show(a);show(b)');assert.equal(pending.length,2);
+ pending[1].resolve({records:[app.scope.b.record,squareRecord('B-neighbor',443040,4919700)],total:2});await flush();
+ pending[0].resolve({records:[app.scope.a.record],total:1});await flush();
+ assert.equal(app.run('current.record.title'),'B');assert.equal(app.run('nearby[1].record.title'),'B-neighbor');
+ app.run('show(a)');assert.equal(pending.length,3);app.element('nearby').onclick();
+ pending[2].resolve({records:[app.scope.a.record],total:1});await flush();
+ assert.equal(app.run('current'),null);assert.equal(app.run('nearby.length'),0);
+});
+
+function fakeStorage(app,initial=[]){
+ app.scope.initialPackages=structuredClone(initial);
+ app.run(`db={};var storedPackages=new Map(initialPackages.map(x=>[x.id,x]));
+ dbCall=async(mode,fn)=>{
+  const request=fn({
+   get(id){const r={result:structuredClone(storedPackages.get(id))};Promise.resolve().then(()=>r.onsuccess?.());return r;},
+   put(x){storedPackages.set(x.id,structuredClone(x));return {result:x.id};}
+  });
+  await Promise.resolve();return request.result;
+ };
+ refreshSaved=async()=>{saved=[...storedPackages.values()];};
+ checkShell=async()=>true;
+ fetchSurroundings=async()=>({elements:[],bbox:[44,20,45,21]});
+ saved=[...storedPackages.values()];`);
+}
+
+test('terrain save includes raw neighboring boundaries and a fresh offline session can select them',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',433040,4909700);
+ const app=await appHarness(async()=>({records:[a,b],total:2}));fakeStorage(app);
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ const result=await app.run('saveCurrent()');assert.equal(result.nearbyParcelsSaved,true);
+ const exported=app.run("JSON.stringify(storedPackages.get('A'))"),snapshot=JSON.parse(exported);
+ assert.equal(snapshot.neighborhood.records.length,2);assert(!('neighborhood' in snapshot.neighborhood.records[0]));
+ const offline=await appHarness(async()=>{throw Error('No network should be needed');});
+ offline.scope.navigator.onLine=false;offline.scope.imported=JSON.parse(exported);offline.run('show(imported)');
+ assert.equal(offline.queries,0);assert(offline.labels.includes('B'));tapAt(offline,433055,4909715);
+ assert.equal(offline.run('current.record.title'),'B');
+ offline.element('clearSelection').onclick();assert.equal(offline.run('nearby.length'),2);
+});
+
+test('opening a legacy saved package online persists neighbors and never recreates a deleted package',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',433040,4909700),initial={...fixture,id:'A',record:a};
+ const app=await appHarness(async()=>({records:[a,b],total:2}));fakeStorage(app,[initial]);
+ app.run('show(saved[0])');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').neighborhood.records.length"),2);
+ let release;const deleted=await appHarness(()=>new Promise(resolve=>release=resolve));fakeStorage(deleted,[initial]);
+ deleted.run("show(saved[0]);storedPackages.delete('A')");release({records:[a,b],total:2});await flush();
+ assert.equal(deleted.run('storedPackages.size'),0);
+});
+
+test('a failed refresh preserves cached neighbors; an old offline package reports missing neighbors',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',433040,4909700);
+ const data=await neighborhoods.downloadNeighborhood({record:a},async()=>({records:[a,b],total:2}));
+ const app=await appHarness(async()=>{throw Error('HTTP 503');});
+ app.scope.cached={...fixture,record:a,neighborhood:data.snapshot};app.run('show(cached)');await flush();
+ assert.equal(app.run('nearby.length'),2);assert.match(app.element('coverage').textContent,/sačuvane/);
+ assert.equal(app.run('current.record.title'),'A');
+ app.scope.navigator.onLine=false;app.scope.old={...fixture,record:squareRecord('old',443000,4919700)};app.run('show(old)');
+ assert.equal(app.run('nearby.length'),1);assert.match(app.element('coverage').textContent,/nisu sačuvane/);
+});
+
+test('parcel query radius includes a margin and large parcels/partial records remain explicit',async()=>{
+ const geometry=geo.parcelGeometry(squareRecord('large',433000,4909700,2000));
+ assert.deepEqual(neighborhoods.parcelNeighborhoodQuery(geometry),{center:[434000,4910700],radius:1000,limited:true});
+ const good=squareRecord('good',433000,4909700);
+ const result=await neighborhoods.downloadNeighborhood({record:good},async()=>({records:[good,{...good,uid:'bad',fullGeom:'POLYGON ((bad))'}],total:3}));
+ assert.equal(result.parcels.length,1);assert.equal(result.snapshot.skipped,1);
+ assert.match(neighborhoods.neighborhoodSummary(result.snapshot),/nepotpun/);
+ assert.throws(()=>neighborhoods.readNeighborhood({...result.snapshot,records:new Array(1001)}));
 });
