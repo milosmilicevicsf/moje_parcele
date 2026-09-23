@@ -2,7 +2,7 @@ declare namespace Cloudflare {
   interface Env {
     DB?: D1Database;
     BUCKET?: R2Bucket;
-    // Overpass-compatible endpoint used by /api/surroundings; defaults to the public instance.
+    // Comma-separated Overpass endpoints for /api/surroundings (read through process.env).
     OVERPASS_URL?: string;
   }
 }
