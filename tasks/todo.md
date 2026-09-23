@@ -60,3 +60,22 @@ Uzrok pada: Vercel detektuje Next.js i traži `.next/routes-manifest.json`, a `p
   ruta 400/403/200 sa `cache-control: public, max-age=86400, s-maxage=604800`.
 - 7/7 testova, `tsc` čisto, lint samo staro upozorenje.
 - Nije provereno na samom Vercelu (nema pristupa nalogu) — sledeći push na `main` će pokrenuti build.
+
+# Plan 4: preuzimanje okoline štuca na produkciji
+
+Merenja na mojeparcele.vercel.app: selo 2–4 s (CDN HIT 43 ms), centar Beograda 504 posle 49 s.
+Direktno: overpass-api.de nasumično 504 „busy" (isti upit čas 3 s, čas 504), ogledala vise >120 s.
+Centar Beograda vraća 6,7 MB / 8090 elemenata — previše za telefon.
+
+- [x] Ruta: paralelni „hedged" pokušaji (drugi server posle 5 s, treći posle 10 s), prvi uspeh pobeđuje, ostali se prekidaju;
+      jedan retry posle 3 s na 429/504 („busy"); razumljiva poruka „preopterećen"
+- [x] Upit: zgrade samo u krugu ~500 m (putevi/voda/šume ostaju ~1 km); centar Beograda 6,7 MB → 3,2 MB
+- [x] `deploy/overpass/`: docker-compose (Overpass + Caddy HTTPS + ključ), `.env.example`, uputstvo; ruta šalje `X-Overpass-Key`
+- [x] Testovi za novi upit; `next build`; provera rute lokalno
+- [x] README + lekcija u `tasks/lessons.md`
+
+## Pregled 4
+- Pre: selo 502 posle 50 s (de „busy", ogledalo visi), Beograd 504 posle 49 s na produkciji.
+- Posle (lokalno, javni serveri): selo 12,5 s, Beograd 12,7 s, Novi Sad 8,9 s — sve 200. Sa mrtvim prvim
+  upstream-om: Beograd 7,6 s (hedging preuzima). Brzina i dalje zavisi od javnih servera; sopstvena instanca je rešenje.
+- Nije moguće ovde testirati docker-compose (nema Docker-a); YAML validan, parametri prema dokumentaciji slike.
