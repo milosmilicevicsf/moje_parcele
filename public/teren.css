@@ -12,3 +12,11 @@
 
 .gps-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 #retryGps{font-size:12px;background:#fffdf7;color:#244738}
+
+/* Leave gaps in the map toolbar available for selecting and panning parcels. */
+.map-top{pointer-events:none;align-items:flex-start}
+.map-top button,.map-label{pointer-events:auto}
+.map-summary{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.map-label{max-width:100%}
+.map-label i{flex-shrink:0}
+#clearSelection{font-size:13px;min-height:44px}

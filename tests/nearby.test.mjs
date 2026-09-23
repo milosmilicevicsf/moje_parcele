@@ -84,13 +84,13 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 async function appHarness(search=async()=>({records:[fixture.record],total:1})){
  const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++},{get:(obj,key)=>obj[key]??(()=>{})});
- function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},addEventListener(){},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
+ function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
-  ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
+  ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
@@ -164,4 +164,68 @@ test('unreadable geometries report a decoding failure instead of missing cadastr
  await app.emit(9);
  assert.match(app.element('emptyDetail').textContent,/nisu mogle da se pročitaju/);
  assert.equal(app.element('nearby').disabled,false);
+});
+
+// Synthetic neighboring UTM parcels keep tap coordinates deterministic.
+function squareRecord(uid,east,north,size=30){
+ const ring=[[east,north],[east+size,north],[east+size,north+size],[east,north+size],[east,north]];
+ return {...fixture.record,uid,title:uid,fullGeom:'POLYGON (('+ring.map(p=>p.join(' ')).join(',')+'))'};
+}
+function pointer(app,type,point,id=1){app.element('map').dispatch(type,{pointerId:id,clientX:point[0],clientY:point[1]});}
+function tapAt(app,east,north){
+ const coords=geo.utm34ToWgs84(east,north),p=app.run('pixel('+JSON.stringify(coords)+')');
+ pointer(app,'pointerdown',p);pointer(app,'pointerup',p);
+}
+test('map taps switch parcels and toggle or explicitly clear selection without losing context',async()=>{
+ const records=[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)];
+ const app=await appHarness(async()=>({records,total:2}));await app.emit(9);
+ tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'A');
+ assert.equal(app.element('clearSelection').hidden,false);
+ assert.equal(app.element('mapMode').textContent,'Parcela A');
+ tapAt(app,457355,4962815);assert.equal(app.run('current.record.title'),'B');
+ const view=app.run('JSON.stringify(view)');
+ app.element('clearSelection').onclick();
+ assert.equal(app.run('current'),null);assert.equal(app.run('nearby.length'),2);
+ assert.equal(app.run('JSON.stringify(view)'),view);assert.equal(app.element('parcelCard').hidden,true);
+ assert.equal(app.element('clearSelection').hidden,true);assert.equal(app.run('watch'),1);
+ assert.equal(app.queries,1,'clearing a loaded map does not require another network request');
+ tapAt(app,457315,4962815);tapAt(app,457315,4962815);assert.equal(app.run('current'),null);
+ tapAt(app,457355,4962815);tapAt(app,457395,4962815);assert.equal(app.run('current'),null,'empty map clears selection');
+});
+test('opening a saved parcel retains selectable neighbors and its downloaded background on clearing',async()=>{
+ const records=[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)];
+ const app=await appHarness(async()=>({records,total:2}));await app.emit(9);
+ app.run("nearby[0].osm={elements:[],bbox:[44,20,45,21]};show(nearby[0])");
+ assert.equal(app.run('nearby.length'),2);
+ app.element('clearSelection').onclick();assert.equal(app.run('mapSurroundings.bbox.length'),4);
+ tapAt(app,457355,4962815);assert.equal(app.run('current.record.title'),'B');
+ app.scope.navigator.onLine=false;
+ app.scope.offlinePackage={...fixture,record:squareRecord('offline',457380,4962800)};
+ app.run('show(offlinePackage)');app.element('clearSelection').onclick();
+ tapAt(app,457395,4962815);assert.equal(app.run('current.record.title'),'offline');
+});
+test('a large overlapping polygon does not swallow taps on a smaller parcel',async()=>{
+ const records=[squareRecord('large',457300,4962800,100),squareRecord('small',457310,4962810,20)];
+ const app=await appHarness(async()=>({records,total:2}));await app.emit(9);
+ tapAt(app,457380,4962880);assert.equal(app.run('current.record.title'),'large');
+ tapAt(app,457320,4962820);assert.equal(app.run('current.record.title'),'small');
+});
+test('dragging, pinching and cancelled touches never change parcel selection',async()=>{
+ const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800)],total:1}));await app.emit(9);
+ tapAt(app,457315,4962815);
+ pointer(app,'pointerdown',[100,100]);pointer(app,'pointermove',[150,100]);pointer(app,'pointermove',[100,100]);pointer(app,'pointerup',[100,100]);
+ assert.equal(app.run('current.record.title'),'A','returning to the drag origin is not a tap');
+ pointer(app,'pointerdown',[100,100]);pointer(app,'pointerdown',[150,100],2);pointer(app,'pointerup',[150,100],2);pointer(app,'pointerup',[100,100]);
+ assert.equal(app.run('current.record.title'),'A');
+ pointer(app,'pointerdown',[100,100]);pointer(app,'pointercancel',[100,100]);pointer(app,'pointerup',[100,100]);
+ assert.equal(app.run('current.record.title'),'A');
+});
+test('a save completing after selection is cleared does not restore or replace a selected parcel',async()=>{
+ const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)],total:2}));await app.emit(9);
+ app.run("show(nearby[0],false);db={};let releaseSave;fetchSurroundings=()=>new Promise(resolve=>releaseSave=resolve);dbCall=async()=>{};refreshSaved=async()=>{};checkShell=async()=>true;var pendingSave=saveCurrent()");
+ app.element('clearSelection').onclick();
+ app.run("releaseSave({elements:[],bbox:[44,20,45,21]})");await app.run('pendingSave');
+ assert.equal(app.run('current'),null);assert.equal(app.element('save').disabled,false);
+ app.run("show(nearby[0],false);pendingSave=saveCurrent();show(nearby[1],false);releaseSave({elements:[],bbox:[44,20,45,21]})");await app.run('pendingSave');
+ assert.equal(app.run('current.record.title'),'B');
 });
