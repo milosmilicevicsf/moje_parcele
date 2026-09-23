@@ -54,8 +54,19 @@ export async function searchParcel(parcel,ko,municipality) {
 
 // Parcels whose boundary lies within `radius` metres of a UTM point; the map viewer uses 12 m for a click.
 export async function searchNearby(east,north,radius) {
-  const data=await call(nearbyRequest(east,north,radius));
-  const records=data.records.filter(r=>typeof r.title==='string'&&isPolygon(r));
+  const request=nearbyRequest(east,north,radius), records=[], seen=new Set();
+  let total=0;
+  // Bound work even if the upstream ignores pagination or reports a bogus total.
+  for(let page=0;page<10;page++){
+    const data=await call({...request,start:page*request.limit});
+    total=Math.max(total,Number(data.total)||0);
+    let added=0;
+    for(const record of data.records.filter(r=>typeof r.title==='string'&&isPolygon(r))){
+      const key=record.uid||record.title+'|'+record.fullGeom;
+      if(!seen.has(key)){seen.add(key);records.push(record);added++;}
+    }
+    if(!added||data.records.length<request.limit||(page+1)*request.limit>=total)break;
+  }
   if(!records.length)throw new Error('GeoSrbija nema parcele na ovom mestu ili katastarski plan ovde nije digitalizovan.');
-  return {records,total:Number(data.total)||records.length};
+  return {records,total:Math.max(total,records.length)};
 }
