@@ -1,0 +1,11 @@
+{$OVERPASS_DOMAIN} {
+	# Samo aplikacija (koja šalje tajni ključ) sme da koristi ovu instancu.
+	@bez_kljuca not header X-Overpass-Key {$OVERPASS_KEY}
+	respond @bez_kljuca 403
+
+	reverse_proxy overpass:80 {
+		transport http {
+			response_header_timeout 70s
+		}
+	}
+}

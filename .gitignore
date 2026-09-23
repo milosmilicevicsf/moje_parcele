@@ -30,6 +30,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!deploy/overpass/.env.example
+# Overpass database created by deploy/overpass/docker-compose.yml
+deploy/overpass/db/
 
 # vercel
 .vercel

@@ -1,0 +1,51 @@
+# Sopstvena Overpass instanca sa OSM podacima za Srbiju + Caddy za HTTPS.
+# Uputstvo: deploy/overpass/README.md
+services:
+  overpass:
+    image: wiktorn/overpass-api
+    container_name: overpass-srbija
+    restart: unless-stopped
+    environment:
+      OVERPASS_MODE: init
+      OVERPASS_META: "no"
+      OVERPASS_PLANET_URL: https://download.geofabrik.de/europe/serbia-latest.osm.pbf
+      # Geofabrik daje samo .pbf; slika očekuje .osm.bz2, pa se konvertuje osmium-om unutar kontejnera.
+      OVERPASS_PLANET_PREPROCESS: "mv /db/planet.osm.bz2 /db/planet.osm.pbf && osmium cat -o /db/planet.osm.bz2 /db/planet.osm.pbf && rm /db/planet.osm.pbf"
+      OVERPASS_DIFF_URL: https://download.geofabrik.de/europe/serbia-updates/
+      OVERPASS_UPDATE_SLEEP: "86400"
+      OVERPASS_COMPRESSION: gz
+      OVERPASS_RULES_LOAD: "10"
+      # Aplikacija ne koristi area upite; generisanje area tabela troši CPU bez koristi.
+      OVERPASS_USE_AREAS: "false"
+      OVERPASS_STOP_AFTER_INIT: "false"
+      OVERPASS_MAX_TIMEOUT: "60"
+      # Svi zahtevi dolaze sa nekoliko IP adresa hostinga (Vercel), pa podrazumevana
+      # zaštita „isti upit sa iste adrese“ i limit po adresi moraju biti isključeni.
+      OVERPASS_ALLOW_DUPLICATE_QUERIES: "yes"
+      OVERPASS_RATE_LIMIT: "64"
+    volumes:
+      - ./db:/db
+    expose:
+      - "80"
+
+  caddy:
+    image: caddy:2
+    container_name: overpass-caddy
+    restart: unless-stopped
+    depends_on:
+      - overpass
+    environment:
+      # Podesite u .env pored ovog fajla (videti README).
+      OVERPASS_DOMAIN: ${OVERPASS_DOMAIN}
+      OVERPASS_KEY: ${OVERPASS_KEY}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:

@@ -7,7 +7,7 @@ test('app starts without any built-in parcel',()=>{const html=fs.readFileSync('p
 test('surroundings service validates the center, builds a bounded query and a complete package',()=>{
  const center=parseCenter(new URLSearchParams('lat=44.33741&lon=20.15887'));assert.deepEqual(center,[44.337,20.159]);
  const box=bbox(center);assert.equal(box.length,4);assert(box[0]<center[0]&&box[2]>center[0]&&box[1]<center[1]&&box[3]>center[1]);assert(Math.abs((box[2]-box[0])-.018)<1e-6);assert((box[3]-box[1])>.018);
- const query=overpassQuery(box);assert.match(query,/^\[out:json\]\[timeout:25\];/);assert(query.includes(box.join(',')));assert.match(query,/out geom;$/);
+ const query=overpassQuery(center),small=bbox(center,.0045);assert.match(query,/^\[out:json\]\[timeout:25\];/);assert(query.includes('way[highway]('+box.join(',')+')'));assert(query.includes('way[building]('+small.join(',')+')'),'buildings limited to the inner box');assert(small[0]>box[0]&&small[2]<box[2]&&small[1]>box[1]&&small[3]<box[3]);assert.match(query,/out geom;$/);
  for(const bad of ['','lat=x&lon=20','lat=44.3']){assert.throws(()=>parseCenter(new URLSearchParams(bad)),e=>e instanceof RequestError&&e.status===400&&/Nedostaju/.test(e.message),bad);}
  for(const bad of ['lat=48.9&lon=20.1','lat=44.3&lon=30']){assert.throws(()=>parseCenter(new URLSearchParams(bad)),e=>e.status===400&&/van područja/.test(e.message),bad);}
  assert.deepEqual(upstreams(undefined),DEFAULT_UPSTREAMS);assert.deepEqual(upstreams(' https://a/x , https://b/y,'),['https://a/x','https://b/y']);
