@@ -10,7 +10,7 @@ test('forward UTM matches the inverse and the point a3 sends for the fixture par
  const [e,n]=wgs84ToUtm34(20.1595475,44.3374173);assert(Math.abs(e-433000.45)<.05&&Math.abs(n-4909693.59)<.05);
 });
 test('nearby search mirrors the a3 map click request and reads place names from desc',()=>{
- const r=nearbyRequest(432954.0831709,4909699.6789006,150);assert.deepEqual(r,{srsid:'32634',st:'circle',s:'432954.08,4909699.68,150',start:0,limit:100,layers:'586,'});
+ const r=nearbyRequest(432954.0831709,4909699.6789006,150);assert.deepEqual(r,{srsid:'32634',st:'circle',s:'432954.08,4909699.68,150',start:0,limit:100,layers:'586,939,'});
  for(const bad of [[NaN,1,10],[1,1,0],[1,1,5000]])assert.throws(()=>nearbyRequest(...bad));
  assert.equal(textRequest('1227/2','Pepeljevac').q,'1227/2 pepeljevac');
  assert.equal(latinPlace('PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'),'Pepeljevac Lajkovac');assert.equal(latinPlace(undefined),'');

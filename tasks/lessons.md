@@ -20,3 +20,8 @@
   a3.geosrbija.rs pokazao je da klik na mapu ide na isti javni `SearchProxy` endpoint sa `st:"circle"`.
 - Pravilo: pre nego što zaključim da funkcija „nije moguća", tražiti od korisnika HAR/curl snimak zvaničnog
   klijenta — obično koristi isti javni endpoint sa drugim parametrima.
+
+## Prazan rezultat nije dokaz da katastar nema podatke
+- Kontekst: upit samo nad slojem 586 radio je u Pepeljevcu, ali je vraćao nulu u centru Beograda i na Novom Beogradu. Isti javni servis vraća tamošnje parcele iz sloja 939.
+- Pravilo: proveriti javni upit na gradskoj i ruralnoj referentnoj lokaciji; preuzeti sve potrebne katastarske slojeve. Prazan odgovor opisati kao rezultat upita, bez tvrdnje da nema parcela ili digitalizovanog plana.
+- Pravilo: za lokalnu pretragu proveriti i starost i prijavljenu tačnost GPS položaja. Testirati grub prvi položaj, prelaz na precizan položaj i odgovor koji stigne nakon promene lokacije.

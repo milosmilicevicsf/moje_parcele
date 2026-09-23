@@ -4,7 +4,9 @@ import {GEOSRBIJA_URL} from './config.js';
 // (verified from captured browser traffic on 2026-09-23). Two request shapes are used:
 // text search ("q") and the spatial "circle" search the map viewer runs on every click.
 const LAYERS='507,941,948,695,694,693,589,587,586,588,939,899,1178,1177,910,49,AdaptiveNames,AdaptiveAddresses,AdaptiveThemes';
-const PARCEL_LAYER='586,';
+// Public search returns rural parcels from 586 and Belgrade parcels from 939.
+// Query both: a single layer silently returns an empty result in the other area.
+const PARCEL_LAYERS='586,939,';
 const unreachable='Veza sa GeoSrbija servisom nije uspela. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu. Ako ni tamo ne radi, proverite vezu ili pokušajte kasnije. Ako sajt radi, ponovite pretragu; servis za parcele može biti privremeno nedostupan.';
 
 export function textRequest(parcel,ko){
@@ -13,7 +15,7 @@ export function textRequest(parcel,ko){
 // east/north in EPSG:32634, radius in metres.
 export function nearbyRequest(east,north,radius){
   if(![east,north,radius].every(Number.isFinite)||radius<=0||radius>1000)throw new Error('Neispravan prostorni upit.');
-  return {srsid:'32634',st:'circle',s:east.toFixed(2)+','+north.toFixed(2)+','+Math.round(radius),start:0,limit:100,layers:PARCEL_LAYER};
+  return {srsid:'32634',st:'circle',s:east.toFixed(2)+','+north.toFixed(2)+','+Math.round(radius),start:0,limit:100,layers:PARCEL_LAYERS};
 }
 // "PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ" -> "Pepeljevac Lajkovac" (the Cyrillic half repeats the Latin one).
 export function latinPlace(desc){
@@ -67,6 +69,5 @@ export async function searchNearby(east,north,radius) {
     }
     if(!added||data.records.length<request.limit||(page+1)*request.limit>=total)break;
   }
-  if(!records.length)throw new Error('GeoSrbija nema parcele na ovom mestu ili katastarski plan ovde nije digitalizovan.');
   return {records,total:Math.max(total,records.length)};
 }
