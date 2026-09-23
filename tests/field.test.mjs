@@ -1,9 +1,21 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {boundary,bearing,distance,unlocal} from '../public/field-geo.js';import {parcelGeometry} from '../public/geo.js';import {parseCenter,bbox,overpassQuery,packageFrom,upstreams,DEFAULT_UPSTREAMS,RequestError} from '../lib/surroundings.js';
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {boundary,bearing,distance,unlocal} from '../public/field-geo.js';import {parcelGeometry,utm34ToWgs84,wgs84ToUtm34} from '../public/geo.js';import {nearbyRequest,textRequest,latinPlace} from '../public/geosrbija.js';import {parseCenter,bbox,overpassQuery,packageFrom,upstreams,DEFAULT_UPSTREAMS,RequestError} from '../lib/surroundings.js';
 const origin=[20,44], ring=p=>p.map(x=>unlocal(x,origin));const square=ring([[0,0],[100,0],[100,100],[0,100]]),hole=ring([[40,40],[60,40],[60,60],[40,60]]);
 test('distance uses nearest segment; holes are outside and separate polygons work',()=>{const center=unlocal([50,50],origin),a=boundary(center,[[square]]);assert(a.inside);assert(Math.abs(a.distance-50)<.01);const h=boundary(center,[[square,hole]]);assert(!h.inside);assert(Math.abs(h.distance-10)<.01);const out=boundary(unlocal([150,30],origin),[[square]]);assert(!out.inside);assert(Math.abs(out.distance-50)<.01);assert(boundary(unlocal([250,50],origin),[[square],[ring([[200,0],[300,0],[300,100],[200,100]])]]).inside);});
 test('bearings and long-range distance',()=>{assert(Math.abs(bearing([20,44],[20,45]))<.01);assert(Math.abs(bearing([20,44],[21,44])-90)<1);assert(Math.abs(distance([20,44],[20,45])-111195)<2);});
 test('fixture parcel has exact eight vertices and plausible area',()=>{const s=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json')),g=parcelGeometry(s.record);assert.equal(g.points.length,8);assert(g.area>1000&&g.area<4000);assert(Math.abs(g.points[0].lat-44.3374173087)<1e-8);});
 test('app starts without any built-in parcel',()=>{const html=fs.readFileSync('public/teren.html','utf8');for(const id of ['number','municipality','ko'])assert.doesNotMatch(html,new RegExp(`<input id="${id}"[^>]*\\svalue=`),id+' must not be prefilled');assert.match(html,/<section id="parcelCard"[^>]*\shidden/);assert(!fs.existsSync('public/sample.json'));assert.doesNotMatch(fs.readFileSync('public/sw.js','utf8'),/sample\.json/);assert.doesNotMatch(fs.readFileSync('public/teren.js','utf8'),/sample\.json/);});
+test('forward UTM matches the inverse and the point a3 sends for the fixture parcel',()=>{
+ for(const [e,n] of [[433000.4513,4909693.590501],[300000,4600000],[700000,5200000]]){const [e2,n2]=wgs84ToUtm34(...utm34ToWgs84(e,n));assert(Math.hypot(e2-e,n2-n)<.001,e+','+n);}
+ // Captured click at UTM (432954.08, 4909699.68) is 46 m west of the fixture's first vertex.
+ const [e,n]=wgs84ToUtm34(20.1595475,44.3374173);assert(Math.abs(e-433000.45)<.05&&Math.abs(n-4909693.59)<.05);
+});
+test('nearby search mirrors the a3 map click request and reads place names from desc',()=>{
+ const r=nearbyRequest(432954.0831709,4909699.6789006,150);assert.deepEqual(r,{srsid:'32634',st:'circle',s:'432954.08,4909699.68,150',start:0,limit:100,layers:'586,'});
+ for(const bad of [[NaN,1,10],[1,1,0],[1,1,5000]])assert.throws(()=>nearbyRequest(...bad));
+ assert.equal(textRequest('1227/2','Pepeljevac').q,'1227/2 pepeljevac');
+ assert.equal(latinPlace('PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'),'Pepeljevac Lajkovac');assert.equal(latinPlace(undefined),'');
+ const html=fs.readFileSync('public/teren.html','utf8');assert.match(html,/<button id="nearby"/);
+});
 test('surroundings service validates the center, builds a bounded query and a complete package',()=>{
  const center=parseCenter(new URLSearchParams('lat=44.33741&lon=20.15887'));assert.deepEqual(center,[44.337,20.159]);
  const box=bbox(center);assert.equal(box.length,4);assert(box[0]<center[0]&&box[2]>center[0]&&box[1]<center[1]&&box[3]>center[1]);assert(Math.abs((box[2]-box[0])-.018)<1e-6);assert((box[3]-box[1])>.018);

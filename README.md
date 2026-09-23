@@ -3,7 +3,8 @@
 Phone-first parcel field map. Open `/teren.html` (the root redirects there).
 
 ## Capabilities
-- Exact parcel search against the public GeoSrbija search service, filtering parcel number, cadastral municipality, and municipality; EPSG:32634 conversion to WGS84.
+- Exact parcel search against the public GeoSrbija search service, filtering parcel number, cadastral municipality, and municipality; EPSG:32634 conversion to WGS84 and back.
+- "Parcele oko mene": every parcel within 150 m of the GPS fix (or of the map centre) drawn as vector outlines with numbers; tap one to select it. This reuses the spatial `circle` request the GeoSrbija map viewer itself sends on a click (`st:"circle", s:"E,N,R", layers:"586,"`), so it needs no token or account. The place line for such parcels is the Latin half of the service's `desc` (cadastral municipality and municipality together).
 - Canvas vector map with polygon holes, vertices, pan, pinch zoom, scale, north reference.
 - User-initiated download of a bounded OpenStreetMap extract (~1 km around parcel center) through the app's own `/api/surroundings` Worker route: roads, tracks, buildings, land use, water. ODbL attribution links remain visible. No standard OSM tile bulk download.
 - Device-local IndexedDB parcels and surroundings, service-worker app shell cache with explicit completeness check. App never reports full offline readiness based on geometry alone.
@@ -14,7 +15,7 @@ Phone-first parcel field map. Open `/teren.html` (the root redirects there).
 ## Data provenance
 The app ships with no built-in parcel. On first open it shows an empty map and the search form; afterwards it opens the most recently saved parcel from the device. Every boundary comes from a live GeoSrbija search and carries its retrieval date. Nearby data is fetched on explicit Save for terrain. Public upstream availability is not guaranteed. `tests/fixtures/parcel.json` is a real search result (1227/2 Pepeljevac, Lajkovac, retrieved 2026-09-16) used only by the geometry tests.
 
-Location fixes stay in page memory; no analytics or location server transmission. External navigation uses only the selected destination in the URL. Parcel searches go from the browser to GeoSrbija (its servers were observed to time out for datacenter IPs, so they are not proxied). Surroundings go to the app's own Worker route, which forwards only a bounded query to Overpass.
+Location fixes stay in page memory; no analytics or location server transmission. External navigation uses only the selected destination in the URL. Parcel searches go from the browser to GeoSrbija (its servers were observed to time out for datacenter IPs, so they are not proxied; `GEOSRBIJA_URL` in `public/config.js` lets a deployment point at its own proxy). Surroundings go to the app's own Worker route, which forwards only a bounded query to Overpass.
 
 ## Surroundings service
 `app/api/surroundings/route.ts` (`GET /api/surroundings?lat=&lon=`) is the only place that talks to Overpass. It validates that the centre lies in Serbia, rounds it to ~100 m, builds the fixed query from `lib/surroundings.js`, and returns `{elements, bbox, downloadedAt, source}`. Responses carry `Cache-Control: public, max-age=86400, s-maxage=604800` so the hosting CDN shares one download between users for 7 days (the browser also rounds the centre to 3 decimals so the URLs match); on Cloudflare the Workers Cache API is used in addition. Requests with `Sec-Fetch-Site: cross-site` are refused so other sites cannot use the deployment as a relay.

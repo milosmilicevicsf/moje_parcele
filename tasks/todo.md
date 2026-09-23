@@ -79,3 +79,22 @@ Centar Beograda vraća 6,7 MB / 8090 elemenata — previše za telefon.
 - Posle (lokalno, javni serveri): selo 12,5 s, Beograd 12,7 s, Novi Sad 8,9 s — sve 200. Sa mrtvim prvim
   upstream-om: Beograd 7,6 s (hedging preuzima). Brzina i dalje zavisi od javnih servera; sopstvena instanca je rešenje.
 - Nije moguće ovde testirati docker-compose (nema Docker-a); YAML validan, parametri prema dokumentaciji slike.
+
+# Plan 5: „Parcele oko mene" (prostorni upit na SearchProxy)
+
+Nalaz iz snimljenih zahteva a3.geosrbija.rs: klik na mapu = `SearchProxy.asmx/Search` sa
+`{"st":"circle","s":"E,N,R","layers":"586,","srsid":"32634"}` — isti endpoint kao pretraga, bez tokena.
+Sa R≈150 m vraća sve parcele oko tačke sa `fullGeom`. Satelitski snimak (`basemap.geosrbija.rs`, ss30_2021) ide bez tokena.
+
+- [x] `geo.js`: `wgs84ToUtm34` (obrnuta projekcija) + round-trip test (greška < 1 mm)
+- [x] `geosrbija.js`: `searchNearby(e,n,r)` + zajednički poziv; `latinPlace(desc)`; `GEOSRBIJA_URL` u `config.js`
+- [x] `teren.js`: dugme „Parcele oko mene" (GPS ili centar mape), crtanje susednih parcela sa brojevima, tap → izbor
+- [x] `draw/fit` rade i bez izabrane parcele kad postoje susedne
+- [x] Testovi (projekcija, telo upita, parsiranje desc); ručna provera u browseru sa lokalnom imitacijom SearchProxy-ja (6 parcela, tap, drag, čuvanje)
+- [x] README
+- [ ] Korisnik proverava uživo protiv a3.geosrbija.rs (odavde nedostupan): da li `circle` upit vraća `fullGeom`
+
+## Pregled (plan 5)
+- Nova klijentska funkcija, bez servera: isti endpoint kao pretraga, samo prostorni upit. Radi bez `A3TKN` tokena.
+- Neprovereno uživo: pretpostavka da `circle` odgovor sadrži `fullGeom` kao i tekstualna pretraga. Ako ne — fallback: za svaki `uid` uraditi tekstualnu pretragu (skuplje).
+- Sledeći korak po vrednosti: satelitska podloga `basemap.geosrbija.rs` (ss30_2021, EPSG:32634 mreža, bez tokena), keširana kroz service worker kao opaque odgovori.
