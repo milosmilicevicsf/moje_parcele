@@ -424,3 +424,14 @@ test('opening a parcel points the eKatastar link at the preselected cadastral mu
  app.scope.other={...remote,record:{...remote.record,uid:'x',desc:'NEPOZNATO MESTO'}};app.run('show(other)');for(let i=0;i<10;i++)await flush();
  assert.equal(app.element('ekatastar').href,EKATASTAR_HOME,'unknown KO falls back to the generic page');
 });
+
+test('selecting a parcel on the map offers a visible way to its details',async()=>{
+ const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800)],total:1}));await app.emit(9);
+ assert.equal(app.element('details').hidden,true);
+ let scrolled=null;app.element('parcelCard').scrollIntoView=options=>scrolled=options;
+ tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'A');
+ assert.equal(app.element('details').hidden,false);
+ assert.equal(scrolled?.block,'nearest','wide screens scroll the side panel to the card');
+ scrolled=null;app.element('details').onclick();assert.equal(scrolled.block,'start');
+ app.element('clearSelection').onclick();assert.equal(app.element('details').hidden,true);
+});
