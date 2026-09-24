@@ -87,7 +87,7 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 });
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map()){
- const labels=[],elements=new Map(),tileRequests=[],images=[];let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const labels=[],elements=new Map(),tileRequests=[],images=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
@@ -99,11 +99,11 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
   document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
-  ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
+  ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,tileRequests,images,stored,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
+ return {element,labels,tileRequests,images,stored,resize:()=>resize(),get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -482,4 +482,25 @@ test('selecting a parcel on the map offers a visible way to its details',async()
  assert.equal(scrolled?.block,'nearest','wide screens scroll the side panel to the card');
  scrolled=null;app.element('details').onclick();assert.equal(scrolled.block,'start');
  app.element('clearSelection').onclick();assert.equal(app.element('details').hidden,true);
+});
+
+
+test('mobile navigation opens search and saved panels and preserves map dimensions while hidden',async()=>{
+ const app=await appHarness();app.scope.innerWidth=390;
+ await app.emit(8);
+ const view=app.run('JSON.stringify(view)'),size=app.run('JSON.stringify([width,height])');
+ app.element('navSearch').onclick();
+ assert.equal(app.element('app').dataset.view,'search');
+ assert.equal(app.element('navSearch')['aria-current'],'page');
+ app.element('map').getBoundingClientRect=()=>({width:0,height:0,left:0,top:0});app.resize();
+ assert.equal(app.run('JSON.stringify([width,height])'),size);
+ app.element('navSaved').onclick();assert.equal(app.element('app').dataset.view,'saved');
+ app.element('navMap').onclick();assert.equal(app.element('app').dataset.view,'map');
+ assert.equal(app.run('JSON.stringify(view)'),view);
+ app.run('show(nearby[0],false)');app.element('details').onclick();
+ assert.equal(app.element('app').dataset.view,'details');
+ app.element('backToMap').onclick();assert.equal(app.element('app').dataset.view,'map');
+ app.element('navSearch').onclick();app.scope.liveSearch=async()=>[fixture.record];
+ await app.run("searchParcel('1','Stari Grad','Beograd')");
+ assert.equal(app.element('app').dataset.view,'map','a search result returns directly to the map');
 });
