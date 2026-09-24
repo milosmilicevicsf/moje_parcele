@@ -112,3 +112,15 @@ Sa R≈150 m vraća sve parcele oko tačke sa `fullGeom`. Satelitski snimak (`ba
 - Browser (lokalni statički server): snimak se poklapa sa granicom 1227/2, zum iznad z18 bez sivih pločica, izbor se pamti, povratak na mapu radi.
 - Esri datum snimka: Pepeljevac 9. 3. 2025, Beograd 9. 4. 2025. GeoSrbija ortofoto je iz 2020–2021.
 - Neprovereno uživo: ◎ protiv prave GeoSrbije (odavde blokirana; pokriveno testom sa imitacijom), link na eKatastar (sajt odavde nedostupan).
+
+# Plan 7: eKatastar sa unapred izabranom KO
+
+- [x] `FindParcela.aspx?KoID=<matični broj KO>` otvara formu sa izabranom opštinom i KO (Čukarica 704083 viđeno u živom linku)
+- [x] Spisak KO sa RGZ stranice „Katastarske opštine“ (389 strana, 5.821 KO) → `public/ko-ids.txt` preko `scripts/build-ko-ids.mjs`
+- [x] `ekatastar.js`: poklapanje po GeoSrbija opisu, prezimenjaci se razlikuju po opštini, dvosmisleno → obična stranica
+- [x] Testovi: sintetički slučajevi, prava tabela (svih 5.821 bez pogrešnog pogotka), aplikacija postavlja link
+
+## Pregled 7
+- 45/45 testova. Browser: 1227/2 → `KoID=728195`, uputstvo ispod linka i poruka posle klika su tačni.
+- Neprovereno: sam eKatastar sa KoID (sajt je odavde blokiran). Parametar je potvrđen samo preko javno indeksiranih stranica.
+- Tabelu osvežavati kad RGZ promeni KO: preuzeti strane u TSV i pokrenuti skriptu.
