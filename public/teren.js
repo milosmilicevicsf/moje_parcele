@@ -1,7 +1,8 @@
 import {parcelGeometry,wgs84ToUtm34} from './geo.js';
 import {searchParcel as liveSearch,searchNearby,latinPlace} from './geosrbija.js';
 import {local,unlocal,boundary,bearing,distance} from './field-geo.js';
-import {SURROUNDINGS_URL} from './config.js';
+import {SURROUNDINGS_URL,SATELLITE_TILES,SATELLITE_ATTRIBUTION} from './config.js';
+import {createTileLayer} from './satellite.js';
 import {createNearbyLoader,nearbyFixState} from './nearby-loader.js';
 import {createLocationTracker} from './location-tracker.js';
 import {downloadNeighborhood,readNeighborhood,neighborhoodSummary} from './parcel-neighborhood.js';
@@ -15,6 +16,11 @@ const metres=m=>m<1000?Math.round(m)+' m':(m/1000).toFixed(1)+' km';
 let nearbyMode=true,nearbyState={kind:'waiting',detail:''},gpsError=null;
 let parcelNeighborhoodVersion=0,mapNeighborhood=null,parcelNeighborhoodState='';
 const neighborhoodRequests=new Map();
+const storedBasemap=()=>{try{return localStorage.getItem('basemap');}catch{return null;}};
+let basemap=storedBasemap()==='satellite'?'satellite':'map',imagery={pending:0,missing:0,tooWide:false},redrawQueued=false;
+const tiles=createTileLayer({template:SATELLITE_TILES,onChange:()=>{if(!redrawQueued){redrawQueued=true;requestAnimationFrame(()=>{redrawQueued=false;draw();});}},load:(url,done)=>{const image=new Image();image.decoding='async';image.onload=()=>done(true);image.onerror=()=>done(false);image.src=url;return image;}});
+// Imagery needs the network; offline the vector map is shown and the preference is kept.
+const satelliteOn=()=>basemap==='satellite'&&navigator.onLine;
 const date=s=>new Date(s).toLocaleDateString('sr-Latn');
 function validPackage(x){if(!x||typeof x.ko!=='string'||typeof x.municipality!=='string'||typeof x.record?.title!=='string'||typeof x.record?.fullGeom!=='string')throw Error('Ovo nije rezervna kopija parcele iz ove aplikacije.');x.geometry=parcelGeometry(x.record);if(x.osm&&(!Array.isArray(x.osm.elements)||x.osm.elements.length>100000))throw Error('Neispravna mapa okoline.');return x;}
 function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open('moje-parcele-teren',1);r.onupgradeneeded=()=>r.result.createObjectStore('parcels',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
@@ -93,20 +99,51 @@ function drawEmpty(){
   title=nearbyState.kind==='empty'?'Pretraga nije vratila granice':'Granice trenutno nisu učitane';detail=nearbyState.detail;
  }else if(watch!==null){title='Čekamo precizniji položaj';detail='Dozvolite preciznu lokaciju. Parcele će se učitati automatski kada telefon odredi položaj.';}
  $('emptyTitle').textContent=title;$('emptyDetail').textContent=detail;
- $('scale').textContent='';$('scale').style.width='0';$('coverage').textContent='';$('mapMode').textContent=title;
+ $('scale').textContent='';$('scale').style.width='0';$('coverage').textContent=gps?imageryNote():'';$('mapMode').textContent=title;
 }
 function setNearbyState(kind,detail=''){nearbyState={kind,detail};draw();}
-function drawNearby(){for(const x of nearby){if(current&&idFor(x)===idFor(current))continue;ctx.beginPath();for(const poly of x.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle='#a8b98f26';ctx.fill('evenodd');ctx.strokeStyle='#7f9668';ctx.lineWidth=1.5;ctx.stroke();if(view.scale>.3){const pts=x.geometry.points,c=pixel([pts.reduce((s,p)=>s+p.lon,0)/pts.length,pts.reduce((s,p)=>s+p.lat,0)/pts.length]);ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle='#f3f5e8';ctx.strokeText(x.record.title,...c);ctx.fillStyle='#4a6140';ctx.fillText(x.record.title,...c);}}}
+function drawNearby(sat){for(const x of nearby){if(current&&idFor(x)===idFor(current))continue;ctx.beginPath();for(const poly of x.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle=sat?'#ffffff12':'#a8b98f26';ctx.fill('evenodd');ctx.strokeStyle=sat?'#ffffffd0':'#7f9668';ctx.lineWidth=1.5;ctx.stroke();if(view.scale>.3){const pts=x.geometry.points,c=pixel([pts.reduce((s,p)=>s+p.lon,0)/pts.length,pts.reduce((s,p)=>s+p.lat,0)/pts.length]);ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle=sat?'#1d2419d0':'#f3f5e8';ctx.strokeText(x.record.title,...c);ctx.fillStyle=sat?'#ffffff':'#4a6140';ctx.fillText(x.record.title,...c);}}}
+function viewBounds(){
+ const [west,north]=unlocal([view.center[0]-width/2/view.scale,view.center[1]+height/2/view.scale],view.origin);
+ const [east,south]=unlocal([view.center[0]+width/2/view.scale,view.center[1]-height/2/view.scale],view.origin);
+ return [west,south,east,north];
+}
+function updateBasemapControls(sat){
+ const wantsSatellite=basemap==='satellite';
+ $('basemap').textContent=wantsSatellite?'Mapa':'Satelit';
+ $('basemap').setAttribute('aria-label',wantsSatellite?'Prikaži običnu mapu':'Prikaži satelitski snimak');
+ $('imageryCredit').hidden=!sat;canvas.parentElement.classList.toggle('satellite',sat);
+}
+function imageryNote(){
+ if(basemap!=='satellite')return '';
+ if(!navigator.onLine)return 'Satelitski snimak zahteva internet · prikazana je obična mapa';
+ if(imagery.tooWide)return 'Uvećajte mapu za satelitski snimak';
+ if(imagery.missing)return 'Satelitski snimak nije dostupan za deo prikaza';
+ if(imagery.pending)return 'Učitavamo satelitski snimak…';
+ return 'Satelitski snimak · datum snimanja zavisi od područja';
+}
+function toggleBasemap(){
+ basemap=basemap==='satellite'?'map':'satellite';
+ try{localStorage.setItem('basemap',basemap);}catch{}
+ draw();
+ if(basemap==='satellite'&&!navigator.onLine)message('Satelitski snimak se učitava samo uz internet. Do tada je prikazana obična mapa.',true);
+}
+$('basemap').onclick=toggleBasemap;$('imageryCredit').textContent=' · Snimak: '+SATELLITE_ATTRIBUTION;
 function draw(){
  $('clearSelection').hidden=!current;$('fit').textContent=current?'▱ Prikaži parcelu':'▱ Prikaži parcele';
- ctx.clearRect(0,0,width,height);ctx.fillStyle='#e9eddd';ctx.fillRect(0,0,width,height);if(!current&&!nearby.length){drawEmpty();return;}$('emptyHint').hidden=true;const step=niceScale(70/view.scale),spacing=step*view.scale;ctx.strokeStyle='#dce2ce';ctx.lineWidth=1;const zero=pixel(view.origin);ctx.beginPath();for(let x=((zero[0]%spacing)+spacing)%spacing;x<width;x+=spacing){ctx.moveTo(x,0);ctx.lineTo(x,height);}for(let y=((zero[1]%spacing)+spacing)%spacing;y<height;y+=spacing){ctx.moveTo(0,y);ctx.lineTo(width,y);}ctx.stroke();
- const surroundings=current?.osm||mapSurroundings,elements=surroundings?.elements||[];for(const e of elements){if(!e.geometry?.length||e.tags?.highway)continue;const t=e.tags||{},closed=e.geometry.length>2&&e.geometry[0].lat===e.geometry.at(-1).lat&&e.geometry[0].lon===e.geometry.at(-1).lon;ctx.beginPath();path(e.geometry,closed);if(closed){ctx.fillStyle=t.building?'#cecabc':t.natural==='water'||t.landuse==='reservoir'?'#b9d5d5':t.landuse==='forest'||t.natural==='wood'?'#cfdfbc':'#e1e7ce';ctx.fill();}if(t.waterway){ctx.strokeStyle='#9bbfc5';ctx.lineWidth=2;ctx.stroke();}}
+ const sat=satelliteOn();updateBasemapControls(sat);
+ ctx.clearRect(0,0,width,height);ctx.fillStyle=sat?'#3a4234':'#e9eddd';ctx.fillRect(0,0,width,height);
+ if(sat&&(current||nearby.length||gps))imagery=tiles.draw(ctx,pixel,viewBounds(),1/(view.scale*Math.min(2,devicePixelRatio||1)));
+ if(!current&&!nearby.length){drawEmpty();return;}$('emptyHint').hidden=true;
+ if(!sat){const step=niceScale(70/view.scale),spacing=step*view.scale;ctx.strokeStyle='#dce2ce';ctx.lineWidth=1;const zero=pixel(view.origin);ctx.beginPath();for(let x=((zero[0]%spacing)+spacing)%spacing;x<width;x+=spacing){ctx.moveTo(x,0);ctx.lineTo(x,height);}for(let y=((zero[1]%spacing)+spacing)%spacing;y<height;y+=spacing){ctx.moveTo(0,y);ctx.lineTo(width,y);}ctx.stroke();}
+ // Over imagery the OSM buildings and land use would hide what the photo shows.
+ const surroundings=current?.osm||mapSurroundings,elements=sat?[]:surroundings?.elements||[];for(const e of elements){if(!e.geometry?.length||e.tags?.highway)continue;const t=e.tags||{},closed=e.geometry.length>2&&e.geometry[0].lat===e.geometry.at(-1).lat&&e.geometry[0].lon===e.geometry.at(-1).lon;ctx.beginPath();path(e.geometry,closed);if(closed){ctx.fillStyle=t.building?'#cecabc':t.natural==='water'||t.landuse==='reservoir'?'#b9d5d5':t.landuse==='forest'||t.natural==='wood'?'#cfdfbc':'#e1e7ce';ctx.fill();}if(t.waterway){ctx.strokeStyle='#9bbfc5';ctx.lineWidth=2;ctx.stroke();}}
  for(const e of elements){if(!e.tags?.highway||!e.geometry?.length)continue;const trail=['path','footway','track','bridleway'].includes(e.tags.highway);ctx.beginPath();path(e.geometry);ctx.lineJoin='round';ctx.strokeStyle=trail?'#a9ad8d':'#c6c5b3';ctx.lineWidth=trail?2:6;ctx.setLineDash(trail?[5,4]:[]);ctx.stroke();ctx.setLineDash([]);if(!trail){ctx.strokeStyle='#fffef4';ctx.lineWidth=3;ctx.stroke();}if(e.tags.name&&view.scale>.12){const p=pixel([e.geometry[Math.floor(e.geometry.length/2)].lon,e.geometry[Math.floor(e.geometry.length/2)].lat]);ctx.font='11px sans-serif';ctx.fillStyle='#7c816b';ctx.textAlign='center';ctx.fillText(e.tags.name,...p);}}
- drawNearby();
- if(current){ctx.beginPath();for(const poly of current.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle='#bfda7060';ctx.fill('evenodd');ctx.strokeStyle='#436530';ctx.lineWidth=3;ctx.stroke();
- current.geometry.points.forEach(p=>{const q=pixel([p.lon,p.lat]);ctx.beginPath();ctx.arc(...q,4,0,Math.PI*2);ctx.fillStyle='#fffef4';ctx.fill();ctx.strokeStyle='#436530';ctx.lineWidth=2;ctx.stroke();if(view.scale>.9){ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle='#f9faf0';ctx.strokeText(p.name,q[0],q[1]-12);ctx.fillStyle='#36562b';ctx.fillText(p.name,q[0],q[1]-12);}});}
+ drawNearby(sat);
+ if(current){const line=sat?'#ffd84a':'#436530';ctx.beginPath();for(const poly of current.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle=sat?'#ffd84a2e':'#bfda7060';ctx.fill('evenodd');ctx.strokeStyle=line;ctx.lineWidth=3;ctx.stroke();
+ current.geometry.points.forEach(p=>{const q=pixel([p.lon,p.lat]);ctx.beginPath();ctx.arc(...q,4,0,Math.PI*2);ctx.fillStyle='#fffef4';ctx.fill();ctx.strokeStyle=line;ctx.lineWidth=2;ctx.stroke();if(view.scale>.9){ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle=sat?'#1d2419d9':'#f9faf0';ctx.strokeText(p.name,q[0],q[1]-12);ctx.fillStyle=sat?'#fff6c8':'#36562b';ctx.fillText(p.name,q[0],q[1]-12);}});}
  drawGps();
- const scale=niceScale(80/view.scale);$('scale').textContent=metres(scale);$('scale').style.width=scale*view.scale+'px';const vc=unlocal(view.center,view.origin),bb=surroundings?.bbox,outside=bb&&(vc[1]<bb[0]||vc[1]>bb[2]||vc[0]<bb[1]||vc[0]>bb[3]);$('coverage').textContent=!nearbyMode&&parcelNeighborhoodState?parcelNeighborhoodState:!current?'Parcele iz GeoSrbije u krugu od '+NEARBY_RADIUS+' m · dodirnite parcelu da je izaberete':surroundings?(outside?'Van preuzete okoline · prikažite parcelu za povratak na mapu':'Preuzeta okolina ~1 km oko parcele · nije satelitski snimak'):'Okolina nije preuzeta. Prikazana je granica na koordinatnoj mreži.';$('mapMode').textContent=current?'Parcela '+current.record.title:'Parcele u okolini';
+ const scale=niceScale(80/view.scale);$('scale').textContent=metres(scale);$('scale').style.width=scale*view.scale+'px';const vc=unlocal(view.center,view.origin),bb=surroundings?.bbox,outside=bb&&(vc[1]<bb[0]||vc[1]>bb[2]||vc[0]<bb[1]||vc[0]>bb[3]);const parcelsNote=!nearbyMode&&parcelNeighborhoodState?parcelNeighborhoodState:!current?'Parcele iz GeoSrbije u krugu od '+NEARBY_RADIUS+' m · dodirnite parcelu da je izaberete':sat?'':surroundings?(outside?'Van preuzete okoline · prikažite parcelu za povratak na mapu':'Preuzeta okolina ~1 km oko parcele · nije satelitski snimak'):'Okolina nije preuzeta. Prikazana je granica na koordinatnoj mreži.';$('coverage').textContent=[imageryNote(),parcelsNote].filter(Boolean).join(' · ');$('mapMode').textContent=current?'Parcela '+current.record.title:'Parcele u okolini';
 }
 new ResizeObserver(()=>{const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;width=r.width;height=r.height;canvas.width=width*d;canvas.height=height*d;ctx.setTransform(d,0,0,d,0,0);draw();}).observe(canvas);
 // Screen position -> lon/lat (inverse of pixel()).

@@ -8,6 +8,7 @@ import {searchNearby} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
 import * as field from '../public/field-geo.js';
 import * as neighborhoods from '../public/parcel-neighborhood.js';
+import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOOM} from '../public/satellite.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
 const fixture=JSON.parse(fs.readFileSync('tests/fixtures/belgrade-parcel.json','utf8'));
@@ -82,20 +83,23 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
  assert.deepEqual(await searchNearby(432954,4909699,150),{records:[],total:0});
 });
 
-async function appHarness(search=async()=>({records:[fixture.record],total:1})){
- const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
- const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++},{get:(obj,key)=>obj[key]??(()=>{})});
- function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
+async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map()){
+ const labels=[],elements=new Map(),tileRequests=[],images=[];let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args)},{get:(obj,key)=>obj[key]??(()=>{})});
+ function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
-  SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
+  createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
+  localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
+  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
+ return {element,labels,tileRequests,images,stored,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -319,4 +323,45 @@ test('parcel query radius includes a margin and large parcels/partial records re
  assert.equal(result.parcels.length,1);assert.equal(result.snapshot.skipped,1);
  assert.match(neighborhoods.neighborhoodSummary(result.snapshot),/nepotpun/);
  assert.throws(()=>neighborhoods.readNeighborhood({...result.snapshot,records:new Array(1001)}));
+});
+
+test('satellite tiles: zoom choice, tile grid and URL template',()=>{
+ // ~0.3 m/px at Belgrade needs z19; zooming far out lowers the level; never above the provider maximum.
+ assert.equal(tileZoom(0.2,44.81),MAX_ZOOM);assert.equal(tileZoom(1.1,44.81),17);assert(tileZoom(500,44.81)<=9);
+ const [x,y]=tileAt(20.4604,44.8178,18);
+ assert(tileLon(x,18)<=20.4604&&tileLon(x+1,18)>20.4604);assert(tileLat(y,18)>=44.8178&&tileLat(y+1,18)<44.8178);
+ assert.equal(tileUrl('https://t/{z}/{y}/{x}',[18,x,y]),`https://t/18/${y}/${x}`);
+ assert.equal(tilesFor([20.46,44.81,20.461,44.811],18).length<=4,true);
+ assert.equal(tilesFor([19,42,23,46],18),null,'a whole-country view does not request thousands of tiles');
+});
+
+test('satellite tiles: missing zoom falls back to a scaled-up ancestor',async()=>{
+ const state=new Map(),drawn=[];let changes=0;
+ const layer=createTileLayer({template:'{z}/{x}/{y}',onChange:()=>changes++,load:(url,done)=>{const z=Number(url.split('/')[0]);queueMicrotask(()=>done(z<=18));state.set(url,z);return {url};}});
+ const ctx={drawImage:(image,sx,sy,sw)=>drawn.push([image.url,sw])},pixel=([lon,lat])=>[(lon-20.46)*1e5,(44.82-lat)*1e5];
+ const bounds=[20.4600,44.8170,20.4601,44.8171];
+ let result=layer.draw(ctx,pixel,bounds,0.2);assert(result.pending>0);assert.equal(drawn.length,0);
+ await flush();drawn.length=0;
+ result=layer.draw(ctx,pixel,bounds,0.2);
+ assert(result.pending>0,'z19 is missing, so its z18 parent is requested');await flush();drawn.length=0;
+ result=layer.draw(ctx,pixel,bounds,0.2);
+ assert.equal(result.pending,0);assert.equal(result.missing,0);
+ assert(drawn.length>0&&drawn.every(([url,size])=>url.startsWith('18/')&&size===128),'draws the matching half of the z18 tile');
+ assert(changes>0);
+});
+
+test('basemap toggle shows imagery under parcels, remembers the choice and falls back offline',async()=>{
+ const app=await appHarness();await app.emit(8);
+ assert.equal(app.element('basemap').textContent,'Satelit');assert.equal(app.tileRequests.length,0,'default map requests no imagery');
+ app.element('basemap').onclick();await flush();await flush();
+ assert.equal(app.stored.get('basemap'),'satellite');assert.equal(app.element('basemap').textContent,'Mapa');
+ assert(app.tileRequests.length>0&&app.tileRequests.every(u=>u.startsWith('https://tiles.test/')));
+ assert(app.images.length>0,'loaded tiles are drawn');assert.equal(app.element('imageryCredit').hidden,false);
+ assert.match(app.element('coverage').textContent,/Satelitski snimak/);
+ app.scope.navigator.onLine=false;app.run('draw()');
+ assert.equal(app.element('imageryCredit').hidden,true);assert.match(app.element('coverage').textContent,/zahteva internet/);
+ app.scope.navigator.onLine=true;
+ const again=await appHarness(undefined,new Map([['basemap','satellite']]));await again.emit(8);await flush();
+ assert.equal(again.element('basemap').textContent,'Mapa','choice survives reload');
+ again.element('basemap').onclick();assert.equal(again.stored.get('basemap'),'map');assert.equal(again.element('imageryCredit').hidden,true);
 });

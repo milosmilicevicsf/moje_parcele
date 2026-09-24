@@ -20,3 +20,8 @@
 .map-label{max-width:100%}
 .map-label i{flex-shrink:0}
 #clearSelection{font-size:13px;min-height:44px}
+
+.map-controls .basemap{font-size:11px;padding:5px 2px;margin-top:6px}
+.satellite .empty-hint{place-content:center;justify-items:center}
+.satellite .empty-hint strong,.satellite .empty-hint span{background:#fffef8e6;padding:6px 10px;border-radius:6px;color:#3f4c38}
+.satellite .north{color:#fff;text-shadow:0 1px 3px #000a}
