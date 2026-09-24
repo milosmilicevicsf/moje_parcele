@@ -1,0 +1,5823 @@
+# Katastarske opštine (RGZ, katastar.rgz.gov.rs/JavniOglasi/katastarske-opstine), preuzeto 2026-09-24
+# opština|katastarska opština|matični broj KO (KoID za eKatastar)
+ada|ada|803448
+ada|mol|803588
+ada|obornjaca|803634
+ada|utrine|803642
+aleksandrovac|aleksandrovac|700029
+aleksandrovac|bobote|700045
+aleksandrovac|boturici|700053
+aleksandrovac|bratici|700061
+aleksandrovac|bzenice|700037
+aleksandrovac|dasnica|700185
+aleksandrovac|dobroljupci|700193
+aleksandrovac|donja zleginja|700207
+aleksandrovac|donji stupanj|720801
+aleksandrovac|donji vratari|700215
+aleksandrovac|drenca|700223
+aleksandrovac|garevina|700126
+aleksandrovac|gornja zleginja|700134
+aleksandrovac|gornji stupanj|700169
+aleksandrovac|gornji vratari|700142
+aleksandrovac|grcak|700177
+aleksandrovac|jelakci|700231
+aleksandrovac|kozetin|700240
+aleksandrovac|koznica|700258
+aleksandrovac|lacisled|721018
+aleksandrovac|latkovac|700266
+aleksandrovac|lesenovci|700274
+aleksandrovac|leskovica|700282
+aleksandrovac|ljubinci|700304
+aleksandrovac|mrmos|721204
+aleksandrovac|novaci|700312
+aleksandrovac|parcin|700339
+aleksandrovac|ples|700347
+aleksandrovac|ploca|700355
+aleksandrovac|puhovac|700363
+aleksandrovac|raklja|700371
+aleksandrovac|rataje|700380
+aleksandrovac|rogavcina|700401
+aleksandrovac|rokci|700410
+aleksandrovac|rudenice|700428
+aleksandrovac|rzanica|700398
+aleksandrovac|sljivovo|700525
+aleksandrovac|stanjevo|700436
+aleksandrovac|starci popovci|700444
+aleksandrovac|strmenica|700452
+aleksandrovac|stubal|700479
+aleksandrovac|subotica|700487
+aleksandrovac|trnavci|700509
+aleksandrovac|trzac|700495
+aleksandrovac|tules|700517
+aleksandrovac|velika vrbnica donja|720585
+aleksandrovac|velika vrbnica gornja|700070
+aleksandrovac|velja glava|700088
+aleksandrovac|vitkovo|700096
+aleksandrovac|vranstica|700118
+aleksandrovac|vrazogrnci|700100
+aleksinac|aleksinac van varos|700533
+aleksinac|aleksinac varos|700541
+aleksinac|aleksinacki bujmir|700550
+aleksinac|bankovac|700851
+aleksinac|beli breg|700568
+aleksinac|belja|700860
+aleksinac|boboviste|700576
+aleksinac|bovan|700584
+aleksinac|bradarac|700592
+aleksinac|cesta|701327
+aleksinac|cicina|700835
+aleksinac|crna bara|700843
+aleksinac|cukurovac|701335
+aleksinac|dasnica|700991
+aleksinac|deligrad|700673
+aleksinac|dobrujevac|700681
+aleksinac|donja pescanica|701009
+aleksinac|donje suhotno|701017
+aleksinac|donji adrovac|701025
+aleksinac|donji krupac|700690
+aleksinac|donji ljubes|701033
+aleksinac|drazevac|700703
+aleksinac|glogovica|700657
+aleksinac|golesnica|700916
+aleksinac|gornja pescanica|700924
+aleksinac|gornje suhotno|700932
+aleksinac|gornji adrovac|700959
+aleksinac|gornji krupac|700665
+aleksinac|gornji ljubes|700967
+aleksinac|gredetin|700975
+aleksinac|grejac|700983
+aleksinac|jakovlje|701068
+aleksinac|jasenje|700711
+aleksinac|kamenica|701076
+aleksinac|katun|700720
+aleksinac|koprivnica|701084
+aleksinac|korman|701092
+aleksinac|kraljevo|700738
+aleksinac|krusje|701106
+aleksinac|kulina|701114
+aleksinac|lipovac|700746
+aleksinac|ljupten|701165
+aleksinac|locika|701149
+aleksinac|loznac|701122
+aleksinac|luzane|701157
+aleksinac|mali drenovac|701173
+aleksinac|moravac|701181
+aleksinac|moravski bujmir|701190
+aleksinac|mozgovo|700754
+aleksinac|nozrina|701203
+aleksinac|porodin|701211
+aleksinac|prcilovica|701220
+aleksinac|prekonozi|740659
+aleksinac|prugovac|700789
+aleksinac|radevce|701238
+aleksinac|rsovac|740683
+aleksinac|rutevac|700797
+aleksinac|srezovac|701254
+aleksinac|stanci|700819
+aleksinac|stublina|701262
+aleksinac|subotinac|700827
+aleksinac|suric|701343
+aleksinac|tesica|701297
+aleksinac|trnjane|701319
+aleksinac|vakup|700606
+aleksinac|veliki drenovac|700878
+aleksinac|vitkovac|700886
+aleksinac|vrcenovica|700894
+aleksinac|vrelo|700622
+aleksinac|vukanja|700908
+aleksinac|vukasinovac|700649
+aleksinac|zitkovac|701050
+alibunar|alibunar|802310
+alibunar|banatski karlovac|800309
+alibunar|dobrica|802646
+alibunar|ilandza|802395
+alibunar|janosik|802425
+alibunar|lokve|802450
+alibunar|nikolinci|800538
+alibunar|novi kozjak|802743
+alibunar|seleus|802506
+alibunar|vladimirovac|802522
+apatin|apatin|803812
+apatin|kupusina|803910
+apatin|prigrevica|803936
+apatin|sonta|803979
+apatin|svilojevo|804029
+arandjelovac|arandjelovac|701351
+arandjelovac|banja|701360
+arandjelovac|bosuta|726974
+arandjelovac|brezovac|701408
+arandjelovac|bukovik|701416
+arandjelovac|garasi|701475
+arandjelovac|gornja tresnjevica|701483
+arandjelovac|jelovik|701548
+arandjelovac|kopljare|701556
+arandjelovac|misaca|701645
+arandjelovac|orasac|701661
+arandjelovac|partizani|723134
+arandjelovac|progoreoci|723177
+arandjelovac|ranilovic|728624
+arandjelovac|stojnik|701696
+arandjelovac|tulez|723258
+arandjelovac|vencane|722979
+arandjelovac|vrbica|701459
+arandjelovac|vukosavci|701467
+arilje|arilje|701734
+arilje|bjelusa|701742
+arilje|bogojevici|701769
+arilje|brekovo|701777
+arilje|cerova|726940
+arilje|djedovac|701840
+arilje|dobrace|701831
+arilje|dragojevac|726605
+arilje|grdovici|701815
+arilje|grivska|701823
+arilje|kruscica|701858
+arilje|latvica|701866
+arilje|mirosaljci|726796
+arilje|radobudja|701904
+arilje|radosevo|701912
+arilje|severovo|701939
+arilje|stupcevici|701947
+arilje|tresnjevica|726923
+arilje|vigoste pogled|701785
+arilje|virovo|726460
+arilje|visoka|701793
+arilje|vrane|701807
+babusnica|aleksandrovac|701971
+babusnica|babusnica|701980
+babusnica|berduj|701998
+babusnica|berin izvor|702005
+babusnica|bogdanovac|702013
+babusnica|bratisevac|702021
+babusnica|brestov dol|702030
+babusnica|crvena jabuka|702510
+babusnica|dol|702145
+babusnica|donje krnjino|702153
+babusnica|draginac|702161
+babusnica|ducevac|702170
+babusnica|gorcince|702129
+babusnica|gornje krnjino|702102
+babusnica|grncar|702137
+babusnica|izvor|702200
+babusnica|jasenov del|702218
+babusnica|kaludjerovo|702226
+babusnica|kambelevac|702234
+babusnica|kijevac|702242
+babusnica|leskovica|702269
+babusnica|linovo|702277
+babusnica|ljuberadja|702285
+babusnica|malo bonjince|702293
+babusnica|masurovac|702307
+babusnica|mezgraja|702315
+babusnica|modra stena|702323
+babusnica|nasuskovica|702331
+babusnica|ostatovica|702340
+babusnica|preseka|702358
+babusnica|provaljenik|702366
+babusnica|radinjince|702374
+babusnica|radosevac|702404
+babusnica|radosin|702382
+babusnica|rakita|702412
+babusnica|rakov dol|702439
+babusnica|raljin|702447
+babusnica|resnik|702455
+babusnica|stol|702463
+babusnica|strbovac|702528
+babusnica|strelac|702471
+babusnica|strizevac|702480
+babusnica|studena|702498
+babusnica|suracevo|702501
+babusnica|valnis|702056
+babusnica|vava|702048
+babusnica|veliko bonjince|702064
+babusnica|vrelo|702072
+babusnica|vuci del|702099
+babusnica|zavidince|702188
+babusnica|zvonce|702196
+bac|bac|800171
+bac|backo novo selo|800180
+bac|bodjani|800198
+bac|plavna|800236
+bac|selenca|800112
+bac|vajska|800252
+backa palanka|backa palanka|800015
+backa palanka|backa palanka grad|800163
+backa palanka|celarevo|800023
+backa palanka|despotovo|802093
+backa palanka|gajdobra|800031
+backa palanka|mladenovo|800210
+backa palanka|nestin|805092
+backa palanka|nova gajdobra|800058
+backa palanka|nova palanka|800228
+backa palanka|obrovac|800066
+backa palanka|parage|800074
+backa palanka|pivnice|800082
+backa palanka|silbas|800139
+backa palanka|tovarisevo|800155
+backa palanka|vizic|805165
+backa topola|backa topola|801437
+backa topola|backa topola grad|803529
+backa topola|bajsa|804355
+backa topola|gornja rogatica|804428
+backa topola|gunaros|803502
+backa topola|mali beograd|804452
+backa topola|njegosevo|803618
+backa topola|novo orahovo|803600
+backa topola|pacir|804487
+backa topola|stara moravica|804509
+backi petrovac|backi petrovac|802042
+backi petrovac|glozan|802107
+backi petrovac|kulpin|802131
+backi petrovac|maglic|800040
+bajina basta|bajina basta|702536
+bajina basta|beserovina|702544
+bajina basta|crvica|702919
+bajina basta|dobrotin|702595
+bajina basta|donje zarozje|702609
+bajina basta|draksin|702617
+bajina basta|dub|702625
+bajina basta|gornje zarozje|702587
+bajina basta|gvozdac|702579
+bajina basta|jagostica|702676
+bajina basta|jakalj|702684
+bajina basta|jelovik|702692
+bajina basta|konjska reka|702706
+bajina basta|kostojevici|702714
+bajina basta|ljestansko|702749
+bajina basta|lug|702722
+bajina basta|mala reka|702757
+bajina basta|obajgora|702765
+bajina basta|okletac|702781
+bajina basta|ovcinja|702773
+bajina basta|perucac|702790
+bajina basta|pilica|702803
+bajina basta|pridoli|702811
+bajina basta|raca|702838
+bajina basta|rastiste|702820
+bajina basta|rogacica|702846
+bajina basta|sijerac|702862
+bajina basta|solotusa|702889
+bajina basta|strmovo|702897
+bajina basta|svojdrug|702854
+bajina basta|visesava|702552
+bajina basta|zaglavak|702633
+bajina basta|zaovine|702641
+bajina basta|zaugline|702650
+bajina basta|zlodol|702668
+barajevo|arnajevo|703451
+barajevo|bacevac|703478
+barajevo|barajevo|703460
+barajevo|beljina|703508
+barajevo|bozdarevac|703516
+barajevo|guncati|703672
+barajevo|lisovic|703826
+barajevo|manic|703869
+barajevo|meljak|703877
+barajevo|rozanci|703974
+barajevo|siljakovac|704091
+barajevo|veliki borak|703567
+barajevo|vranic|703630
+batocina|badnjevac|736414
+batocina|batocina selo|719137
+batocina|batocina varosica|719129
+batocina|brzan|719161
+batocina|crni kao|736694
+batocina|dobrovodica|719218
+batocina|gradac|736503
+batocina|kijevo|719307
+batocina|milatovac|719366
+batocina|niksic|719382
+batocina|prnjavor|719455
+batocina|zirovnica|719269
+becej|backo gradiste|803456
+becej|backo petrovo selo|803464
+becej|becej|803472
+becej|milesevo|803570
+becej|radicevic|803685
+bela crkva|banatska palanka i|800317
+bela crkva|banatska palanka ii|800325
+bela crkva|banatska subotica|800660
+bela crkva|bela crkva|800333
+bela crkva|cesko selo|800350
+bela crkva|crvena crkva|800341
+bela crkva|dobricevo|800678
+bela crkva|dupljaja|800392
+bela crkva|grebenac|800449
+bela crkva|jasenovo|800465
+bela crkva|kajtasovo|800473
+bela crkva|kaludjerovo i|800481
+bela crkva|kaludjerovo ii|800686
+bela crkva|kaludjerovo iii|800694
+bela crkva|kruscica|800503
+bela crkva|kusic i|800708
+bela crkva|kusic ii|800716
+bela crkva|kusic iii|800724
+bela crkva|vracev gaj i|800643
+bela crkva|vracev gaj ii|800732
+bela palanka|babin kal i|702927
+bela palanka|babin kal ii|702935
+bela palanka|bela palanka van varos|702951
+bela palanka|bela palanka varos|702960
+bela palanka|beziste|702943
+bela palanka|bukurovac|702978
+bela palanka|ciflik|703427
+bela palanka|crnce|703419
+bela palanka|crvena reka|703389
+bela palanka|crveni breg|703397
+bela palanka|divljana|703095
+bela palanka|dol|703109
+bela palanka|dolac|703117
+bela palanka|donja glama|703125
+bela palanka|donja koritnica|703133
+bela palanka|donji rinj|703141
+bela palanka|drazevo|703150
+bela palanka|glogovac|703028
+bela palanka|gornja glama|703036
+bela palanka|gornja koritnica|703044
+bela palanka|gornji rinj|703052
+bela palanka|gradiste i|703079
+bela palanka|gradiste ii|703087
+bela palanka|klenje|703168
+bela palanka|klisura|703176
+bela palanka|kosmovac|703192
+bela palanka|kozja|703184
+bela palanka|kremenica|703206
+bela palanka|krupac|703214
+bela palanka|laniste|703222
+bela palanka|leskovik|703249
+bela palanka|ljubatovica|703257
+bela palanka|miranovac|703265
+bela palanka|mokliste|703273
+bela palanka|mokra|703281
+bela palanka|novo selo|703290
+bela palanka|oreovac|703303
+bela palanka|pajez|703311
+bela palanka|sinjac|703320
+bela palanka|sljivovik|703435
+bela palanka|spaj|703443
+bela palanka|tamnjanica|703338
+bela palanka|telovac|703346
+bela palanka|toponica|703354
+bela palanka|tresnjanci|703362
+bela palanka|veta|702986
+bela palanka|vitanovac|702994
+bela palanka|vrandol|703001
+bela palanka|vrgudinac|703010
+beocin|banostor|804967
+beocin|beocin|804975
+beocin|cerevic|805009
+beocin|grabovo|805041
+beocin|lug|805068
+beocin|rakovac|803260
+beocin|susek|805122
+beocin|svilos|805149
+blace|alabana|704172
+blace|barbatovac|704199
+blace|blace|704202
+blace|cucale|704547
+blace|cungula|704539
+blace|djurevac|704326
+blace|donja dragusa|704288
+blace|donja josanica|704296
+blace|donja rasica|704300
+blace|donji kasevar|704318
+blace|dzepnica|704555
+blace|gornja dragusa|704245
+blace|gornja josanica|704253
+blace|gornji kasevar|704261
+blace|grgure|704270
+blace|kacapor|704334
+blace|krivaja|704342
+blace|kutlovac|704369
+blace|lazarevac|704377
+blace|medjuhana|704385
+blace|muzace|704393
+blace|popova|704407
+blace|prebreza|704415
+blace|pretresnja|704423
+blace|pridvorica|704431
+blace|rasica|704440
+blace|sibnica|704466
+blace|siljomana|704563
+blace|stubal|704474
+blace|suvaja|704482
+blace|suvi do|704504
+blace|svarce|704458
+blace|trbunje|704512
+blace|vise selo|704229
+blace|vrbovac|704237
+bogatic|badovinci|704571
+bogatic|banovo polje|704580
+bogatic|belotic|704601
+bogatic|bogatic|704610
+bogatic|crna bara|704849
+bogatic|dublje|704652
+bogatic|glogovac|704628
+bogatic|glusci|704636
+bogatic|klenje|704695
+bogatic|metkovic|704725
+bogatic|ocage|704733
+bogatic|salas crnobarski|704784
+bogatic|sovljak|704806
+bogatic|uzvece|704822
+bojnik|bojnik|723355
+bojnik|borince|723363
+bojnik|brestovac|723398
+bojnik|crkvice|724432
+bojnik|cukovac|725765
+bojnik|djindjusa|725099
+bojnik|donje konjuvce|723622
+bojnik|dragovac|723649
+bojnik|dubrava|723673
+bojnik|gornje brijanje|724815
+bojnik|gornje konjuvce|723541
+bojnik|granica|723550
+bojnik|ivanje|723720
+bojnik|kacabac i|725269
+bojnik|kacabac ii|725277
+bojnik|kamenica|723738
+bojnik|kosancic|725293
+bojnik|lapotince|725331
+bojnik|lozane|723843
+bojnik|magas dobra voda|723860
+bojnik|majkovac|723878
+bojnik|mijajlica|723967
+bojnik|mrves|723975
+bojnik|obilic|725501
+bojnik|obrazda|724025
+bojnik|orane|724033
+bojnik|plavce|724084
+bojnik|pridvorica|724149
+bojnik|recica|724220
+bojnik|savinac|724246
+bojnik|slavnik|724327
+bojnik|stubla|725706
+bojnik|turjane|724408
+bojnik|vujanovo|723452
+bojnik|zeletovo|723703
+bojnik|zorovac|723711
+boljevac|bacevica|704873
+boljevac|bogovina|704881
+boljevac|boljevac|704890
+boljevac|dobro polje|704920
+boljevac|dobrujevac|704938
+boljevac|ilino|705004
+boljevac|jablanica|705012
+boljevac|krivi vir|705039
+boljevac|lukovo|705055
+boljevac|mali izvor|705063
+boljevac|mirovo|705071
+boljevac|osnic|705080
+boljevac|podgorac i|705101
+boljevac|podgorac ii|705110
+boljevac|rujiste|740705
+boljevac|savinac|705128
+boljevac|sumrakovac|705136
+boljevac|valakonje|704903
+boljevac|vrbovac|704911
+bor|bor i|715662
+bor|bor ii|715689
+bor|brestovac|715697
+bor|bucje|715719
+bor|donja bela reka|715808
+bor|gornjane|727695
+bor|krivelj|715867
+bor|luka|705241
+bor|metovnica|715905
+bor|ostrelj|715921
+bor|sarbanovac|705144
+bor|slatina|715956
+bor|tanda|727776
+bor|topla|715964
+bor|zlot i|704946
+bor|zlot ii|704954
+bor|zlot iii|704962
+bor|zlot iv|704989
+bor|zlot v|704997
+bosilegrad|barje|705373
+bosilegrad|belut|705381
+bosilegrad|bistar|705390
+bosilegrad|bosilegrad i|705411
+bosilegrad|bosilegrad ii|705420
+bosilegrad|brankovci|705438
+bosilegrad|bresnica|705446
+bosilegrad|buceljevo|705454
+bosilegrad|crnostica|705896
+bosilegrad|doganica|705560
+bosilegrad|donja lisina|705578
+bosilegrad|donja ljubata|705586
+bosilegrad|donja rzana|705594
+bosilegrad|donje tlamino|705608
+bosilegrad|dukat|705624
+bosilegrad|glozje|705462
+bosilegrad|goles|705489
+bosilegrad|gornja lisina|705497
+bosilegrad|gornja ljubata|705519
+bosilegrad|gornja rzana|705527
+bosilegrad|gornje tlamino|705535
+bosilegrad|grujinci|705551
+bosilegrad|izvor|705667
+bosilegrad|jaresnik|705675
+bosilegrad|karamanica|705683
+bosilegrad|milevci|705721
+bosilegrad|mlekominci|705730
+bosilegrad|musulj|705748
+bosilegrad|nazarica|705756
+bosilegrad|paralovo|705772
+bosilegrad|ploca|705799
+bosilegrad|radicevci|705802
+bosilegrad|rajcilovci|705829
+bosilegrad|resen|705837
+bosilegrad|ribarci|705845
+bosilegrad|rikacevo|705853
+bosilegrad|zeravino|705632
+bosilegrad|zli dol|705659
+brus|batote|705900
+brus|belo polje|705918
+brus|blazevo|705926
+brus|bogise|705934
+brus|boranci|705969
+brus|botunja|705977
+brus|bozoljin|705942
+brus|brdjani|705985
+brus|brus|706019
+brus|brzece|705993
+brus|budilovina|706027
+brus|cokotar|706558
+brus|crvena jabuka|706540
+brus|djerekare|706191
+brus|domisevina|706124
+brus|donje levice|706132
+brus|donji lipovac|706159
+brus|drenova|706167
+brus|drtevci|706175
+brus|dupci|706183
+brus|gocmanci|706086
+brus|gornje levice|706060
+brus|gornji lipovac|706078
+brus|grad|706094
+brus|gradac|706108
+brus|grasevci|706116
+brus|igros|706256
+brus|iricici|706264
+brus|knezevo|706272
+brus|kobilje|706299
+brus|kocine|706329
+brus|kovizle|706302
+brus|kriva reka|706337
+brus|lepenac|706345
+brus|livadje|706353
+brus|mackovac|706388
+brus|mala grabovnica|706370
+brus|mala vrbnica|706361
+brus|milentija|706396
+brus|osredci|706400
+brus|paljevstica|706418
+brus|pokrp|706426
+brus|radmanovo|706469
+brus|radunje|706477
+brus|ravni|706434
+brus|ravniste|706442
+brus|razbojna|706485
+brus|ribari|706493
+brus|sosice|706566
+brus|stanulovici|706507
+brus|strojinci|706515
+brus|sudimlja|706523
+brus|trsanovci|706531
+brus|velika grabovnica|706035
+brus|vitose|706043
+brus|vlajkovci|706051
+brus|zarevo|706205
+brus|zilinci|706213
+brus|ziljci|706221
+brus|zlatari|706248
+brus|zunje|706230
+bujanovac|baraljevac|706582
+bujanovac|biljaca|706639
+bujanovac|bogdanovac|706647
+bujanovac|borovac|706671
+bujanovac|bozinjevac i|706655
+bujanovac|bozinjevac ii|706663
+bujanovac|bratoselce|706680
+bujanovac|breznica|706698
+bujanovac|brnjare|706701
+bujanovac|bujanovac|706710
+bujanovac|car|707686
+bujanovac|djordjevac|706949
+bujanovac|dobrosin|706892
+bujanovac|donje novo selo|706914
+bujanovac|dreznica|706922
+bujanovac|gornje novo selo|706850
+bujanovac|gramada|706876
+bujanovac|jablanica|707015
+bujanovac|jastrebac|707023
+bujanovac|karadnik|707031
+bujanovac|klenike|707040
+bujanovac|klinovac|707058
+bujanovac|konculj|707066
+bujanovac|kosarno|707074
+bujanovac|krsevica|707082
+bujanovac|kustica|707112
+bujanovac|letovica|707147
+bujanovac|levosoje|707139
+bujanovac|ljiljance|707198
+bujanovac|lopardince|707155
+bujanovac|lucane|707171
+bujanovac|lukarce|707163
+bujanovac|malo bustranje|707228
+bujanovac|muhovac|707252
+bujanovac|negovac|707279
+bujanovac|nesalce|707287
+bujanovac|oslare|707325
+bujanovac|petka|707333
+bujanovac|pretina|707368
+bujanovac|pribovce|707384
+bujanovac|rakovac|707422
+bujanovac|ravno bucje|707392
+bujanovac|rusce|707465
+bujanovac|samoljica|707473
+bujanovac|sebrat|707490
+bujanovac|sejace|707503
+bujanovac|spancevac|707538
+bujanovac|srpska kuca|707546
+bujanovac|starac|707562
+bujanovac|suharno|707597
+bujanovac|trejak|707619
+bujanovac|turija|707635
+bujanovac|uzovo|707643
+bujanovac|veliki trnovac|706787
+bujanovac|vogance|706809
+bujanovac|vrban|706817
+bujanovac|zarbince|706990
+bujanovac|zbevac|706957
+bujanovac|zuzeljica|706965
+cacak|atenica|743984
+cacak|baluga ljubicska|744301
+cacak|baluga trnavska|743992
+cacak|banjica|744000
+cacak|becanj|744310
+cacak|beljina|745162
+cacak|bresnica|744336
+cacak|brezovica|726451
+cacak|cacak|744298
+cacak|donja gorevnica|744417
+cacak|donja trepca|744425
+cacak|goricani|744042
+cacak|gornja gorevnica|744395
+cacak|gornja trepca|744409
+cacak|jancici|744433
+cacak|jezdina|744093
+cacak|jezevica|744085
+cacak|kaculice|744107
+cacak|katrga|744441
+cacak|konjevici|744450
+cacak|kukici|744115
+cacak|kulinovci|744123
+cacak|lipnica|744140
+cacak|ljubic|744468
+cacak|loznica|744158
+cacak|medjuvrsje|744166
+cacak|milicevci|744476
+cacak|miokovci|744484
+cacak|mojsinje|744492
+cacak|mrcajevci|744506
+cacak|mrsinci|744174
+cacak|ostra|744514
+cacak|pakovrace|744182
+cacak|parmenac|744204
+cacak|petnica|744212
+cacak|preljina|744522
+cacak|premeca|744239
+cacak|pridvorica|744247
+cacak|prijevor|744549
+cacak|prislonica|744557
+cacak|rajac|744255
+cacak|rakova|744565
+cacak|ridjage|744263
+cacak|rosci|744573
+cacak|slatina|744271
+cacak|sokolici|744581
+cacak|stancici|744590
+cacak|trbusani|744611
+cacak|trnava|744280
+cacak|vapa|744026
+cacak|vidova|744344
+cacak|viljusa|744034
+cacak|vranici|744352
+cacak|vrncani|744379
+cacak|vujetinci|744387
+cacak|zablace|744077
+cacak|zaocani|744069
+cajetina|alin potok|743682
+cajetina|branesci|743712
+cajetina|cajetina|743968
+cajetina|cickova|701963
+cajetina|dobroselica|743755
+cajetina|drenova|743771
+cajetina|gostilje|743747
+cajetina|jablanica|743798
+cajetina|kriva reka|743828
+cajetina|ljubis|743844
+cajetina|mackat|741345
+cajetina|mesnik|743852
+cajetina|rozanstvo|743909
+cajetina|semegnjevo|743917
+cajetina|sirogojno|743933
+cajetina|sljivovica|743976
+cajetina|stublo|743941
+cajetina|tripkova|741469
+cajetina|trnava|743950
+cajetina|zeljine|743780
+cicevac|braljina|720542
+cicevac|cicevac|736341
+cicevac|cicevac grad|736350
+cicevac|grad stalac|720739
+cicevac|lucina|736155
+cicevac|mojsinje|721174
+cicevac|mrzenica|721182
+cicevac|plocnik|736210
+cicevac|pojate|736236
+cicevac|radosevac|736287
+cicevac|stalac|736333
+cicevac|trubarevo|721468
+coka|coka|801844
+coka|crna bara|801836
+coka|jazovo|801330
+coka|ostojicevo|801372
+coka|padej|801399
+coka|sanad|801984
+coka|vrbica|802018
+crna trava|bajinci|710202
+crna trava|bankovci|710229
+crna trava|brod|710296
+crna trava|crna trava|711063
+crna trava|darkovce|710466
+crna trava|dobro polje|710512
+crna trava|gornje gare|710377
+crna trava|gradska|710415
+crna trava|jabukovik|710580
+crna trava|kalna|710628
+crna trava|krivi del|710695
+crna trava|mlaciste|710750
+crna trava|ostrozub|710784
+crna trava|pavlicina|710806
+crna trava|preslap|710822
+crna trava|rajcetine|710903
+crna trava|ruplje|710911
+crveni krst|bercinac|729078
+crveni krst|camurlija|730122
+crveni krst|donja toponica|729370
+crveni krst|donja trnava|729388
+crveni krst|donji komren|729442
+crveni krst|gornja toponica|729230
+crveni krst|gornja trnava|729248
+crveni krst|gornji komren|729329
+crveni krst|hum|730092
+crveni krst|kravlje|729604
+crveni krst|leskovik|729663
+crveni krst|medosevac|729736
+crveni krst|mezgraja|729744
+crveni krst|miljkovac|729779
+crveni krst|nis crveni krst|729817
+crveni krst|paligrace|700762
+crveni krst|paljina|729884
+crveni krst|popovac|729922
+crveni krst|rujnik|729990
+crveni krst|secanica|701246
+crveni krst|supovac|701289
+crveni krst|trupale|730068
+crveni krst|vele polje|700614
+crveni krst|vrtiste|729167
+cukarica|cukarica|704083
+cukarica|ostruznica|703893
+cukarica|rusanj|703982
+cukarica|sremcica|704024
+cukarica|umka|704067
+cukarica|velika mostanica|703559
+cukarica|zeleznik|703702
+cuprija|batinac|732257
+cuprija|bigrenica|732265
+cuprija|cuprija grad|732664
+cuprija|cuprija van grad|732656
+cuprija|dvorica|738042
+cuprija|isakovo|713457
+cuprija|ivankovac|732435
+cuprija|jovac|738140
+cuprija|kovanica|713481
+cuprija|krusar|732478
+cuprija|mijatovac|738328
+cuprija|ostrikovac|738352
+cuprija|paljane|732516
+cuprija|senje|732583
+cuprija|supska|732630
+cuprija|virine|713376
+cuprija|vlaska|732303
+decani|babaloc|900702
+decani|beleg|901547
+decani|crnobreg|903299
+decani|dasinovac|901709
+decani|decane|901725
+decani|donji ratis|901741
+decani|donji streoc|900192
+decani|drenovac|901776
+decani|dubovik|900214
+decani|glodjane|901636
+decani|gornja luka|914223
+decani|gornji ratis|901652
+decani|gornji streoc|900206
+decani|gramocelj|901679
+decani|huljaj|903264
+decani|istinic|900184
+decani|jasic djocaj|901881
+decani|junik|901903
+decani|kodralija|901920
+decani|ljubusa|900974
+decani|ljumbarda|901997
+decani|maznik|902004
+decani|papic|900958
+decani|papracane|900966
+decani|pobrdje|903051
+decani|pozar|903060
+decani|prilep|903094
+decani|rastavica|903124
+decani|rznic i|903167
+decani|rznic ii|903175
+decani|saptelj|903329
+decani|slup|903205
+decani|voksa|901610
+despotovac|balajnac|713317
+despotovac|beljajka|713325
+despotovac|bogava|713333
+despotovac|brestovo|713341
+despotovac|bukovac|713350
+despotovac|despotovac|713414
+despotovac|dvoriste|713406
+despotovac|grabovica|713392
+despotovac|jasenovo|738620
+despotovac|jelovac|713473
+despotovac|jezero|713465
+despotovac|lipovica|713490
+despotovac|lomnica|713503
+despotovac|medvedja|713511
+despotovac|miliva|713520
+despotovac|panjevac|713538
+despotovac|plazane|713546
+despotovac|popovnjak|713554
+despotovac|ravna reka|713562
+despotovac|resavica|713589
+despotovac|senjski rudnik|732591
+despotovac|sladaja|713597
+despotovac|stenjevac|713619
+despotovac|strmosten|713627
+despotovac|trucevac|713635
+despotovac|veliki popovic|713368
+despotovac|vitance|713384
+despotovac|vojnik|713422
+despotovac|zidilje|713449
+despotovac|zlatovo|732842
+dimitrovgrad|bacevo|713660
+dimitrovgrad|baljev dol|713686
+dimitrovgrad|banjski dol|713643
+dimitrovgrad|barje|713651
+dimitrovgrad|bilo|713678
+dimitrovgrad|bracevci|713694
+dimitrovgrad|brebevnica|713708
+dimitrovgrad|dimitrovgrad|713848
+dimitrovgrad|donja nevlja|713856
+dimitrovgrad|donji krivodol|713864
+dimitrovgrad|dragovita|713872
+dimitrovgrad|gojin dol|713775
+dimitrovgrad|gornja nevlja|713791
+dimitrovgrad|gornja planinica|714011
+dimitrovgrad|gornji krivodol|713805
+dimitrovgrad|gradinje|713813
+dimitrovgrad|grapa|713821
+dimitrovgrad|gulenovci|713830
+dimitrovgrad|iskrovci|713929
+dimitrovgrad|izatovci|713902
+dimitrovgrad|kamenica|713937
+dimitrovgrad|kusa vrana|713945
+dimitrovgrad|lukavica|713953
+dimitrovgrad|mazgos|713961
+dimitrovgrad|mojinci|713970
+dimitrovgrad|paskasija|713988
+dimitrovgrad|petacinci|713996
+dimitrovgrad|petrlas|714003
+dimitrovgrad|poganovo|714020
+dimitrovgrad|praca|714038
+dimitrovgrad|protopopinci|714046
+dimitrovgrad|radejna|714054
+dimitrovgrad|senokos|714062
+dimitrovgrad|skrvenica|714089
+dimitrovgrad|slivnica|714119
+dimitrovgrad|smilovci|714127
+dimitrovgrad|trnski odorovci|714135
+dimitrovgrad|verzar|713716
+dimitrovgrad|visocki odorovci|713724
+dimitrovgrad|vlkovija|713759
+dimitrovgrad|vrapca|713767
+dimitrovgrad|zeljusa|713899
+djakovica|babaj boks|900699
+djakovica|bardosan|901571
+djakovica|batusa|900729
+djakovica|bec|901555
+djakovica|berjak|901563
+djakovica|bistrazin|901458
+djakovica|brekovac|901580
+djakovica|brovina|901598
+djakovica|ceret|903302
+djakovica|cerim|903248
+djakovica|crmljane|903272
+djakovica|damjane|901504
+djakovica|deva|901717
+djakovica|djakovica van varos|901792
+djakovica|djakovica varos|901806
+djakovica|doblibare|901750
+djakovica|dobric|901768
+djakovica|donje novo selo|901733
+djakovica|dujak|901784
+djakovica|erec|901814
+djakovica|firza|903256
+djakovica|goden|901440
+djakovica|gornje novo selo|901644
+djakovica|grcina|901482
+djakovica|grgoc|901687
+djakovica|guska|901695
+djakovica|jablanica|901865
+djakovica|jahoc|901890
+djakovica|janos|901873
+djakovica|kodra hutit|901938
+djakovica|kodralija becka|901911
+djakovica|korenica|901946
+djakovica|kosare|901954
+djakovica|kraljane|901962
+djakovica|kusevac|901989
+djakovica|lipovac|901512
+djakovica|marmule|902934
+djakovica|meca|902942
+djakovica|moglica|902969
+djakovica|molic|902977
+djakovica|nivokaz|902985
+djakovica|orize|902993
+djakovica|osek hilja|903027
+djakovica|osek pasa|903019
+djakovica|paljabarda|903035
+djakovica|petrusan|903043
+djakovica|ponosevac|903078
+djakovica|popovac|903086
+djakovica|raca|903159
+djakovica|racaj|903132
+djakovica|radonjic|903108
+djakovica|rakoc|903116
+djakovica|rogovo i|902071
+djakovica|rogovo ii|900052
+djakovica|sadikagin zid|903183
+djakovica|seremet|903337
+djakovica|sisman|903345
+djakovica|skivjane|903191
+djakovica|smac|902047
+djakovica|smonica|903213
+djakovica|stubla|903221
+djakovica|trakanic|903230
+djakovica|ujz|902080
+djakovica|vogovo|901601
+djakovica|vranic|901628
+djakovica|zabelj|901822
+djakovica|zdrelo|901849
+djakovica|zub|901857
+djakovica|zulfaj|901474
+doljevac|belotinac|729051
+doljevac|capljinac|730149
+doljevac|cecina|730157
+doljevac|curlina|730084
+doljevac|doljevac|714992
+doljevac|klisura|729558
+doljevac|knezica|729566
+doljevac|kocane|715263
+doljevac|malosiste|729701
+doljevac|mekis|715328
+doljevac|orljane|715433
+doljevac|perutina|729914
+doljevac|pukovac|715492
+doljevac|rusna|730009
+doljevac|sajinovac|715646
+doljevac|sarlince|715654
+gadzin han|cagrovac|730114
+gadzin han|celije|730076
+gadzin han|donje dragovlje|729400
+gadzin han|donji barbes|729426
+gadzin han|donji dusnik|729434
+gadzin han|duga poljana|729485
+gadzin han|dukat|729493
+gadzin han|gadzin han|729191
+gadzin han|gare|729205
+gadzin han|gornje dragovlje|729264
+gadzin han|gornje vlase|729256
+gadzin han|gornji barbes|729299
+gadzin han|gornji dusnik|729302
+gadzin han|grkinja|729345
+gadzin han|jaglicje|729507
+gadzin han|kaletinac|729531
+gadzin han|koprivnica|729582
+gadzin han|krastavce|729612
+gadzin han|licje|729671
+gadzin han|mali krcimir|729698
+gadzin han|mali vrtop|729680
+gadzin han|marina kutina|729728
+gadzin han|miljkovac|729752
+gadzin han|novo selo|729833
+gadzin han|ovsinjinac|729850
+gadzin han|ravna dubrava|710873
+gadzin han|sebet|730181
+gadzin han|semce|730017
+gadzin han|sopotnica|730033
+gadzin han|taskovici|730041
+gadzin han|toponica|730050
+gadzin han|veliki krcimir|729124
+gadzin han|veliki vrtop|729116
+gadzin han|vilandrica|729132
+glogovac|banjica|902713
+glogovac|berisa|902039
+glogovac|dobrosevac|902799
+glogovac|domanek|902802
+glogovac|donja fustica|902144
+glogovac|donja koretica|902136
+glogovac|donji zabelj|907189
+glogovac|gladno selo|902675
+glogovac|globare|902683
+glogovac|glogovac|902691
+glogovac|godance|902705
+glogovac|gornja fustica|902063
+glogovac|gornja koretica|902055
+glogovac|gornje obrinje|902756
+glogovac|gornji zabelj|902101
+glogovac|gradica|902772
+glogovac|kisna reka|902128
+glogovac|komorane|902152
+glogovac|krajkovo|902870
+glogovac|lapusnik|904449
+glogovac|likosane|913871
+glogovac|negrovce|900044
+glogovac|nekovce|902110
+glogovac|novo cikatovo|902853
+glogovac|orlate|900036
+glogovac|poklek|902900
+glogovac|poluza|902918
+glogovac|stankovce|902764
+glogovac|staro cikatovo|902845
+glogovac|strbulovo|903400
+glogovac|stutica|903418
+glogovac|trdevac|902861
+glogovac|trpeza|900028
+glogovac|trstenik|902888
+glogovac|vasiljevo|902829
+glogovac|vrbovac|902632
+glogovac|vucak|902659
+gnjilane|bilince|901423
+gnjilane|brasaljce|901067
+gnjilane|bukovik sapar|901075
+gnjilane|burince|901083
+gnjilane|celik|903973
+gnjilane|cernica|903965
+gnjilane|dobrcane|900168
+gnjilane|donja budriga|901300
+gnjilane|donje slakovce|901318
+gnjilane|donji livoc|903612
+gnjilane|donji makres|903639
+gnjilane|draganac|903647
+gnjilane|dunavo|903655
+gnjilane|gadis|901245
+gnjilane|gnjilane|901253
+gnjilane|gornje kusce|901261
+gnjilane|gornje slakovce|901270
+gnjilane|gornji livoc|901288
+gnjilane|gornji makres|901296
+gnjilane|inatovce|903850
+gnjilane|kisno polje|903744
+gnjilane|kmetovce|903752
+gnjilane|koretiste|903779
+gnjilane|kravarica|903787
+gnjilane|lipovica|903795
+gnjilane|lovce|903809
+gnjilane|mali goden|903817
+gnjilane|malisevo|903825
+gnjilane|mozgovo|903922
+gnjilane|mucibaba|903949
+gnjilane|nosalje|903698
+gnjilane|paralovo|903701
+gnjilane|partes|903710
+gnjilane|pasjane|903728
+gnjilane|pidic|903736
+gnjilane|podgradje|903833
+gnjilane|pones|903841
+gnjilane|prilepnica|903868
+gnjilane|silovo|900249
+gnjilane|slubica|903876
+gnjilane|stancic|903892
+gnjilane|stanisor|903884
+gnjilane|straza|903906
+gnjilane|stublina|903914
+gnjilane|surlane|900257
+gnjilane|ugljare|903957
+gnjilane|velekince|901091
+gnjilane|vladovo|901105
+gnjilane|vlastica|901113
+gnjilane|vrapcic|901121
+gnjilane|vrbica|901130
+gnjilane|zegovac|903663
+gnjilane|zegovacka vrbica|903671
+gnjilane|zegra|903680
+golubac|baric|712540
+golubac|bikinje|712558
+golubac|branicevo|712566
+golubac|brnjica|712574
+golubac|dobra|712655
+golubac|donja krusevica|712663
+golubac|dusmanic|712671
+golubac|dvoriste|712647
+golubac|golubac|712639
+golubac|klenje|712701
+golubac|krivaca|712710
+golubac|kudres|712728
+golubac|malesevo|712736
+golubac|miljevic|712744
+golubac|mrckovac|712752
+golubac|ponikve|712779
+golubac|radosevac|712787
+golubac|sladinac|712795
+golubac|snegotin|712809
+golubac|suvajic|712825
+golubac|usije|712817
+golubac|vinci|712582
+golubac|vojilovo|712604
+golubac|zitkovica|712680
+gora|backa|900265
+gora|brod|900303
+gora|dikance|900397
+gora|dragas|900419
+gora|globocica i|900362
+gora|globocica ii|900389
+gora|krstac|900494
+gora|krusevo|900508
+gora|kukuljane|900532
+gora|lestane|900559
+gora|ljuboviste|900567
+gora|mlike|900575
+gora|orcusa|900583
+gora|radesa|900621
+gora|rapca|900630
+gora|restelica|900656
+gora|vraniste|900354
+gora|zli potok|900451
+gornji milanovac|belo polje|712841
+gornji milanovac|bersici|712850
+gornji milanovac|bogdanica|743232
+gornji milanovac|boljkovci|726966
+gornji milanovac|brajici|712868
+gornji milanovac|brdjani|744328
+gornji milanovac|brezna|712876
+gornji milanovac|brezovica|727008
+gornji milanovac|brusnica|712884
+gornji milanovac|cerova|727300
+gornji milanovac|davidovica|727059
+gornji milanovac|donja crnuca|713015
+gornji milanovac|donja vrbava|712990
+gornji milanovac|donji branetici|713007
+gornji milanovac|dragolj|727083
+gornji milanovac|drenova|713023
+gornji milanovac|druzetici|743364
+gornji milanovac|gojna gora|743305
+gornji milanovac|gornja crnuca|712973
+gornji milanovac|gornja vrbava|712957
+gornji milanovac|gornji banjani|712922
+gornji milanovac|gornji branetici|712949
+gornji milanovac|gornji milanovac|712965
+gornji milanovac|grabovica|712981
+gornji milanovac|jablanica|713031
+gornji milanovac|kalimanici|713040
+gornji milanovac|klaticevo|713058
+gornji milanovac|kostunici|713066
+gornji milanovac|kriva reka|727156
+gornji milanovac|leusici|713074
+gornji milanovac|lipovac|713082
+gornji milanovac|ljevaja|713147
+gornji milanovac|ljutovnica|713155
+gornji milanovac|locevci|713112
+gornji milanovac|lozanj|713104
+gornji milanovac|lunjevica|713139
+gornji milanovac|majdan|713163
+gornji milanovac|mutanj|727237
+gornji milanovac|nakucani|713171
+gornji milanovac|nevade|713180
+gornji milanovac|ozrem|713198
+gornji milanovac|polom|713201
+gornji milanovac|pranjani|713210
+gornji milanovac|prnjavor|713228
+gornji milanovac|reljinci|727253
+gornji milanovac|rucici|727270
+gornji milanovac|rudnik|727261
+gornji milanovac|sarani|713309
+gornji milanovac|semedraz|713244
+gornji milanovac|silopaj|727318
+gornji milanovac|sinosevici|713252
+gornji milanovac|srezojevci|713279
+gornji milanovac|svrackovci|713236
+gornji milanovac|takovo|713287
+gornji milanovac|teocin|713295
+gornji milanovac|trudelj|727288
+gornji milanovac|ugrinovci|727296
+gornji milanovac|velerec|712892
+gornji milanovac|vracevsnica|712906
+gornji milanovac|vrncani|712914
+gornji milanovac|zagradje|727105
+grocka|begaljica|703486
+grocka|bolec|703524
+grocka|brestovik|703532
+grocka|drazanj|703699
+grocka|grocka|703664
+grocka|kaludjerica|703770
+grocka|kamendol|703788
+grocka|lestane|703818
+grocka|pudarci|703923
+grocka|ritopek|703966
+grocka|umcari|745243
+grocka|vinca|703605
+grocka|vrcin|703656
+grocka|zaklopaca|703737
+indjija|beska|805190
+indjija|cortanovci|805211
+indjija|indjija|803049
+indjija|krcedin|805262
+indjija|ljukovo|803146
+indjija|maradik|803197
+indjija|novi karlovci|805335
+indjija|novi slankamen|805343
+indjija|stari slankamen|805459
+irig|bankovci|802913
+irig|dobrodol|805815
+irig|grgetek|803006
+irig|irig|803057
+irig|jazak prnjavor|803073
+irig|jazak selo|803065
+irig|krusedol prnjavor|803103
+irig|krusedol selo|803090
+irig|mala remeta|803154
+irig|neradin|803227
+irig|rivica|803278
+irig|satrinci|803359
+irig|velika remeta|803383
+irig|vrdnik|803421
+istok|banja|903353
+istok|banja krnjina|902721
+istok|banjica|903361
+istok|begov lukavac|903370
+istok|belica|902730
+istok|belo polje|903388
+istok|crkolez|900125
+istok|crnce|900141
+istok|crni lug|900133
+istok|djurakovac|904198
+istok|dobrusa|904309
+istok|dragoljevac|904082
+istok|drenje|904295
+istok|dubrava|904317
+istok|istok|904406
+istok|kalicane|904112
+istok|kasica|904139
+istok|kos|904236
+istok|kovrage|904228
+istok|krnjina|904244
+istok|ljubovo|904279
+istok|ljubozda|904287
+istok|lugovo|904252
+istok|malo dubovo|904325
+istok|mojstir|904333
+istok|muzevine|904341
+istok|orno brdo|904350
+istok|osojane|904368
+istok|poljane|904376
+istok|prekale|904384
+istok|prigoda|904392
+istok|rakos|904414
+istok|saljinovica|900150
+istok|sinaje|904104
+istok|starodvorane|904147
+istok|studenica|904155
+istok|susica|904180
+istok|suvi lukavac|904163
+istok|suvo grlo|904171
+istok|tomance|900087
+istok|trbuhovac|900095
+istok|tucep|900109
+istok|ukca|900117
+istok|veric|904066
+istok|vrelo|904074
+istok|zac|904201
+istok|zakovo|904210
+ivanjica|bedina varos|716154
+ivanjica|bratljevo|716162
+ivanjica|brezova|716189
+ivanjica|brusnik|716197
+ivanjica|budozelja|716219
+ivanjica|cecina|716545
+ivanjica|dajici|716286
+ivanjica|deretin|716294
+ivanjica|dobri do|716308
+ivanjica|dubrava|716316
+ivanjica|ercege|716324
+ivanjica|gledjica|716260
+ivanjica|gradac|716278
+ivanjica|ivanjica|716332
+ivanjica|komadine|716359
+ivanjica|koritnik|716367
+ivanjica|kosovica|716375
+ivanjica|kumanica|716383
+ivanjica|kusici|716391
+ivanjica|lisa|726729
+ivanjica|luke|726753
+ivanjica|mana|716405
+ivanjica|maskova|716413
+ivanjica|medovine|716421
+ivanjica|mocioci|701874
+ivanjica|opaljenik|716430
+ivanjica|osonica|726818
+ivanjica|preseka|701882
+ivanjica|prilike|716448
+ivanjica|radaljevo|716464
+ivanjica|ravna gora|716456
+ivanjica|rokci|716499
+ivanjica|rovine|716472
+ivanjica|sarenik|716553
+ivanjica|sivcina|716529
+ivanjica|smiljevac|716537
+ivanjica|sume|716561
+ivanjica|svestica|716502
+ivanjica|vasiljevici|716227
+ivanjica|vionica|716235
+ivanjica|vrmbaje|716243
+ivanjica|vucak|716251
+jagodina|bagrdan selo|737909
+jagodina|bagrdan varosica|737895
+jagodina|belica|737917
+jagodina|bresje|737933
+jagodina|bukovce|737941
+jagodina|bunar|737950
+jagodina|crnce|738476
+jagodina|deonica|738069
+jagodina|dobra voda|738581
+jagodina|donje stiplje|738077
+jagodina|donji racnik|738085
+jagodina|dragocvet|738093
+jagodina|dragosevac|738107
+jagodina|drazmirovac|738115
+jagodina|duboka|738123
+jagodina|glavinci|738000
+jagodina|glogovac|738018
+jagodina|gornje stiplje|738026
+jagodina|gornji racnik|738034
+jagodina|ivkovacki prnjavor|738131
+jagodina|jagodina|738409
+jagodina|josanicki prnjavor|738158
+jagodina|kalenovac|738166
+jagodina|kocino selo|738212
+jagodina|kolare|738182
+jagodina|koncarevo|738204
+jagodina|kovacevac|738174
+jagodina|laniste|738239
+jagodina|lovci|738247
+jagodina|lozovik|738255
+jagodina|lukar|738271
+jagodina|majur|738280
+jagodina|mali popovic|738298
+jagodina|medjurec|738310
+jagodina|medojevac|738301
+jagodina|milosevo|738336
+jagodina|misevic|738344
+jagodina|rajkinac|738719
+jagodina|rakitovo|738379
+jagodina|ribare|738387
+jagodina|ribnik|738395
+jagodina|santarovac|738484
+jagodina|siokovac|738425
+jagodina|slatina|737828
+jagodina|staro selo|737836
+jagodina|strizilo|738433
+jagodina|suljkovac|738492
+jagodina|topola|738441
+jagodina|trnava|738468
+jagodina|vinoraca|737968
+jagodina|voljavce|737976
+jagodina|vranovac|737984
+jagodina|vrba|737992
+kacanik|banjica|903531
+kacanik|belograce|903540
+kacanik|bicevac|903493
+kacanik|bob|903507
+kacanik|dimce|903574
+kacanik|djeneral jankovic|903485
+kacanik|djurdjev dol|900745
+kacanik|doganovic|903582
+kacanik|drenova glava|903434
+kacanik|drobnjak|912468
+kacanik|dura gabrica|903477
+kacanik|eleza|900753
+kacanik|gajre|903469
+kacanik|globocica|903515
+kacanik|gorance|903523
+kacanik|gornja grlica|903558
+kacanik|hodza mala|903990
+kacanik|ivaja|900885
+kacanik|kacanik|900800
+kacanik|korbulic|900826
+kacanik|kotlina|900907
+kacanik|kovacevac|900818
+kacanik|krivenik|900796
+kacanik|necavce|900834
+kacanik|nika|900842
+kacanik|nikovce|900869
+kacanik|palivodenica|900877
+kacanik|pustenik|900893
+kacanik|reka|900923
+kacanik|rezance|900915
+kacanik|runjevo|900931
+kacanik|seciste|900770
+kacanik|semanje|900761
+kacanik|slatina|900788
+kacanik|sopotnica|904031
+kacanik|stagovo|904007
+kacanik|stari kacanik|904015
+kacanik|straza|904040
+kacanik|vata dubrava|903566
+kacanik|vrtolnica|903442
+kanjiza|adorjan|805831
+kanjiza|horgos|804436
+kanjiza|kanjiza|803537
+kanjiza|male pijace|803545
+kanjiza|martonos|805840
+kanjiza|orom|803669
+kanjiza|tresnjevac|803723
+kanjiza|velebit|803774
+kikinda|banatska topola|801267
+kikinda|banatsko veliko selo|800759
+kikinda|basaid|801275
+kikinda|idjos|801321
+kikinda|kikinda|801356
+kikinda|mokrin|801364
+kikinda|nakovo|800783
+kikinda|novi kozarci|800791
+kikinda|rusko selo|800813
+kikinda|sajan|801402
+kladovo|brza palanka|716782
+kladovo|davidovac|716626
+kladovo|grabovica|716618
+kladovo|kladovo|716634
+kladovo|kladusnica|716642
+kladovo|korbovo|716669
+kladovo|kostol|716677
+kladovo|kupuziste|716839
+kladovo|ljubicevac|716685
+kladovo|mala vrbica|716693
+kladovo|manastirica|716707
+kladovo|milutinovac|716715
+kladovo|petrovo selo|716731
+kladovo|podvrska|716740
+kladovo|recica|716758
+kladovo|reka|716880
+kladovo|rtkovo|716766
+kladovo|sip|716723
+kladovo|tekija|716774
+kladovo|vajuga|716570
+kladovo|velesnica|716588
+kladovo|velika kamenica|716600
+kladovo|velika vrbica|716596
+klina|balince|904708
+klina|berkovo|905283
+klina|bica|905291
+klina|bobovac|904724
+klina|boksic|911178
+klina|budisavci|911216
+klina|cabic|911607
+klina|cerovik|911577
+klina|ceskovo|910759
+klina|crni lug|911585
+klina|cupevo|911623
+klina|dobra voda|904902
+klina|dobri dol|904929
+klina|dolac|904945
+klina|dolovo|910996
+klina|donji petric|911003
+klina|drenovac|911020
+klina|drenovcic|905267
+klina|drsnik|904996
+klina|dugonjive|910929
+klina|dus|905003
+klina|dusevic|905186
+klina|golubovac|904848
+klina|gornji petric|911321
+klina|grabanica|910961
+klina|grebnik|904872
+klina|iglarevo|905062
+klina|jagoda|911046
+klina|josanica|905160
+klina|kijevo|905119
+klina|klina|905216
+klina|klinavac|905224
+klina|kpuz|911127
+klina|krusevo|910791
+klina|lozica|911674
+klina|mlecane|911771
+klina|naglavci|910473
+klina|novo selo deic|910503
+klina|novo selo zajmovo|910511
+klina|plocice|911470
+klina|prcevo|911500
+klina|rudice|905151
+klina|sicevo|905232
+klina|skorosnik|911364
+klina|stup|910678
+klina|stupelj|908878
+klina|svrhe|911356
+klina|veliki djurdjevik|905011
+klina|vidanje|911259
+klina|vlaski drenovac|904791
+klina|volujak|904805
+klina|vrmnica|904821
+klina|zabrdje|905020
+klina|zlokucane|905208
+knic|bajcetina|716936
+knic|balosave|716944
+knic|bare|716952
+knic|becevica|716979
+knic|borac|716987
+knic|brestovac|716995
+knic|brnjica|717002
+knic|bumbarevo brdo|717029
+knic|cestin|717762
+knic|dragusica|717266
+knic|dubrava|717312
+knic|grabovac|717142
+knic|grivac|717169
+knic|gruza|717193
+knic|guberevac|717207
+knic|guncati|717215
+knic|kikojevac|717398
+knic|knezevac|717401
+knic|knic|717410
+knic|konjusa|717428
+knic|kusovac|717444
+knic|leskovac|717479
+knic|lipnica|717495
+knic|ljubic|717509
+knic|ljuljaci|717517
+knic|oplanic|717568
+knic|pajsijevic|717576
+knic|pretoke|717622
+knic|radmilovic|717657
+knic|raskovic|717673
+knic|sumorovac|717720
+knic|toponica|717738
+knic|vrbeta|717070
+knic|vuckovica|717088
+knic|zabojnica|717363
+knic|zunje|717355
+knjazevac|aldina reka|717819
+knjazevac|aldinac|717827
+knjazevac|balanovac|717835
+knjazevac|balinac|717843
+knjazevac|balta berilovac|717851
+knjazevac|banjski oresac|717860
+knjazevac|beli potok|717878
+knjazevac|bercinovac|717886
+knjazevac|bozinovac|717894
+knjazevac|bucje|717924
+knjazevac|bulinovac|717916
+knjazevac|crni vrh|718700
+knjazevac|crvenje|718696
+knjazevac|custica|718688
+knjazevac|debelica|718092
+knjazevac|dejanovac|718106
+knjazevac|donja kamenica|718114
+knjazevac|donja sokolovica|718122
+knjazevac|donje zunice|718149
+knjazevac|drecinovac|718173
+knjazevac|drenovac|718165
+knjazevac|drvnik|718157
+knjazevac|gabrovnica|718025
+knjazevac|glogovac|718033
+knjazevac|gornja kamenica|718041
+knjazevac|gornja sokolovica|718050
+knjazevac|gornje zunice|718068
+knjazevac|gradiste|718076
+knjazevac|grezna|718084
+knjazevac|inovo|718220
+knjazevac|jakovac|718238
+knjazevac|jalovik izvor|718246
+knjazevac|janja|718254
+knjazevac|jelasnica|718262
+knjazevac|kalicina|718289
+knjazevac|kalna|718297
+knjazevac|kandalica|718319
+knjazevac|knjazevac|718327
+knjazevac|kozelj|718335
+knjazevac|krenta|718343
+knjazevac|lepena|718351
+knjazevac|lokva|718360
+knjazevac|manjinac|718386
+knjazevac|miljkovac|739057
+knjazevac|minicevo|718408
+knjazevac|mucibaba|718416
+knjazevac|novo korito|718424
+knjazevac|oresac|718432
+knjazevac|osljane|718459
+knjazevac|papratna|718467
+knjazevac|petrusa|718475
+knjazevac|ponor|718483
+knjazevac|potrkanje|718491
+knjazevac|pricevac|718505
+knjazevac|radicevac|718530
+knjazevac|ravna|718513
+knjazevac|ravno bucje|718521
+knjazevac|repusnica|718556
+knjazevac|rgoste|718548
+knjazevac|sarbanovac|718718
+knjazevac|sesti gabar|718726
+knjazevac|skrobnica|718599
+knjazevac|slatina|718602
+knjazevac|stanjinac|718629
+knjazevac|staro korito|718637
+knjazevac|stipina|718734
+knjazevac|stitarac|718742
+knjazevac|stogazovac|718645
+knjazevac|strbac|718769
+knjazevac|suman topla|718777
+knjazevac|svrljiska topla|718564
+knjazevac|tatrasnica|718653
+knjazevac|trgoviste|718661
+knjazevac|trnovac|718670
+knjazevac|valevac|717932
+knjazevac|vasilj|717959
+knjazevac|vidovac|717967
+knjazevac|vina|717975
+knjazevac|vitkovac|717983
+knjazevac|vlasko polje|717991
+knjazevac|vrtovac|718017
+knjazevac|zlne|718181
+knjazevac|zorunovac|718203
+knjazevac|zubetinac|718211
+knjazevac|zukovac|718190
+koceljeva|batalage|742767
+koceljeva|brdarica|709115
+koceljeva|bresnica|709123
+koceljeva|cukovine|709549
+koceljeva|donje crniljevo|709247
+koceljeva|draginje|709255
+koceljeva|druzetic|731986
+koceljeva|galovic|709182
+koceljeva|golocelo|709204
+koceljeva|gradojevic|709212
+koceljeva|kamenica|709298
+koceljeva|koceljeva|709328
+koceljeva|koceljeva varosica|709336
+koceljeva|ljutice|709395
+koceljeva|mali bosnjak|709409
+koceljeva|subotica|709514
+koceljeva|svileuva|709492
+koceljeva|zukve|742864
+kosjeric|bjeloperica|718785
+kosjeric|brajkovici|718793
+kosjeric|cikote|719072
+kosjeric|drenovci|718840
+kosjeric|dubnica|718858
+kosjeric|galovici|718807
+kosjeric|godecevo i|718815
+kosjeric|godecevo ii|718823
+kosjeric|godljevo|718831
+kosjeric|kosjeric selo|718874
+kosjeric|kosjeric varos|718866
+kosjeric|makoviste i|718882
+kosjeric|makoviste ii|718904
+kosjeric|mionica|718912
+kosjeric|mrcici|718939
+kosjeric|musici|718947
+kosjeric|paramun|718955
+kosjeric|polosnica i|718963
+kosjeric|polosnica ii|718971
+kosjeric|radanovci|718980
+kosjeric|rosici|718998
+kosjeric|ruda bukva|719005
+kosjeric|seca reka|719013
+kosjeric|sevrljuge|719099
+kosjeric|skakavci|719021
+kosjeric|stojici|719030
+kosjeric|subjel|719048
+kosjeric|tubici|719064
+kosovo polje|ariljaca|908436
+kosovo polje|batuse|905933
+kosovo polje|dobri dub|907367
+kosovo polje|donje dobrevo|907154
+kosovo polje|donji grabovac|907162
+kosovo polje|ence|907219
+kosovo polje|gornje dobrevo|908614
+kosovo polje|kosovo polje|906964
+kosovo polje|kuzmin|906999
+kosovo polje|mala slatina|907103
+kosovo polje|mali belacevac|907111
+kosovo polje|pomazatin|907278
+kosovo polje|ugljare|914347
+kosovo polje|velika slatina|908568
+kosovo polje|veliki belacevac|908576
+kosovo polje|vragolija|908584
+kosovska kamenica|ajnovce|908894
+kosovska kamenica|berivojce|908908
+kosovska kamenica|blato|908916
+kosovska kamenica|boljevce|908932
+kosovska kamenica|bosce|908959
+kosovska kamenica|bozevce|908924
+kosovska kamenica|bratilovce|908967
+kosovska kamenica|busince|908983
+kosovska kamenica|busovata|908975
+kosovska kamenica|carakovce|912247
+kosovska kamenica|carevce|912239
+kosovska kamenica|dajkovce|909157
+kosovska kamenica|dazdince|909149
+kosovska kamenica|desivojce|909165
+kosovska kamenica|djurisevce|908860
+kosovska kamenica|domorovce|908797
+kosovska kamenica|donja sipasnica|908827
+kosovska kamenica|donja veljeglava|908819
+kosovska kamenica|donje karacevo|908835
+kosovska kamenica|donje korminjane|908843
+kosovska kamenica|drenovce|908851
+kosovska kamenica|firiceja|912212
+kosovska kamenica|glogovce|909033
+kosovska kamenica|gmince|909041
+kosovska kamenica|gogolovce|909050
+kosovska kamenica|gornja sipasnica|909076
+kosovska kamenica|gornja veljeglava|909068
+kosovska kamenica|gornje karacevo|909092
+kosovska kamenica|gornje korminjane|909084
+kosovska kamenica|gradjenik|909106
+kosovska kamenica|grizime|909114
+kosovska kamenica|kololec|911798
+kosovska kamenica|koprivnica|911801
+kosovska kamenica|koretin|911810
+kosovska kamenica|kosovska kamenica|911828
+kosovska kamenica|kostadince|911836
+kosovska kamenica|krajnidel|911844
+kosovska kamenica|kremenata i|911852
+kosovska kamenica|kremenata ii|911879
+kosovska kamenica|kriljevo|911887
+kosovska kamenica|lisocka|911895
+kosovska kamenica|ljajcic|911909
+kosovska kamenica|ljestar|911917
+kosovska kamenica|malo ropotovo|911925
+kosovska kamenica|marovce|911933
+kosovska kamenica|mesina|911941
+kosovska kamenica|miganovce|911950
+kosovska kamenica|mocare|911968
+kosovska kamenica|mucivrce|911976
+kosovska kamenica|novo selo|911984
+kosovska kamenica|odanovce|912000
+kosovska kamenica|odevce|912018
+kosovska kamenica|ogoste|911992
+kosovska kamenica|oraovica|912026
+kosovska kamenica|pancelo|912034
+kosovska kamenica|petrovce|912042
+kosovska kamenica|policka|912069
+kosovska kamenica|rajanovce|912077
+kosovska kamenica|ranilug|912085
+kosovska kamenica|robovac|912093
+kosovska kamenica|rogacica|912107
+kosovska kamenica|saic|906816
+kosovska kamenica|sedlare|912123
+kosovska kamenica|strelica|912140
+kosovska kamenica|strezovce|912131
+kosovska kamenica|svirce|912115
+kosovska kamenica|tirince|912158
+kosovska kamenica|tomance|912166
+kosovska kamenica|toponica|912174
+kosovska kamenica|trstena|912182
+kosovska kamenica|tudjevce|912204
+kosovska kamenica|vaganes|908991
+kosovska kamenica|veliko ropotovo|909009
+kosovska kamenica|vrucevce|909017
+kosovska kamenica|zajcevce|911330
+kosovska kamenica|zuja|910872
+kosovska mitrovica|bajgora|906956
+kosovska mitrovica|bare|907421
+kosovska mitrovica|bataire|907448
+kosovska mitrovica|brabonjic|907537
+kosovska mitrovica|dedinje|907782
+kosovska mitrovica|donje vinarce|907847
+kosovska mitrovica|donje zabare|907855
+kosovska mitrovica|gornje zabare|907723
+kosovska mitrovica|kacandol|905658
+kosovska mitrovica|kopriva|905712
+kosovska mitrovica|kosovska mitrovica|905747
+kosovska mitrovica|kosutovo|905763
+kosovska mitrovica|kovacica|905674
+kosovska mitrovica|kutlovac|905780
+kosovska mitrovica|ljusta|905852
+kosovska mitrovica|madjare|914231
+kosovska mitrovica|mazic|905879
+kosovska mitrovica|meljenica|906344
+kosovska mitrovica|orahovo|906409
+kosovska mitrovica|ovcare|906387
+kosovska mitrovica|rasane|906468
+kosovska mitrovica|rzana|906492
+kosovska mitrovica|seljance|906549
+kosovska mitrovica|sipolje|906778
+kosovska mitrovica|stari trg|906603
+kosovska mitrovica|strana|906611
+kosovska mitrovica|supkovac|906786
+kosovska mitrovica|suvi do|906620
+kosovska mitrovica|svinjare|906522
+kosovska mitrovica|trstena|906646
+kosovska mitrovica|vaganica|907561
+kosovska mitrovica|veliki kicic|902225
+kosovska mitrovica|vidomiric|907626
+kosovska mitrovica|vidusic|907634
+kosovska mitrovica|vlahinje|907642
+kosovska mitrovica|vrbnica|907685
+kosovska mitrovica|zabrdje|905496
+kosovska mitrovica|zijaca|905534
+kostolac|klenovnik|734098
+kostolac|kostolac grad|734306
+kostolac|kostolac selo|734314
+kostolac|ostrovo|734179
+kostolac|petka|734187
+kovacica|crepaja|802352
+kovacica|debeljaca|802638
+kovacica|idvor|802689
+kovacica|kovacica|802735
+kovacica|padina|802786
+kovacica|samos|802816
+kovacica|uzdin|802832
+kovin|bavaniste i|800279
+kovin|bavaniste ii|800287
+kovin|deliblato|800368
+kovin|deliblatski pesak|805807
+kovin|dubovac|800384
+kovin|gaj|805858
+kovin|kovin|800490
+kovin|mramorak|800511
+kovin|plocica|800589
+kovin|skorenovac|800597
+kragujevac|adzine livade|716928
+kragujevac|baljkovac|719102
+kragujevac|botunje|719153
+kragujevac|bukorovac|719170
+kragujevac|cerovac|719510
+kragujevac|cumic|719528
+kragujevac|cvetojevac|719501
+kragujevac|desimirovac|719200
+kragujevac|divostin|717223
+kragujevac|djuriselo|717339
+kragujevac|dobraca|717231
+kragujevac|donja sabanta|719226
+kragujevac|donje grbice|717240
+kragujevac|donje komarice|719234
+kragujevac|draca|717274
+kragujevac|dragobraca|717258
+kragujevac|drenovac|717282
+kragujevac|dulene|737615
+kragujevac|erdec|717347
+kragujevac|golocelo|717118
+kragujevac|gornja sabanta|737577
+kragujevac|gornje grbice i|717126
+kragujevac|gornje grbice ii|717134
+kragujevac|gornje jarusice|736481
+kragujevac|gornje komarice|719196
+kragujevac|grosnica i|717177
+kragujevac|grosnica ii|717185
+kragujevac|jabucje|719285
+kragujevac|jovanovac|719293
+kragujevac|kamenica|717380
+kragujevac|korman|719315
+kragujevac|kotraza|701564
+kragujevac|kragujevac i|745081
+kragujevac|kragujevac ii|745090
+kragujevac|kragujevac iii|745103
+kragujevac|kragujevac iv|745111
+kragujevac|kutlovo|717452
+kragujevac|ljubicevac|701599
+kragujevac|luznice|719331
+kragujevac|mala vrbica|717525
+kragujevac|mali senj|719340
+kragujevac|marsic|719358
+kragujevac|maslosevo|701637
+kragujevac|mironic|719374
+kragujevac|novi milanovac|719404
+kragujevac|opornica|719412
+kragujevac|pajazitovo|719439
+kragujevac|poskurice|717606
+kragujevac|prekopeca|717614
+kragujevac|ramaca|717665
+kragujevac|resnik|719463
+kragujevac|rogojevac|717681
+kragujevac|sljivovac|717797
+kragujevac|stragari|701700
+kragujevac|tresnjevak|717746
+kragujevac|trmbas|719498
+kragujevac|ugljarevac|717754
+kragujevac|velika sugubina|737534
+kragujevac|velike pcelice|737542
+kragujevac|veliki senj|717037
+kragujevac|vinjiste|717045
+kragujevac|vlakca|701432
+kraljevo|adrani|719536
+kraljevo|bapsko polje|719544
+kraljevo|bare|736732
+kraljevo|bogutovac|719552
+kraljevo|bresnik|719587
+kraljevo|brezna|719579
+kraljevo|brezova|736830
+kraljevo|bukovica|719595
+kraljevo|bzovik|736775
+kraljevo|cerje|737453
+kraljevo|cibukovac|720097
+kraljevo|cukojevac|717789
+kraljevo|cvetke|720089
+kraljevo|dedevci|719684
+kraljevo|djakovo|736945
+kraljevo|dolac|736902
+kraljevo|dragosinjci|719692
+kraljevo|drakcici|719706
+kraljevo|drazinice|736937
+kraljevo|drlupa|717304
+kraljevo|gledic|717096
+kraljevo|godacica|717100
+kraljevo|gokcanica|719641
+kraljevo|gotovac|719650
+kraljevo|grdica|719676
+kraljevo|jarcujak|719749
+kraljevo|kamenica|719757
+kraljevo|konarevo|719781
+kraljevo|kovaci|719773
+kraljevo|kovanluk|719765
+kraljevo|kraljevo|719790
+kraljevo|krusevica|719803
+kraljevo|ladjevci|719811
+kraljevo|lazac|744131
+kraljevo|lesevo|717487
+kraljevo|lopatnica|719820
+kraljevo|maglic|719838
+kraljevo|mataruge|719846
+kraljevo|meljanica|719854
+kraljevo|metikos|719862
+kraljevo|milakovac|717550
+kraljevo|milavcici|717541
+kraljevo|milice|737127
+kraljevo|milocaj|719889
+kraljevo|mlanca|737135
+kraljevo|mrsac|719897
+kraljevo|musina reka|719919
+kraljevo|obrva|719927
+kraljevo|oplanici|719935
+kraljevo|orlja glava|737178
+kraljevo|pecenog|717592
+kraljevo|pekcanica|719951
+kraljevo|petropolje|717584
+kraljevo|plana|737216
+kraljevo|polumir|737259
+kraljevo|popovici|719978
+kraljevo|predole|719986
+kraljevo|progorelica|719994
+kraljevo|ratina|720003
+kraljevo|ravanica|717649
+kraljevo|reka|737313
+kraljevo|ribnica|720011
+kraljevo|rocevici|720020
+kraljevo|rudnjak|720038
+kraljevo|rudno|737330
+kraljevo|samaila|720046
+kraljevo|savovo|737348
+kraljevo|sibnica|717690
+kraljevo|sirca|720054
+kraljevo|stubal|717711
+kraljevo|tadenje|737399
+kraljevo|tavnik|744603
+kraljevo|tolisnica|726915
+kraljevo|trgoviste|720062
+kraljevo|usce|737445
+kraljevo|vitanovac|717053
+kraljevo|vitkovac|717061
+kraljevo|vrba|719617
+kraljevo|vrdila|719625
+kraljevo|vrh|736864
+kraljevo|zaklopaca|719714
+kraljevo|zakuta|717371
+kraljevo|zamcanje|719722
+kraljevo|zasad|736970
+krupanj|banjevac|720119
+krupanj|bela crkva|720135
+krupanj|bogostica|720151
+krupanj|brezovice|720160
+krupanj|brstica|720178
+krupanj|cerova|720445
+krupanj|cvetulja|720437
+krupanj|dvorska|725994
+krupanj|kostajnik|720259
+krupanj|krasava|720267
+krupanj|krupanj|720283
+krupanj|krzava|720275
+krupanj|likodra|720291
+krupanj|lipenovic i|720305
+krupanj|lipenovic ii|720313
+krupanj|mojkovic|720330
+krupanj|planina|720348
+krupanj|ravnaja|720356
+krupanj|sljivova|720470
+krupanj|stave|720399
+krupanj|tolisavac|720402
+krupanj|tomanj|720429
+krupanj|vrbic|720194
+krupanj|zavlaka|720216
+krusevac|bela voda|720488
+krusevac|belasica|720496
+krusevac|bivolje|720500
+krusevac|boljevac|720526
+krusevac|bovan|720518
+krusevac|brajkovac|720534
+krusevac|buci|720577
+krusevac|bukovica|720569
+krusevac|celije|721476
+krusevac|cerova|721484
+krusevac|citluk|721506
+krusevac|crkvina|721492
+krusevac|dedina|720771
+krusevac|djunis|720810
+krusevac|doljane|720780
+krusevac|donji stepos|720798
+krusevac|dvorane|720763
+krusevac|gaglovo|720666
+krusevac|gari|720674
+krusevac|gavez|720658
+krusevac|globare|720682
+krusevac|globoder|720704
+krusevac|gornji stepos|720712
+krusevac|grevci|720747
+krusevac|grkljane|720755
+krusevac|jablanica|720852
+krusevac|jasika|720879
+krusevac|josje|720887
+krusevac|kamenare|720895
+krusevac|kaonik|720909
+krusevac|kapidzija|720917
+krusevac|kobilje|720925
+krusevac|komorane|720933
+krusevac|konjuh|720941
+krusevac|krusevac|720968
+krusevac|krusince|720976
+krusevac|krvavica|720950
+krusevac|kukljin|720984
+krusevac|kupci|720992
+krusevac|lazarevac|741698
+krusevac|lazarica|721000
+krusevac|lipovac|721026
+krusevac|ljubava|721077
+krusevac|lomnica|721042
+krusevac|lovci|721034
+krusevac|lukavac|721069
+krusevac|mackovac|721140
+krusevac|majdevo|721085
+krusevac|makresane|721093
+krusevac|mala reka|721115
+krusevac|mala vrbnica|721107
+krusevac|mali siljegovac|721123
+krusevac|malo golovode|721131
+krusevac|mesevo|721158
+krusevac|modrica|721166
+krusevac|mudrakovac|721212
+krusevac|naupare|721239
+krusevac|padez|721247
+krusevac|pakasnica|721255
+krusevac|parunovac|721263
+krusevac|pasjak|721271
+krusevac|pepeljevac|721280
+krusevac|petina|721298
+krusevac|poljaci|721310
+krusevac|pozlata|721301
+krusevac|ribare|721328
+krusevac|rlica|721336
+krusevac|rosica|721344
+krusevac|sanac|721522
+krusevac|sasilovac|721549
+krusevac|savrane|721514
+krusevac|sebecevac|721352
+krusevac|sezemce|721379
+krusevac|slatina|721387
+krusevac|sogolj|721557
+krusevac|srndalje|721395
+krusevac|srnje|721409
+krusevac|stanci|721417
+krusevac|stitare|721565
+krusevac|susica|721425
+krusevac|tekija|721433
+krusevac|trebotin|721441
+krusevac|trmcare|721450
+krusevac|velika krusevica|720593
+krusevac|veliki siljegovac|720607
+krusevac|veliko golovode|720615
+krusevac|vitanovac|720623
+krusevac|vratare|720631
+krusevac|vucak|720640
+krusevac|zdravinje|720828
+krusevac|zebica|720836
+krusevac|zubovac|720844
+kucevo|blagojev kamen|722626
+kucevo|bukovska|722634
+kucevo|ceremosnja|722863
+kucevo|cerovica|722871
+kucevo|duboka|722677
+kucevo|glozane|722669
+kucevo|kaona|722685
+kucevo|kucajna|722693
+kucevo|kucevo i|722707
+kucevo|kucevo ii|722715
+kucevo|kucevo iii|722723
+kucevo|ljesnica|722731
+kucevo|mala bresnica|708925
+kucevo|misljenovac|722740
+kucevo|mustapic|722758
+kucevo|neresnica|722766
+kucevo|popovac|722774
+kucevo|rabrovo|708984
+kucevo|radenka|722804
+kucevo|rakova bara|722812
+kucevo|ravniste|722782
+kucevo|sena|722839
+kucevo|sevica|722880
+kucevo|srpce|722847
+kucevo|turija|722855
+kucevo|velika bresnica|708755
+kucevo|voluja|722642
+kucevo|vukovic|712612
+kucevo|zelenik|712698
+kula|crvenka|801445
+kula|kruscic|801623
+kula|kula|801470
+kula|lipar|801488
+kula|ruski krstur|801674
+kula|sivac|801526
+kursumlija|babica|721573
+kursumlija|bacoglava|721590
+kursumlija|barlovo|721581
+kursumlija|belo polje|721603
+kursumlija|bogujevac|721611
+kursumlija|dabinovac|721743
+kursumlija|dankovice|721751
+kursumlija|dedinac|721778
+kursumlija|degrmen|721760
+kursumlija|desiska|721786
+kursumlija|djake|721832
+kursumlija|dobri do|721794
+kursumlija|donja mikuljana|721808
+kursumlija|donje tocane|721816
+kursumlija|dubrava|721824
+kursumlija|gornja mikuljana|721719
+kursumlija|gornje tocane|721727
+kursumlija|grabovnica|721735
+kursumlija|igriste|721921
+kursumlija|ivan kula|721913
+kursumlija|kalimance|721930
+kursumlija|kastrat|721948
+kursumlija|konjuva|721956
+kursumlija|kosmaca|721964
+kursumlija|krcmare|721999
+kursumlija|krtok|721972
+kursumlija|kupinovo|722006
+kursumlija|kursumlija|722014
+kursumlija|kursumlijska banja|722022
+kursumlija|kutlovo|722049
+kursumlija|ljusa|722073
+kursumlija|ljutova|722065
+kursumlija|lukovo|722057
+kursumlija|macja stena|722138
+kursumlija|mackovac|722146
+kursumlija|magovo|722081
+kursumlija|mala kosanica|722090
+kursumlija|maricice|722103
+kursumlija|markovice|722111
+kursumlija|matarova|722120
+kursumlija|mehane|722189
+kursumlija|mercez|722162
+kursumlija|merdare|722154
+kursumlija|mijocici|722197
+kursumlija|mirnica|722219
+kursumlija|mrca|722227
+kursumlija|nevada|722235
+kursumlija|novo selo|722243
+kursumlija|orlovac|722251
+kursumlija|pacaradja|722294
+kursumlija|parada|722278
+kursumlija|parduse|722286
+kursumlija|pepeljevac|722308
+kursumlija|perunika|722316
+kursumlija|pevastica|722260
+kursumlija|pljakovo|722324
+kursumlija|prekoradja|722359
+kursumlija|prevetica|722332
+kursumlija|prolom|722367
+kursumlija|raca|722391
+kursumlija|rastelica|722383
+kursumlija|ravni sort|722375
+kursumlija|rudare|722405
+kursumlija|sagonjevo|722413
+kursumlija|samokovo|722421
+kursumlija|satra|722600
+kursumlija|sekiraca|722448
+kursumlija|seliste|722456
+kursumlija|selova|722464
+kursumlija|seoce|722472
+kursumlija|spance|722499
+kursumlija|stava|722618
+kursumlija|svinjiste|722430
+kursumlija|tacevac|722502
+kursumlija|tijovac|722529
+kursumlija|tmava|722537
+kursumlija|trebinje|722545
+kursumlija|trecak|722553
+kursumlija|tresnjica|722561
+kursumlija|trmka|722570
+kursumlija|trn|722588
+kursumlija|trpeza|722596
+kursumlija|vasiljevac|721620
+kursumlija|veliko pupavce|721638
+kursumlija|visoka|721646
+kursumlija|vlahinja|721654
+kursumlija|vrelo|721662
+kursumlija|vrsevac|721689
+kursumlija|vukojevac|721697
+kursumlija|zagradje|721891
+kursumlija|zalica|721859
+kursumlija|zebica|721905
+kursumlija|zegrova|721867
+kursumlija|zeljeva|721875
+kursumlija|zuc|721883
+lajkovac|bajevac|742732
+lajkovac|bogovadja|728233
+lajkovac|celije|723266
+lajkovac|donji lajkovac|727946
+lajkovac|jabucje|742872
+lajkovac|lajkovac|742945
+lajkovac|mali borak|742961
+lajkovac|markova crkva|728080
+lajkovac|nepricava|742988
+lajkovac|pepeljevac|728195
+lajkovac|pridvorica|728225
+lajkovac|ratkovac|728276
+lajkovac|rubribreza|743046
+lajkovac|skobalj|743062
+lajkovac|slovac|708259
+lajkovac|stepanje|743119
+lajkovac|strmovo|728314
+lajkovac|vracevic|727881
+lapovo|lapovo|745146
+lazarevac|arapovac|722898
+lazarevac|barosevac|722910
+lazarevac|barzilovica|722901
+lazarevac|bistrica|722928
+lazarevac|brajkovac|722936
+lazarevac|burovo|722944
+lazarevac|cibutkovica|723282
+lazarevac|cvetovac|723274
+lazarevac|dren|723002
+lazarevac|dudovica|723029
+lazarevac|junkovac|723053
+lazarevac|krusevica|723061
+lazarevac|lazarevac|723070
+lazarevac|leskovac|723088
+lazarevac|lukavica|723096
+lazarevac|mali crljeni|723100
+lazarevac|medosevac|723118
+lazarevac|mirosaljci|723126
+lazarevac|petka|723142
+lazarevac|prkosava|723169
+lazarevac|rudovci|723185
+lazarevac|sakulja|723193
+lazarevac|sokolovo|723207
+lazarevac|sopic|723304
+lazarevac|stepojevac|723215
+lazarevac|strmovo|723223
+lazarevac|stubica|723231
+lazarevac|susnjar|723312
+lazarevac|trbusnica|723240
+lazarevac|veliki crljeni|722952
+lazarevac|vrbovno|722987
+lazarevac|vreoci|722995
+lazarevac|zeoke|723045
+lazarevac|zupanjac|723037
+lebane|bacevina|723339
+lebane|bosnjace|723380
+lebane|buvce|723401
+lebane|cekavica|724424
+lebane|cenovac|724416
+lebane|donje vranovce|723614
+lebane|drvodelj|723657
+lebane|geglja|723509
+lebane|goli rid|723517
+lebane|gornje vranovce|723533
+lebane|grgurovce|723576
+lebane|klajic|723754
+lebane|konjino|723762
+lebane|krivaca|723789
+lebane|lalinovac|723797
+lebane|lebane|723819
+lebane|lipovica|723835
+lebane|lugare|723851
+lebane|malo vojlovce|723894
+lebane|nova topola|724009
+lebane|novo selo|724017
+lebane|pertate|724050
+lebane|petrovac|724076
+lebane|popovce|724092
+lebane|porostica|724114
+lebane|prekopcelica|724122
+lebane|radevce|724181
+lebane|radinovac|724190
+lebane|rafuna|724203
+lebane|sarce|724475
+lebane|sekicol|724289
+lebane|silovo|724483
+lebane|slisane|724335
+lebane|stulac|724491
+lebane|sumane|724505
+lebane|svinjarica|724254
+lebane|togocevce|724378
+lebane|veliko vojlovce|723436
+lebane|zdeglovo|723690
+leposavic|bare|907430
+leposavic|belo brdo|907456
+leposavic|beluce|907464
+leposavic|berberiste|907472
+leposavic|bistrica|907499
+leposavic|borcane|907529
+leposavic|borova|907502
+leposavic|ceranja|906689
+leposavic|cirkovice|906662
+leposavic|crnatovo|906727
+leposavic|crveni|906697
+leposavic|dobrava|907804
+leposavic|donje isevo|907839
+leposavic|donji krnjin|905437
+leposavic|dren|905453
+leposavic|gornji krnjin|907740
+leposavic|granicane|907715
+leposavic|grkaje|907766
+leposavic|guvniste|907774
+leposavic|ibarsko postenje|905577
+leposavic|jelakce|905615
+leposavic|kajkovo|905631
+leposavic|kamenica|905640
+leposavic|kijevcice|905666
+leposavic|koporice|905704
+leposavic|kosutovo|905755
+leposavic|kutnje|905798
+leposavic|leposavic|905801
+leposavic|lesak|905810
+leposavic|lozno|905836
+leposavic|majdevo|905887
+leposavic|miokovice|906352
+leposavic|mosnica|906379
+leposavic|ostrace|906417
+leposavic|plakaonica|906425
+leposavic|popovce|906433
+leposavic|potkomlje|906441
+leposavic|pridvorica|906450
+leposavic|rvatska|906476
+leposavic|saljska bistrica|906760
+leposavic|seoce|906565
+leposavic|slatina|906573
+leposavic|socanica|906581
+leposavic|trebice|906638
+leposavic|vracevo|907677
+leposavic|vuca|907693
+leposavic|zemanica|905518
+leskovac|babicko|724513
+leskovac|badince|724521
+leskovac|barje|724530
+leskovac|belanovce|724548
+leskovac|beli potok|724556
+leskovac|bistrica|724564
+leskovac|bobiste|724572
+leskovac|bocevica|710270
+leskovac|bogojevce|724599
+leskovac|bojisina|710245
+leskovac|bratmilovce|724602
+leskovac|brejanovce|724629
+leskovac|brestovac|724637
+leskovac|bricevlje|709620
+leskovac|brza|724645
+leskovac|bukova glava|724653
+leskovac|bunusa|724661
+leskovac|cekmin|725790
+leskovac|cifluk razgojnski|725803
+leskovac|crcavac|725781
+leskovac|crkovnica|725773
+leskovac|crveni breg|711047
+leskovac|cukljenik|725811
+leskovac|dedina bara|710474
+leskovac|dobrotin|710539
+leskovac|donja jajina|724947
+leskovac|donja kupinovica|724955
+leskovac|donja lokosnica|724963
+leskovac|donja slatina|724971
+leskovac|donje brijanje|724980
+leskovac|donje krajince|724998
+leskovac|donje sinkovce|725005
+leskovac|donje stopanje|725013
+leskovac|donje trnjane|725021
+leskovac|donji bunibrod|725030
+leskovac|draskovac|725048
+leskovac|drcevac|725064
+leskovac|drvodelja|725056
+leskovac|dusanovo|725072
+leskovac|gagince|723479
+leskovac|gorina|724769
+leskovac|gornja jajina|724777
+leskovac|gornja kupinovica|724785
+leskovac|gornja lokosnica|724793
+leskovac|gornja slatina|724807
+leskovac|gornje krajince|724823
+leskovac|gornje sinkovce|724831
+leskovac|gornje stopanje|724840
+leskovac|gornje trnjane|724858
+leskovac|gornji bunibrod|724866
+leskovac|gradasnica|724874
+leskovac|grajevce|724882
+leskovac|graovo|724904
+leskovac|grdanica|724912
+leskovac|grdelica selo|710431
+leskovac|grdelica varos|710423
+leskovac|guberevac|724939
+leskovac|igriste|725196
+leskovac|jarsenovo|725200
+leskovac|jasunja|725218
+leskovac|jelasnica|725226
+leskovac|kaludjerce|725234
+leskovac|karadjordjevac|725242
+leskovac|kastavar|725285
+leskovac|koracevac|709824
+leskovac|kovaceva bara|710636
+leskovac|kozare|710644
+leskovac|krpejce|710709
+leskovac|kukulovce|725307
+leskovac|kumarevo|725315
+leskovac|kutles|725323
+leskovac|leskovac|725340
+leskovac|licin dol|710741
+leskovac|lipovica|725358
+leskovac|mala biljanica|725366
+leskovac|mala grabovnica|725374
+leskovac|mala kopasnica|725382
+leskovac|manojlovce|725404
+leskovac|medja|725412
+leskovac|melovo|723959
+leskovac|milanovo|725439
+leskovac|mirosevce|725447
+leskovac|mrkovica|709948
+leskovac|mrstane|725455
+leskovac|nakrivanj|725471
+leskovac|navalin|725463
+leskovac|nesvrta|725480
+leskovac|nomanica|725498
+leskovac|novo selo|710768
+leskovac|oraovica|725510
+leskovac|orasac|725528
+leskovac|oruglica|724041
+leskovac|padez|725536
+leskovac|palikuca|725544
+leskovac|palojce|710814
+leskovac|pecenjevce|725579
+leskovac|petrovac|725552
+leskovac|piskupovo|725587
+leskovac|podrimce|725595
+leskovac|predejane selo|710008
+leskovac|predejane varos|709999
+leskovac|presecina|725609
+leskovac|priboj|725617
+leskovac|radonjica|725625
+leskovac|rajno polje|710890
+leskovac|ravni del|724173
+leskovac|razgojna|725633
+leskovac|rudare|725641
+leskovac|sainovac|725820
+leskovac|sarlince|725838
+leskovac|sejanica|710946
+leskovac|sisince|725846
+leskovac|slatina|725676
+leskovac|slavujevce|725668
+leskovac|smrdan|725684
+leskovac|strojkovce|725692
+leskovac|stupnica|725714
+leskovac|susevlje|710130
+leskovac|svirce|725650
+leskovac|todorovce|725722
+leskovac|tulovo|725749
+leskovac|tupalovce|711012
+leskovac|turekovac|725757
+leskovac|velika biljanica|724670
+leskovac|velika grabovnica|724688
+leskovac|velika kopasnica|724696
+leskovac|veliko trnjane|724700
+leskovac|vilje kolo|710300
+leskovac|vina|724718
+leskovac|vinarce|724726
+leskovac|vlase|724734
+leskovac|vucje|724742
+leskovac|zabljane|725102
+leskovac|zaguzane|725145
+leskovac|zaluznje|725153
+leskovac|zivkovo|725129
+leskovac|zizavica|725137
+leskovac|zlocudovo|725170
+leskovac|zlokucane|725161
+leskovac|zoljevo|725188
+lipljan|androvac|906794
+lipljan|bandulic|906808
+lipljan|banjica|905925
+lipljan|brus|906174
+lipljan|bujance|906182
+lipljan|bukovica|906204
+lipljan|crni breg|909351
+lipljan|cuculjaga|909378
+lipljan|divljaka|906271
+lipljan|dobrotin|906280
+lipljan|donja gusterica|906298
+lipljan|donje gadimlje|906310
+lipljan|glogovce|906069
+lipljan|golesko vrelo|906034
+lipljan|gornja gusterica|906077
+lipljan|gornje gadimlje|906085
+lipljan|guvno selo|906107
+lipljan|janjevo|905950
+lipljan|klecka|905968
+lipljan|konjsko|905976
+lipljan|konjuh|905984
+lipljan|krajiste|906000
+lipljan|krajmirovce|906018
+lipljan|laletic|906026
+lipljan|lepina|906115
+lipljan|lipljan|906131
+lipljan|lipovica|906140
+lipljan|livadje|906123
+lipljan|lug|906158
+lipljan|lugadzija|906166
+lipljan|magura|909181
+lipljan|mala dobranja|909190
+lipljan|mali alas|909203
+lipljan|malo gracko|909211
+lipljan|malo ribare|909220
+lipljan|marevce|909424
+lipljan|medvece|909432
+lipljan|mirena|909360
+lipljan|muhadzer babus|909467
+lipljan|novo rujce|909289
+lipljan|oklap|909297
+lipljan|okosnica|909319
+lipljan|plitkovic|905372
+lipljan|poturovce|909394
+lipljan|rabovce|909408
+lipljan|radevo|909416
+lipljan|rusinovce|909459
+lipljan|sedlare|909475
+lipljan|sisarka|904694
+lipljan|skulanovo|909483
+lipljan|slovinje|909491
+lipljan|smolusa|909505
+lipljan|staro gracko|909238
+lipljan|staro rujce|909246
+lipljan|suvi do|909254
+lipljan|teca|909262
+lipljan|toplicane|909335
+lipljan|torina|909343
+lipljan|varigovce|906239
+lipljan|velika dobranja|906247
+lipljan|veliki alas|906255
+lipljan|veliko ribare|906263
+lipljan|vogacica|906212
+lipljan|vrelo|909173
+lipljan|vrsevce|906042
+lipljan|zlokucane|905941
+ljig|ba|712833
+ljig|babajic|727806
+ljig|belanovica|726958
+ljig|bosnjanovic|727822
+ljig|brancic|726982
+ljig|cvetanovac|728373
+ljig|dici|727067
+ljig|donji banjani|727075
+ljig|gukos|727024
+ljig|ivanovci|727113
+ljig|jajcic|727997
+ljig|kadina luka|728004
+ljig|kalanjevci|727130
+ljig|kozelj|727148
+ljig|lalinci|727164
+ljig|latkovic|728063
+ljig|liplje|727172
+ljig|ljig|727199
+ljig|moravci|727229
+ljig|paleznica|728152
+ljig|poljanice|727245
+ljig|slavkovica|728306
+ljig|stavica|727326
+ljig|sutci|727334
+ljig|velisevac|727865
+ljig|zivkovci|727091
+ljubovija|citluk|727652
+ljubovija|crnca|727644
+ljubovija|donja bukovica|727431
+ljubovija|donja ljubovidja|727440
+ljubovija|donja orovica|727458
+ljubovija|donje koslje i|727466
+ljubovija|donje koslje ii|727474
+ljubovija|drlace|727504
+ljubovija|gornja bukovica|727369
+ljubovija|gornja ljubovidja|727377
+ljubovija|gornja orovica|727385
+ljubovija|gornje koslje|727393
+ljubovija|gracanica|727407
+ljubovija|grcic|727415
+ljubovija|leovic|727512
+ljubovija|ljubovija|727547
+ljubovija|lonjin|727539
+ljubovija|postenje|727563
+ljubovija|rujevac|727571
+ljubovija|savkovic|727580
+ljubovija|selanac|727598
+ljubovija|sokolac|727601
+ljubovija|tornik|727610
+ljubovija|uzovnica|727628
+loznica|banja koviljaca|725854
+loznica|bradic|725862
+loznica|brnjac|725897
+loznica|cikote|726397
+loznica|cokesina|726419
+loznica|donja badanja|726001
+loznica|donja sipulja|726028
+loznica|donje nedeljice|726036
+loznica|donji dobric|726044
+loznica|draginac|726052
+loznica|filipovici|726389
+loznica|gornja badanja|725935
+loznica|gornja borina|725943
+loznica|gornja sipulja|725951
+loznica|gornje nedeljice|725960
+loznica|gornji dobric|725978
+loznica|grncara|725986
+loznica|jadranska lesnica|726087
+loznica|jarebice|726095
+loznica|jelav|726109
+loznica|joseva|726117
+loznica|jugovici|726125
+loznica|kamenica|726133
+loznica|korenita|726168
+loznica|kozjak|726150
+loznica|lesnica|745197
+loznica|lipnica|726192
+loznica|loznica|745189
+loznica|milina|726222
+loznica|novo selo|726249
+loznica|paskovac|726257
+loznica|pomijaca|726265
+loznica|ribarice|726273
+loznica|runjani|726281
+loznica|simino brdo|726290
+loznica|slatina|726303
+loznica|sor|726427
+loznica|straza|726311
+loznica|stupnica|726320
+loznica|surice|726435
+loznica|tekeris|726338
+loznica|trbosilje|726346
+loznica|trbusnica|726354
+loznica|trsic|726362
+loznica|veliko selo|725919
+loznica|vocnjak|725927
+loznica|zajaca|726079
+lucani|beli kamen|726443
+lucani|djeradj|726621
+lucani|dljin|726575
+lucani|donja kravarica|726583
+lucani|donji dubac|726591
+lucani|ducalovici|726613
+lucani|goracici|726508
+lucani|gornja kravarica|726516
+lucani|gornji dubac|726524
+lucani|grab|726532
+lucani|guberevci|726559
+lucani|guca|726567
+lucani|kaona|726656
+lucani|kotraza|726664
+lucani|krivaca|726672
+lucani|krstac|726699
+lucani|lis|726702
+lucani|lisice|726737
+lucani|lucani|726761
+lucani|markovica|726770
+lucani|milatovici|726788
+lucani|negrisori|726800
+lucani|psanik|726869
+lucani|puhovo|726842
+lucani|rogaca|726877
+lucani|rtari|726885
+lucani|rti|726893
+lucani|tijanje|726907
+lucani|turica|726931
+lucani|vica|726478
+lucani|vlasteljice|726486
+lucani|vuckovica|726494
+lucani|zeoke|726648
+lucani|zivica|726630
+majdanpek|boljetin|727679
+majdanpek|crnajka|727792
+majdanpek|debeli lug|727709
+majdanpek|donji milanovac|727717
+majdanpek|golubinje|727687
+majdanpek|jasikovo|714437
+majdanpek|klokocevac|727725
+majdanpek|leskovo|714496
+majdanpek|majdanpek|727733
+majdanpek|miroc|727741
+majdanpek|mosna|727750
+majdanpek|rudna glava|727768
+majdanpek|topolnica|727784
+majdanpek|vlaole|714364
+mali idjos|feketic|801461
+mali idjos|lovcenac|801500
+mali idjos|mali idjos|801518
+mali zvornik|brasina|725889
+mali zvornik|budisic|720186
+mali zvornik|citluk|720461
+mali zvornik|culine|720453
+mali zvornik|donja borina|726010
+mali zvornik|donja tresnjica|720208
+mali zvornik|mali zvornik|720321
+mali zvornik|radalj|720364
+mali zvornik|sakar|720372
+mali zvornik|velika reka|727342
+malo crnice|aljudovo|733881
+malo crnice|batusa|733911
+malo crnice|bozevac|733938
+malo crnice|crljenac|733083
+malo crnice|kaliste|734071
+malo crnice|kobilje|732893
+malo crnice|kravlji do|734101
+malo crnice|kula|734110
+malo crnice|malo crnice|734144
+malo crnice|malo gradiste|708933
+malo crnice|salakovac|734233
+malo crnice|sapine|734284
+malo crnice|sljivovac|734292
+malo crnice|smoljinac|734241
+malo crnice|toponica|734250
+malo crnice|veliko crnice|734004
+malo crnice|veliko selo|733997
+malo crnice|vrbnica|714186
+malo crnice|zabrega|734063
+medijana|brzi brod|729094
+medijana|nis bubanj|729795
+medijana|nis cele kula|729809
+medvedja|bogunovac|723347
+medvedja|borovac|723371
+medvedja|bucumet|723410
+medvedja|cokotin|724467
+medvedja|crni vrh|724459
+medvedja|djulekare|723681
+medvedja|donja lapastica|723606
+medvedja|drence|723665
+medvedja|gajtan|723495
+medvedja|gazdare|723487
+medvedja|gornja lapastica|723525
+medvedja|grbavce|723568
+medvedja|gubavce|723584
+medvedja|gurgutovo|723592
+medvedja|kapit|723746
+medvedja|lece|723827
+medvedja|macedonce|723916
+medvedja|mala braina|723886
+medvedja|marovac|723908
+medvedja|medevce|723932
+medvedja|medvedja|723924
+medvedja|mrkonje|723983
+medvedja|negosavlje|723991
+medvedja|petrilje|724068
+medvedja|porostica|724106
+medvedja|pusto silovo|724157
+medvedja|ravna banja|724165
+medvedja|retkocer|724211
+medvedja|rujkovac|724238
+medvedja|sijarina|724297
+medvedja|sijarinska banja|724319
+medvedja|sponce|724343
+medvedja|stara banja|724351
+medvedja|stubla|724360
+medvedja|svirce|724262
+medvedja|tulare|724386
+medvedja|tupale|724394
+medvedja|velika braina|723428
+medvedja|vrapce|723444
+merosina|aleksandrovo|714607
+merosina|arbanasce|714615
+merosina|azbresnica|714593
+merosina|balajnac|714666
+merosina|balicevac|714682
+merosina|batusinac|714712
+merosina|biljeg|714755
+merosina|brest|714780
+merosina|bucic|714810
+merosina|desilovo|714976
+merosina|devca|714968
+merosina|donja rasovaca|715000
+merosina|dudulajce|701041
+merosina|gornja rasovaca|714879
+merosina|gradiste|714933
+merosina|jug bogdanovac|715182
+merosina|kostadinovac|715255
+merosina|krajkovac|715271
+merosina|lepaja|715298
+merosina|merosina|715336
+merosina|oblacina|715425
+merosina|rozina|715549
+mionica|berkovac|727814
+mionica|brezdje|727849
+mionica|bukovac|727857
+mionica|djurdjevac|727989
+mionica|donji music|727954
+mionica|ducic|727962
+mionica|golubac|727903
+mionica|gornji lajkovac|727911
+mionica|gornji music|727920
+mionica|gunjica|727938
+mionica|klasnic|728012
+mionica|kljuc|728039
+mionica|komanice|728047
+mionica|krcmar|728055
+mionica|maljevic|728071
+mionica|mionica selo|728101
+mionica|mionica varos|728098
+mionica|mratisic|728110
+mionica|nanomir|728136
+mionica|osecenica|728144
+mionica|pastric|728187
+mionica|planinica|728209
+mionica|popadic|728217
+mionica|radobic|728241
+mionica|rajkovic|728250
+mionica|rakari|728268
+mionica|robaje|728284
+mionica|sankovic|728292
+mionica|struganik|728322
+mionica|suseoka|728381
+mionica|tabanovic|728349
+mionica|todorin do|728357
+mionica|tolic|728365
+mionica|virovac|727873
+mionica|vrtiglav|727890
+mladenovac|americ|728390
+mladenovac|dubona|739987
+mladenovac|granice|740306
+mladenovac|jagnjilo|740349
+mladenovac|koracica|728489
+mladenovac|kovacevac|740357
+mladenovac|mala vrbica|728497
+mladenovac|markovac|701602
+mladenovac|medjuluzje|728535
+mladenovac|mladenovac selo|728551
+mladenovac|mladenovac varos|728543
+mladenovac|pruzatovac|728594
+mladenovac|rabrovac|740403
+mladenovac|rajkovac|728608
+mladenovac|senaja|728659
+mladenovac|sepsin|728705
+mladenovac|velika ivanca|728411
+mladenovac|velika krsna|740241
+mladenovac|vlaska|728420
+negotin|aleksandrovac|728802
+negotin|bracevac|728713
+negotin|brestovac|728721
+negotin|bukovce|728730
+negotin|crnomasnica|729019
+negotin|cubra|729027
+negotin|dupljane|728772
+negotin|dusanovac|728799
+negotin|glogovica ii|728764
+negotin|jabukovac|716812
+negotin|jasenica|728829
+negotin|karbulovo|728837
+negotin|kobisnica|728845
+negotin|kovilovo|728853
+negotin|mala kamenica|716847
+negotin|malajnica|716855
+negotin|mihajlovac|716863
+negotin|milosevo|728861
+negotin|mokranje|728870
+negotin|negotin|728888
+negotin|plavna|716871
+negotin|popovica|705284
+negotin|prahovo|728896
+negotin|radujevac|728900
+negotin|rajac|728918
+negotin|recka|728926
+negotin|rogljevo|728934
+negotin|samarinovac|728942
+negotin|sarkamen|705357
+negotin|sikole i|705314
+negotin|sikole ii|728969
+negotin|slatina|716898
+negotin|smedovac|728977
+negotin|srbovo|728985
+negotin|stubik i|716910
+negotin|stubik ii|729035
+negotin|tamnic|728993
+negotin|trnjane|705349
+negotin|urovica|716901
+negotin|veljkovo|728748
+negotin|vidrovac|728756
+negotin|vratna|716804
+niska banja|bancarevo|729043
+niska banja|cukljenik|730173
+niska banja|donja studena|729361
+niska banja|gornja studena|729221
+niska banja|jelasnica|729523
+niska banja|kunovica|729639
+niska banja|lazarevo selo|729647
+niska banja|niska banja|729825
+niska banja|ostrovica|729876
+niska banja|prosek manastir|729957
+niska banja|prva kutina|729949
+niska banja|radikina bara|729973
+niska banja|rautovo|729981
+niska banja|ravni do|729965
+niska banja|sicevo|730025
+nova crnja|aleksandrovo|800929
+nova crnja|molin|800856
+nova crnja|nova crnja|800864
+nova crnja|radojevo|800872
+nova crnja|srpska crnja|800899
+nova crnja|toba|800902
+nova crnja|vojvoda stepa|800937
+nova varos|akmacici|730190
+nova varos|amzici|730203
+nova varos|bela reka|743704
+nova varos|bistrica|730211
+nova varos|bozetici|730220
+nova varos|brdo|730238
+nova varos|bukovik|730246
+nova varos|buradja|743739
+nova varos|celice|730416
+nova varos|debelja|730297
+nova varos|draglica|743763
+nova varos|drazevici|730319
+nova varos|drmanovici|730327
+nova varos|gornje trudovo|730289
+nova varos|jasenovo|743801
+nova varos|komarani|730335
+nova varos|kucani|743836
+nova varos|ljepojevici|730343
+nova varos|misevici|739642
+nova varos|negbina|743887
+nova varos|nova varos|730351
+nova varos|ojkovica|743895
+nova varos|radijevici|730360
+nova varos|radoinja|730378
+nova varos|rutosi|730386
+nova varos|senista|743925
+nova varos|stitkovo|730424
+nova varos|tikva|730394
+nova varos|tisovica|730408
+nova varos|trudovo|701955
+nova varos|vilovi|730254
+nova varos|vranesa|730262
+novi becej|bocar|801305
+novi becej|kumane|805572
+novi becej|novi becej|805661
+novi becej|novo milosevo|801313
+novi beograd|novi beograd|716090
+novi knezevac|banatsko arandjelovo|801780
+novi knezevac|djala|801895
+novi knezevac|majdan|801925
+novi knezevac|novi knezevac|801941
+novi knezevac|srpski krstur|801909
+novi pazar|alulovice|730432
+novi pazar|bajevica|730459
+novi pazar|banja|730467
+novi pazar|bare|730475
+novi pazar|batnjik|730483
+novi pazar|bekova|730491
+novi pazar|bele vode|730505
+novi pazar|boturovina|730513
+novi pazar|brdjani|730521
+novi pazar|brestovo|730530
+novi pazar|casic dolac|731498
+novi pazar|cokovice|731480
+novi pazar|dezeva|730718
+novi pazar|dojinovice|730726
+novi pazar|dolac|730734
+novi pazar|doljani|730742
+novi pazar|dragocevo|730769
+novi pazar|dramice|730777
+novi pazar|golice|730653
+novi pazar|gornja tusimlja|730661
+novi pazar|gosevo|730670
+novi pazar|gracane|730696
+novi pazar|gradjanovice|730688
+novi pazar|grubetice|730700
+novi pazar|hotkovo|731471
+novi pazar|ivanca|730815
+novi pazar|izbice|730823
+novi pazar|jablanica|730831
+novi pazar|janca|730858
+novi pazar|javor|730840
+novi pazar|jova|730866
+novi pazar|kasalj|730874
+novi pazar|koprivnica|730912
+novi pazar|kosurice|730939
+novi pazar|kovacevo|730882
+novi pazar|kozlje|730904
+novi pazar|krusevo|730947
+novi pazar|kuzmicevo|730955
+novi pazar|leca|730963
+novi pazar|lopuznje|730971
+novi pazar|lukare|730980
+novi pazar|lukarsko gosevo|730998
+novi pazar|lukocrevo|731005
+novi pazar|miscice|731013
+novi pazar|muhovo|731030
+novi pazar|mur|731021
+novi pazar|negotinac|731048
+novi pazar|novi pazar|731056
+novi pazar|odojevice|731064
+novi pazar|oholje|731129
+novi pazar|okose|731072
+novi pazar|osaonica|731099
+novi pazar|osoje|731102
+novi pazar|paralovo|731145
+novi pazar|pasji potok|731153
+novi pazar|pavlje|731137
+novi pazar|pilareta|731161
+novi pazar|pobrdje|731170
+novi pazar|polokce|731200
+novi pazar|pope|731218
+novi pazar|postenje|731226
+novi pazar|pozega|731188
+novi pazar|pozezina|731196
+novi pazar|prcenova|731234
+novi pazar|pusta tusimlja|731242
+novi pazar|pustovlah|731269
+novi pazar|radaljica|731277
+novi pazar|rajcinovice|731307
+novi pazar|rajcinovicka trnava|731315
+novi pazar|rajetice|731285
+novi pazar|rajkovice|731293
+novi pazar|rakovac|731323
+novi pazar|rast|731331
+novi pazar|saronje|731510
+novi pazar|savci|731501
+novi pazar|sebecevo|731340
+novi pazar|sitnice|731358
+novi pazar|skukovo|731366
+novi pazar|slatina|731374
+novi pazar|smilov laz|731382
+novi pazar|srednja tusimlja|731404
+novi pazar|stitare|731528
+novi pazar|stradovo|731412
+novi pazar|sudsko selo|731439
+novi pazar|tenkovo|731447
+novi pazar|trnava|731455
+novi pazar|tunovo|731463
+novi pazar|varevo|730548
+novi pazar|vever|730556
+novi pazar|vidovo|730564
+novi pazar|vitkovice|730572
+novi pazar|vojkovice|730599
+novi pazar|vojnice|730602
+novi pazar|vranovina|730629
+novi pazar|vucinice|730637
+novi pazar|vucja lokva|730645
+novi pazar|zabrdje|730793
+novi pazar|zlatare|730807
+novi pazar|zunjevice|730785
+novi sad|begec|802077
+novi sad|budisava|804541
+novi sad|bukovac|805203
+novi sad|cenej|802085
+novi sad|futog|802255
+novi sad|kac|804649
+novi sad|kisac|802123
+novi sad|kovilj|804576
+novi sad|ledinci|803120
+novi sad|novi sad i|802158
+novi sad|novi sad ii|802166
+novi sad|novi sad iii|802174
+novi sad|novi sad iv|802182
+novi sad|petrovaradin|805378
+novi sad|rumenka|802239
+novi sad|sremska kamenica|803308
+novi sad|stepanovicevo|802263
+novi sad|veternik|802298
+novo brdo|bostane|907863
+novo brdo|izvor|905402
+novo brdo|jasenovik|905321
+novo brdo|klobukar|905330
+novo brdo|labljane|907014
+novo brdo|manisince|905356
+novo brdo|novo brdo|905275
+novo brdo|prekovce|905348
+novo brdo|trnicevce|905313
+novo brdo|zebince|905399
+obilic|ade|908410
+obilic|babin most|904686
+obilic|baksija|908452
+obilic|breznica|905429
+obilic|crkvena vodica|906875
+obilic|dobro selo|907375
+obilic|gornji grabovac|908622
+obilic|hamidija|908789
+obilic|krusevac|906972
+obilic|lazarevo|907022
+obilic|leskovcic|907065
+obilic|mazgit|907081
+obilic|milosevo|907138
+obilic|obilic|907251
+obilic|plemetina|909513
+obilic|raskovo|906905
+obilic|sibovac|908363
+obilic|sipitula|906891
+obrenovac|baljevac|731536
+obrenovac|baric|731544
+obrenovac|belo polje|731552
+obrenovac|brgulice|731579
+obrenovac|brovic|731587
+obrenovac|drazevac|731625
+obrenovac|dren|731633
+obrenovac|grabovac|731617
+obrenovac|jasenak|731668
+obrenovac|konatice|731684
+obrenovac|krtinska|731692
+obrenovac|ljubinic|731714
+obrenovac|mala mostanica|703834
+obrenovac|mislodjin|731749
+obrenovac|obrenovac|731757
+obrenovac|orasac|731765
+obrenovac|piroman|731773
+obrenovac|poljane|731781
+obrenovac|ratari|731790
+obrenovac|rvati|731803
+obrenovac|skela|731811
+obrenovac|stubline|731820
+obrenovac|trstenica|731838
+obrenovac|urovci|731846
+obrenovac|usce|731854
+obrenovac|veliko polje|731595
+obrenovac|vukicevica|731609
+obrenovac|zabrezje|731641
+obrenovac|zvecka|731650
+odzaci|backi brestovac|801577
+odzaci|backi gracac|801585
+odzaci|bogojevo|801593
+odzaci|deronje|800201
+odzaci|karavukovo|801607
+odzaci|lalic|801640
+odzaci|odzaci|801666
+odzaci|ratkovo|800104
+odzaci|srpski miletic|801704
+opovo|baranda|802573
+opovo|opovo|802751
+opovo|sakule|802808
+opovo|sefkerin|802492
+orahovac|bela crkva|904716
+orahovac|bratotin|904732
+orahovac|brestovac|904759
+orahovac|brnjaca|904767
+orahovac|bublje|904775
+orahovac|celina|908398
+orahovac|ciflak|911615
+orahovac|crnovrana|911593
+orahovac|danjane|904899
+orahovac|dobri dol|904937
+orahovac|domanek|904953
+orahovac|donje potocane|904961
+orahovac|dragobilje|904970
+orahovac|drenovac|904988
+orahovac|gedza|904830
+orahovac|goric|904856
+orahovac|gornje potocane|904864
+orahovac|janciste|905089
+orahovac|jovic|905097
+orahovac|koznik|905127
+orahovac|kramovik|905135
+orahovac|labucevo|905143
+orahovac|ljubizda|911682
+orahovac|madjare|911704
+orahovac|mala hoca|911712
+orahovac|malisevo|911739
+orahovac|milanovic|911755
+orahovac|mirusa|911763
+orahovac|moralija|911747
+orahovac|mrasor|911780
+orahovac|naspale|911399
+orahovac|nogavac|911402
+orahovac|opterusa|911429
+orahovac|orahovac|911437
+orahovac|ostrozub|911445
+orahovac|pagarusa|911453
+orahovac|petkovic|911461
+orahovac|poluza|911488
+orahovac|ponorac|911496
+orahovac|pusto selo|911518
+orahovac|radoste|911526
+orahovac|ratkovac|911534
+orahovac|retimlje|911542
+orahovac|sanovac|911348
+orahovac|sopnic|911372
+orahovac|turjak|911569
+orahovac|velika hoca|904783
+orahovac|velika krusa|909980
+orahovac|vranjak|904813
+orahovac|zatric|905038
+orahovac|zociste|905046
+orahovac|zrze|905054
+osecina|bastav|720127
+osecina|belotic|720143
+osecina|bratacic|731897
+osecina|carina|727636
+osecina|dragijevica|731978
+osecina|dragodol|727482
+osecina|gornje crniljevo|731951
+osecina|gunjaci|727423
+osecina|komiric|720224
+osecina|konjusa|720232
+osecina|lopatanj|732001
+osecina|osecina|732044
+osecina|ostruzanj|732079
+osecina|pecka|727555
+osecina|pluzac|732087
+osecina|sirdija|732109
+osecina|tudjin|732150
+palilula beograd|besni fok|732176
+palilula beograd|borca|732184
+palilula beograd|komareva humka|732206
+palilula beograd|kovilovo|732192
+palilula beograd|krnjaca|732214
+palilula beograd|lepusnica|732222
+palilula beograd|ovca|732249
+palilula beograd|palilula|703907
+palilula beograd|slanci|704016
+palilula beograd|veliko selo|703591
+palilula beograd|visnjica|703613
+palilula nis|berbatovo|729060
+palilula nis|bubanj|729108
+palilula nis|cokot|730165
+palilula nis|donje medjurovo|729418
+palilula nis|donje vlase|729396
+palilula nis|gabrovac|729183
+palilula nis|gornje medjurovo|729272
+palilula nis|krusce|715280
+palilula nis|lalinac|729655
+palilula nis|mramor|715344
+palilula nis|novo selo|729841
+palilula nis|pasi poljana|729892
+palilula nis|suvi do|745251
+palilula nis|vukmanovo|729175
+pancevo|banatski brestovac|802328
+pancevo|banatsko novo selo|802336
+pancevo|dolovo|802379
+pancevo|glogonj|802387
+pancevo|ivanovo|802409
+pancevo|jabuka|802417
+pancevo|kacarevo|802441
+pancevo|omoljica|802468
+pancevo|pancevo|802484
+pancevo|starcevo|802514
+pancevo|vojlovica|802549
+pantelej|brenica|729086
+pantelej|cerje|730106
+pantelej|donja vrezina|729353
+pantelej|donji matejevac i|729469
+pantelej|donji matejevac ii|729477
+pantelej|gornja vrezina|729213
+pantelej|gornji matejevac|729337
+pantelej|jasenovik|729515
+pantelej|kamenica|729540
+pantelej|knez selo|729574
+pantelej|malca|729710
+pantelej|nis pantelej|729787
+pantelej|oreovac|729868
+pantelej|pasjaca|729906
+pantelej|vrelo|729159
+paracin|bosnjane|732273
+paracin|buljane|732281
+paracin|busilovac|732290
+paracin|cepure|732672
+paracin|davidovac|732362
+paracin|donja mutnica|732389
+paracin|donje vidovo|732397
+paracin|drenovac|732419
+paracin|glavica|732311
+paracin|golubovac|732320
+paracin|gornja mutnica|732338
+paracin|gornje vidovo i|732346
+paracin|gornje vidovo ii|732354
+paracin|izvor|732443
+paracin|klacevica|732451
+paracin|krezbinac|732460
+paracin|lebina|732486
+paracin|lesje|732494
+paracin|mirilovac|732508
+paracin|paracin|732524
+paracin|paracin grad|732532
+paracin|plana|732559
+paracin|popovac|732567
+paracin|potocac|708518
+paracin|rasevica|708526
+paracin|ratare|732575
+paracin|saludovac|732702
+paracin|savac|732699
+paracin|sikirica|732605
+paracin|sinji vir|738417
+paracin|striza|732613
+paracin|stubica|732621
+paracin|svojnovo|708534
+paracin|tekija|732648
+paracin|tresnjevica|738450
+paracin|zabrega|732427
+pec|alagina reka|911631
+pec|babice|911640
+pec|barane|911658
+pec|belo polje|911666
+pec|blagaje|911151
+pec|boge|911160
+pec|brestovik|911208
+pec|brezanik|911194
+pec|brolic|911186
+pec|bucane|911224
+pec|celopek|910732
+pec|crni vrh|910767
+pec|cuska|910716
+pec|dobri do|910988
+pec|drelje|911011
+pec|dubovo|910899
+pec|duganjive|910902
+pec|glavicica|911291
+pec|glodjane|911305
+pec|gorazdevac|911313
+pec|grabovac|910970
+pec|hadzovici|910724
+pec|jablanica|911038
+pec|josanica|911054
+pec|klincina|911062
+pec|kosuric|911089
+pec|kosutane|911119
+pec|kotradic|911097
+pec|krstovac|911135
+pec|krusevac|911143
+pec|kuciste|910805
+pec|labljane|910813
+pec|lipa|910821
+pec|ljesane|910856
+pec|ljubenic|910864
+pec|ljutoglava|910422
+pec|lodja|910830
+pec|lozane|910848
+pec|mala jablanica|905194
+pec|mali stupelj|910449
+pec|maljevice|910457
+pec|nabrdje|910465
+pec|naklo|910481
+pec|novo selo|910490
+pec|ozrim|910520
+pec|pec|910546
+pec|pepice|910538
+pec|pistane|910554
+pec|plavljane|910562
+pec|pocesce|910589
+pec|radavac|905178
+pec|rasic|910619
+pec|rausic|910597
+pec|romune|910627
+pec|rosulje|910635
+pec|ruhot|910643
+pec|siga|910660
+pec|skrelje|910775
+pec|svrke|910651
+pec|trebovic|910686
+pec|trstenik|910694
+pec|turjak|910708
+pec|velika jablanica|905305
+pec|veliki stupelj|911232
+pec|vitomirica|911267
+pec|vragovac|911275
+pec|vranovac|911283
+pec|zagrmlje|910937
+pec|zahac|910945
+pec|zlopek|910953
+pecinci|asanja|805173
+pecinci|brestac|802948
+pecinci|dec|805220
+pecinci|donji tovarnik|804070
+pecinci|karlovcic|805254
+pecinci|kupinovo|805297
+pecinci|obrez|805351
+pecinci|ogar|804215
+pecinci|pecinci|805360
+pecinci|popinci|805386
+pecinci|prhovo|805394
+pecinci|sibac|803294
+pecinci|simanovci|805475
+pecinci|sremski mihaljevci|805416
+pecinci|subotiste|803332
+petrovac na mlavi|bistrica|732729
+petrovac na mlavi|bosnjak|714151
+petrovac na mlavi|burovac|732737
+petrovac na mlavi|busur|732745
+petrovac na mlavi|covdin|733075
+petrovac na mlavi|dobrnje|732800
+petrovac na mlavi|dubocka|732818
+petrovac na mlavi|kamenovo|732869
+petrovac na mlavi|kladurovo|732877
+petrovac na mlavi|knezica|732885
+petrovac na mlavi|krvije|732907
+petrovac na mlavi|leskovac|732915
+petrovac na mlavi|lopusnik|732923
+petrovac na mlavi|malo laole|732931
+petrovac na mlavi|manastirica|732940
+petrovac na mlavi|melnica|732958
+petrovac na mlavi|oreskovica|732966
+petrovac na mlavi|orljevo|714267
+petrovac na mlavi|pankovo|732974
+petrovac na mlavi|petrovac na mlavi|732982
+petrovac na mlavi|ranovac|733008
+petrovac na mlavi|rasanac|733016
+petrovac na mlavi|setonje|733091
+petrovac na mlavi|stamnica|733024
+petrovac na mlavi|starcevo|733032
+petrovac na mlavi|tabanovac|733059
+petrovac na mlavi|trnovce|733067
+petrovac na mlavi|veliki popovac|732761
+petrovac na mlavi|veliko laole|732770
+petrovac na mlavi|vezicevo|732753
+petrovac na mlavi|vitovnica|732788
+petrovac na mlavi|vosanovac|732796
+petrovac na mlavi|zabrdje|732834
+petrovac na mlavi|zdrelo|732826
+pirot|barje ciflik|733113
+pirot|basara|733121
+pirot|bazovik|733105
+pirot|bela|733130
+pirot|berilovac|733148
+pirot|berovica|733156
+pirot|blato|733164
+pirot|brlog|733172
+pirot|cerev del|733814
+pirot|cerova|733822
+pirot|ciniglavci|733865
+pirot|crnokliste|733857
+pirot|crvencevo|733849
+pirot|dobri do|733318
+pirot|dojkinci|733326
+pirot|drzina|733334
+pirot|gnjilan|733270
+pirot|gornja drzina|713783
+pirot|gostusa|733288
+pirot|gradasnica|733296
+pirot|gradiste|733300
+pirot|izvor|733377
+pirot|jalbotina|733385
+pirot|jelovica|733393
+pirot|kamik|733407
+pirot|koprivstica|733415
+pirot|kostur|733423
+pirot|krupac|733431
+pirot|kumanovo|733440
+pirot|mala lukanja|733458
+pirot|mali jovanovac|733466
+pirot|mali suvodol|733474
+pirot|milojkovac|733482
+pirot|mirkovci|733504
+pirot|nisor|733512
+pirot|obrenovac|733539
+pirot|oreovica|733547
+pirot|orlja|733555
+pirot|osmakovo|733563
+pirot|paklestica|733571
+pirot|pasjac|733580
+pirot|petrovac|733598
+pirot|pirot grad|733610
+pirot|pirot van varos|733601
+pirot|planinica|733628
+pirot|pokrevenik|733636
+pirot|poljska rzana|733644
+pirot|ponor|733652
+pirot|prisjan|733679
+pirot|ragodes|733687
+pirot|rasnica|733695
+pirot|rosomac|733709
+pirot|rsovci|733717
+pirot|rudinje|733725
+pirot|sinja glava|733733
+pirot|slavinja|714097
+pirot|sopot|733741
+pirot|sreckovac|733750
+pirot|stanicenje|733768
+pirot|sugrin|733873
+pirot|sukovo|733776
+pirot|temska|733784
+pirot|topli do|733792
+pirot|trnjana|733806
+pirot|velika lukanja|733199
+pirot|veliki jovanovac|733202
+pirot|veliki suvodol|733229
+pirot|veliko selo|733237
+pirot|visocka rzana|733245
+pirot|vlasi|713732
+pirot|vojnegovac|733253
+pirot|vraniste|733261
+pirot|zaskovci|733369
+pirot|zavoj|733342
+plandiste|banatski sokolac|801089
+plandiste|barice|801097
+plandiste|duzine|801119
+plandiste|hajducica|801127
+plandiste|jermenovci|801135
+plandiste|kupinik|801143
+plandiste|margita|801151
+plandiste|markovicevo|801160
+plandiste|mileticevo|801178
+plandiste|plandiste|801186
+plandiste|stari lec|801194
+plandiste|velika greda|801208
+plandiste|veliki gaj|801224
+podujevo|alabak|910783
+podujevo|bajcina|907871
+podujevo|balovac|907898
+podujevo|baraina|907901
+podujevo|batlava|907910
+podujevo|belo polje|907928
+podujevo|blato|907936
+podujevo|bradas|907979
+podujevo|braina|907944
+podujevo|brece|907987
+podujevo|brevnik|907952
+podujevo|burince|907995
+podujevo|dobri do|908118
+podujevo|dobrotin|908126
+podujevo|donja dubnica|908134
+podujevo|donja lapastica|908142
+podujevo|donja pakastica|908169
+podujevo|donje ljupce|908177
+podujevo|donji sibovac|908185
+podujevo|dumos|908207
+podujevo|duz|908193
+podujevo|dvoriste|908100
+podujevo|glavnik|908029
+podujevo|godisnjak|908037
+podujevo|gornja dubnica|908045
+podujevo|gornja lapastica|908053
+podujevo|gornja pakastica|908061
+podujevo|gornje ljupce|908070
+podujevo|gornji sibovac|908088
+podujevo|grdovac|908096
+podujevo|hrtica|914282
+podujevo|kacibeg|908240
+podujevo|kaljatica|908231
+podujevo|kisela banja|908266
+podujevo|konjusevac|908282
+podujevo|krpimej|908304
+podujevo|krusevica|908312
+podujevo|ladovac|908339
+podujevo|lausa|908347
+podujevo|letance|908355
+podujevo|livadica|910066
+podujevo|lug|910074
+podujevo|luzane|910082
+podujevo|majance|910112
+podujevo|mazap|910104
+podujevo|medregovac|910139
+podujevo|merdare|910147
+podujevo|metohija|910155
+podujevo|mirovac|910163
+podujevo|murgula|910171
+podujevo|obrandza|910198
+podujevo|orlane|910201
+podujevo|palatna|910210
+podujevo|penduha|910228
+podujevo|perane|910236
+podujevo|podujevo|910244
+podujevo|popovo|910252
+podujevo|potok|910279
+podujevo|prepolac|910287
+podujevo|radujevac|910309
+podujevo|rakinica|910317
+podujevo|recica|910341
+podujevo|repa|910333
+podujevo|revuce|910325
+podujevo|sajkovac|914312
+podujevo|sakovica|914339
+podujevo|siljevica|910368
+podujevo|slatina|910376
+podujevo|stedim|914304
+podujevo|surdula|910384
+podujevo|surkis|910392
+podujevo|svetlje|910350
+podujevo|trnava|914258
+podujevo|trnavica|914266
+podujevo|turucica|914274
+podujevo|velika reka|908002
+podujevo|zakut|908223
+podujevo|zitinje|908215
+pozarevac|bare|733890
+pozarevac|batovac|733903
+pozarevac|beranje|733920
+pozarevac|bradarac|733946
+pozarevac|bratinac|733954
+pozarevac|brezane|733962
+pozarevac|bubusinac|733989
+pozarevac|cirikovac|734276
+pozarevac|dragovac|734012
+pozarevac|drmno|734039
+pozarevac|dubravica|734047
+pozarevac|kasidol|734080
+pozarevac|klicevac|708844
+pozarevac|lucica|734128
+pozarevac|maljurevac|734136
+pozarevac|nabrdje|734152
+pozarevac|poljana|734209
+pozarevac|pozarevac|734195
+pozarevac|prugovo|745120
+pozarevac|recica|709000
+pozarevac|trnjane|734268
+pozarevac|zivica|734055
+pozega|bakionica|743224
+pozega|cestobrodica|743674
+pozega|donja dobrinja|743348
+pozega|drazinovici|743356
+pozega|duskovci|743372
+pozega|glumac|743283
+pozega|godovik|743291
+pozega|gornja dobrinja|743313
+pozega|gorobilje|743321
+pozega|gugalj|743330
+pozega|jelen do|743429
+pozega|kalenici|743437
+pozega|ljutice|743453
+pozega|lopas|726745
+pozega|loret|743445
+pozega|madjer|743461
+pozega|mala jezevica|743470
+pozega|milicevo selo|743488
+pozega|mrselji|743496
+pozega|otanj|743500
+pozega|papratiste|743518
+pozega|pilatovici|726826
+pozega|pozega|743526
+pozega|prijanovici|743534
+pozega|prilipac|726834
+pozega|radovci|743542
+pozega|rasna|743569
+pozega|recice|743577
+pozega|roge|743585
+pozega|rupeljevo|743593
+pozega|srednja dobrinja|743615
+pozega|svrackovo|743607
+pozega|tabanovici|743623
+pozega|tometino polje|743640
+pozega|tuckovo|743658
+pozega|tvrdici|743631
+pozega|uzici|743666
+pozega|velika jezevica|743259
+pozega|visibaba|743267
+pozega|vranjani|743275
+pozega|zaselje|743399
+pozega|zdravcici|743402
+presevo|alidjerce|706574
+presevo|bercevac|706612
+presevo|bujic|706728
+presevo|bukarevac i|706736
+presevo|bukarevac ii|706744
+presevo|bukovac|706752
+presevo|bustranje|706779
+presevo|cakanovac|707651
+presevo|cerevajka|707660
+presevo|crnotince|707678
+presevo|cukarka|707694
+presevo|depce|706884
+presevo|donja susaja|706906
+presevo|gare|706825
+presevo|golemi dol|706833
+presevo|gornja susaja|706841
+presevo|gospodjince|706868
+presevo|ilince|707007
+presevo|kurbalija|707104
+presevo|ljanik|707180
+presevo|madjare|707201
+presevo|miratovac|707244
+presevo|norca|707309
+presevo|oraovica|707317
+presevo|peceno|707350
+presevo|presevo|707376
+presevo|rajince|707406
+presevo|ranatovce|707449
+presevo|reljan|707457
+presevo|sefer|707511
+presevo|slavujevac|707520
+presevo|stanevce|707554
+presevo|strezovce|707589
+presevo|svinjiste|707481
+presevo|trnava|707627
+presevo|zujince i|706973
+presevo|zujince ii|706981
+priboj|banja|734322
+priboj|batkovici|734349
+priboj|bucje|734357
+priboj|citluk|734586
+priboj|crnuzi|734578
+priboj|dobrilovici|734365
+priboj|hercegovacka golesa|734560
+priboj|kalafati|734390
+priboj|kaludjerovici|734403
+priboj|kasidoli|734411
+priboj|kratovo|734420
+priboj|krnjaca|734438
+priboj|mazici|734446
+priboj|milijes|734454
+priboj|priboj|734462
+priboj|pribojska golesa|734489
+priboj|pribojske celice|734497
+priboj|raca|734519
+priboj|ritosici|734527
+priboj|sjeverin|734535
+priboj|socice|734543
+priboj|strmac|734551
+priboj|zabrdje|734373
+priboj|zabrnjica|734381
+prijepolje|aljinovici|739243
+prijepolje|balici|734594
+prijepolje|bare|734608
+prijepolje|biskupici|734616
+prijepolje|bjelahova|734624
+prijepolje|brajkovac|734632
+prijepolje|brodarevo|734667
+prijepolje|brvine|734659
+prijepolje|bukovik|734675
+prijepolje|causevici|735361
+prijepolje|crkveni toci|735353
+prijepolje|divci|734764
+prijepolje|djurasici|734837
+prijepolje|donje babine|734772
+prijepolje|donji stranjani|734799
+prijepolje|drenova|734802
+prijepolje|dusmanici|734829
+prijepolje|dzurovo|735370
+prijepolje|gojakovici|734705
+prijepolje|gornje babine|734713
+prijepolje|gornje goracice|739367
+prijepolje|gornji stranjani|734721
+prijepolje|gostun|734730
+prijepolje|gracanica|734748
+prijepolje|grobnice|734756
+prijepolje|hisardzik|735337
+prijepolje|hrta|735345
+prijepolje|ivanje|734896
+prijepolje|ivezici|734900
+prijepolje|izbicanj|734918
+prijepolje|jabuka|734926
+prijepolje|juncevici|734934
+prijepolje|kacevo|734977
+prijepolje|kamena gora|734942
+prijepolje|karaula|739561
+prijepolje|karosevina|734969
+prijepolje|kolovrat|734993
+prijepolje|koprivna|735019
+prijepolje|kosatica|735027
+prijepolje|kosevine|735035
+prijepolje|kovacevac|734985
+prijepolje|krusevo|735043
+prijepolje|kucin|735051
+prijepolje|mataruge|735060
+prijepolje|medjani|735078
+prijepolje|milakovici|735086
+prijepolje|milesevo|735094
+prijepolje|miljevici|735108
+prijepolje|milosev do|739634
+prijepolje|mrckovina|735116
+prijepolje|muskovina|735124
+prijepolje|oraovac|735132
+prijepolje|orasac|735159
+prijepolje|osoje|735167
+prijepolje|ostra stijena|735175
+prijepolje|potkrs|735183
+prijepolje|potok|735191
+prijepolje|pravosevo|735205
+prijepolje|prijepolje|735213
+prijepolje|rasno|735221
+prijepolje|ratajska|735230
+prijepolje|sedobro|735248
+prijepolje|seljane|735256
+prijepolje|seljasnica|735264
+prijepolje|skokuce|735272
+prijepolje|slatina|735299
+prijepolje|sopotnica|735302
+prijepolje|tasevo|735329
+prijepolje|vinicka|734683
+prijepolje|vrbovo|734691
+prijepolje|zabrdnji toci|734845
+prijepolje|zalug|734861
+prijepolje|zastup|734870
+prijepolje|zavinogradje|734853
+prijepolje|zvijezd|734888
+pristina grad|ajkobila|908886
+pristina grad|ajvalija|908428
+pristina grad|badovac|908444
+pristina grad|balaban|907880
+pristina grad|bariljevo|906336
+pristina grad|besinje|908541
+pristina grad|businje|908550
+pristina grad|caglavica|906883
+pristina grad|dabisevac|909122
+pristina grad|devet jugovica|907359
+pristina grad|donja brnjica|907383
+pristina grad|dragovac|907197
+pristina grad|drenovac|905917
+pristina grad|glogovica|909025
+pristina grad|gornja brnjica|908606
+pristina grad|gracanica|907324
+pristina grad|grastica|907332
+pristina grad|kacikol|908258
+pristina grad|kojlovica|907235
+pristina grad|kolic|908274
+pristina grad|kukavica|907006
+pristina grad|laplje selo|907049
+pristina grad|lebane|907057
+pristina grad|lukare|907073
+pristina grad|makovac|907090
+pristina grad|marevce|905364
+pristina grad|maticane|907120
+pristina grad|mramor|907146
+pristina grad|nisevce|910180
+pristina grad|novo selo|907243
+pristina grad|orlovic|907260
+pristina grad|preoce|907286
+pristina grad|pristina|907294
+pristina grad|propastica|910295
+pristina grad|prugovac|907308
+pristina grad|radosevac|907316
+pristina grad|rimaniste|906913
+pristina grad|sarban|914240
+pristina grad|saskovac|909386
+pristina grad|sicevo|906921
+pristina grad|slivovo|906930
+pristina grad|sofalija|906948
+pristina grad|susica|906824
+pristina grad|tenes do|906832
+pristina grad|trudna|906859
+pristina grad|vrani do|908592
+pristina grad|zlatare|907227
+prizren|atmadja|910406
+prizren|belobrod|900273
+prizren|bilusa|910414
+prizren|bljac|900281
+prizren|brezna|900290
+prizren|brodosavce|900311
+prizren|brut|900320
+prizren|buca|900346
+prizren|buzec|900338
+prizren|caparce|908380
+prizren|dedaj|909670
+prizren|djonaj|909734
+prizren|dojnice|909688
+prizren|donja srbica|909696
+prizren|donje ljubinje|909700
+prizren|drajcici|909718
+prizren|dusanovo|909726
+prizren|gornja srbica|910023
+prizren|gornje ljubinje|910031
+prizren|gornje selo|910040
+prizren|gorozup|910058
+prizren|grazdanik|909955
+prizren|grncare|909963
+prizren|hoca zagradska|908371
+prizren|jablanica|909793
+prizren|jeskovo|909807
+prizren|kabas|909823
+prizren|kabas has|909831
+prizren|kapra|900478
+prizren|karasindjerdj|909840
+prizren|kobanja|909815
+prizren|kojus|909858
+prizren|korisa|909866
+prizren|kosovce|900486
+prizren|krajk|909874
+prizren|kuklibeg|900516
+prizren|kukovce|900524
+prizren|kusnin|909882
+prizren|kustendil|909904
+prizren|landovica|909912
+prizren|leskovac|909947
+prizren|lez|909939
+prizren|ljubicevo|909564
+prizren|ljubizda|909530
+prizren|ljubizda has i|909548
+prizren|ljubizda has ii|909556
+prizren|ljukinaj|909572
+prizren|ljutoglav|909599
+prizren|lokvica|909521
+prizren|mala krusa|909629
+prizren|mamusa|909637
+prizren|manastirica|909645
+prizren|mazrek|909602
+prizren|medvece|909653
+prizren|miljaj|909661
+prizren|musnikovo|908649
+prizren|nasec|908657
+prizren|nebregoste|908665
+prizren|novake|908673
+prizren|novo selo|908681
+prizren|petrovo selo|908690
+prizren|pirane|908703
+prizren|plajnik|900613
+prizren|planeja|908711
+prizren|planjane|908720
+prizren|plava i|900591
+prizren|plava ii|900605
+prizren|posliste|908738
+prizren|prizren|908746
+prizren|randubrava|908754
+prizren|recane|908762
+prizren|rence|900648
+prizren|romaja|908479
+prizren|sainovac i|900664
+prizren|sainovac ii|900672
+prizren|skorobiste|908487
+prizren|smac|908495
+prizren|spinadija|908401
+prizren|sredska|908509
+prizren|struzje|908517
+prizren|trepetinca|908525
+prizren|tupec|908533
+prizren|veleza|909971
+prizren|vlasnja|909998
+prizren|vrbicane|910007
+prizren|vrbnica|910015
+prizren|zapluzje|900427
+prizren|zgatar|900435
+prizren|zivinjane|909742
+prizren|zjum has|909777
+prizren|zjum opoljski|900443
+prizren|zojic|909785
+prizren|zrze|900460
+prizren|zur|909769
+prokuplje|arbanaska|735388
+prokuplje|babin potok|714631
+prokuplje|babotinac|735396
+prokuplje|bace|735400
+prokuplje|bajcince|714658
+prokuplje|balcak|714704
+prokuplje|balinovac|714674
+prokuplje|bela voda|735418
+prokuplje|beli kamen|714739
+prokuplje|belogos|735426
+prokuplje|beloljin|735434
+prokuplje|berilje|714747
+prokuplje|bogujevac|714763
+prokuplje|bregovina|714771
+prokuplje|bresnicic|735469
+prokuplje|bresnik|735442
+prokuplje|bublica|714798
+prokuplje|bucince|714801
+prokuplje|bukoloram|735477
+prokuplje|bulatovac|735485
+prokuplje|cukovac|736040
+prokuplje|djurovac|715115
+prokuplje|djusnica|735728
+prokuplje|dobrotic|714984
+prokuplje|donja bejasnica|735655
+prokuplje|donja bresnica|735663
+prokuplje|donja konjusa|735671
+prokuplje|donja recica|735680
+prokuplje|donja strazava|715018
+prokuplje|donja toponica|735698
+prokuplje|donja trnava|735701
+prokuplje|donje kordince|715026
+prokuplje|donji statovac|715069
+prokuplje|dragi deo|715077
+prokuplje|drenovac|735710
+prokuplje|dzigolj|715638
+prokuplje|glasovik|714844
+prokuplje|gojinovac|735540
+prokuplje|gornja bejasnica|735558
+prokuplje|gornja bresnica|735566
+prokuplje|gornja konjusa|735574
+prokuplje|gornja recica|735582
+prokuplje|gornja strazava|714887
+prokuplje|gornja toponica|735604
+prokuplje|gornja trnava|735612
+prokuplje|gornje kordince|714895
+prokuplje|gornji statovac|714925
+prokuplje|grabovac|735639
+prokuplje|gubetin|735647
+prokuplje|jabucevo|715158
+prokuplje|jovine livade|715174
+prokuplje|jugovac|735744
+prokuplje|kaludra|735752
+prokuplje|klisurica|715212
+prokuplje|koncic|735787
+prokuplje|kondzelj|735779
+prokuplje|kozince|715239
+prokuplje|krusevica|735795
+prokuplje|macina|715310
+prokuplje|madjere|735809
+prokuplje|mala plana|735817
+prokuplje|merovac|735825
+prokuplje|mikulovac|715379
+prokuplje|miljkovica|735833
+prokuplje|mrljak|715352
+prokuplje|mrselj|735841
+prokuplje|nova bozurna|715387
+prokuplje|novi djurovac|715395
+prokuplje|novo selo|715417
+prokuplje|obrtince|735850
+prokuplje|pasinac|735868
+prokuplje|pasjaca|715441
+prokuplje|pestis|735876
+prokuplje|petrovac|715468
+prokuplje|piskalje|735884
+prokuplje|plocnik|735892
+prokuplje|pojate|715484
+prokuplje|potocic|735906
+prokuplje|prekadin|735914
+prokuplje|prekasnica|735922
+prokuplje|prekopuce|735949
+prokuplje|prokuplje|735957
+prokuplje|prokuplje grad|735965
+prokuplje|rankova reka|715506
+prokuplje|rastovnica|715514
+prokuplje|reljinac|735981
+prokuplje|resinac|735990
+prokuplje|rgaje|735973
+prokuplje|siroke njive|736058
+prokuplje|sismanovac|736066
+prokuplje|smrdan|736007
+prokuplje|srednji statovac|715573
+prokuplje|stari djurovac|715590
+prokuplje|tovrljane|736015
+prokuplje|trnovi laz|736023
+prokuplje|tulare|736031
+prokuplje|velika plana|735493
+prokuplje|vica|735507
+prokuplje|vlasa|735515
+prokuplje|vlasovo|735523
+prokuplje|vodice|735531
+prokuplje|zdravinje|735736
+prokuplje|zitni potok|715123
+prokuplje|zlata|715140
+raca|adrovac|736406
+raca|borci|736422
+raca|bosnjane|736449
+raca|djurdjevo|736538
+raca|donja raca|736511
+raca|donje jarusice|736520
+raca|malo krcmare|736589
+raca|mirasevac|736597
+raca|popovic|736635
+raca|raca|736643
+raca|saranovo|736651
+raca|sepci|736660
+raca|sipic|736678
+raca|veliko krcmare|736457
+raca|visevac|736465
+raca|vojinovac|719188
+raca|vucic|736473
+rakovica|knezevac|703796
+rakovica|resnik|703940
+rakovica|stara rakovica|704032
+raska|badanj|736716
+raska|baljevac|736724
+raska|bela stena|736759
+raska|beoci|736767
+raska|biljanovac|736783
+raska|binice|736791
+raska|boce|736813
+raska|borovice|736805
+raska|brvenica|736821
+raska|crna glava|737461
+raska|draganici|736929
+raska|gnjilica|736872
+raska|gradac|736899
+raska|josanicka banja|736988
+raska|karadak|737003
+raska|kaznovice|736996
+raska|kopaonik|745154
+raska|korlace|737020
+raska|kovaci|737011
+raska|kravice|737038
+raska|kremice|737046
+raska|krusevica|737054
+raska|kucane|737062
+raska|lisina|737089
+raska|lukovo|737097
+raska|milatkovice|737119
+raska|mure|737143
+raska|nosoljin|737160
+raska|novo selo|737151
+raska|panojevice|737194
+raska|pavlica|737186
+raska|piskanja|737208
+raska|plesin|737224
+raska|pobrdje|737232
+raska|pocesje|737267
+raska|radosice|737275
+raska|rakovac|737283
+raska|raska|737291
+raska|rudnica|737321
+raska|rvati|737305
+raska|sebimilje|737356
+raska|semetes|737364
+raska|sipacina|737470
+raska|supnje|737372
+raska|tiodze|737402
+raska|trnava|737429
+raska|tusnic plavkovo|737437
+raska|varevo|736848
+raska|vojmilovici|736856
+raska|zarevo|736961
+raska|zutice|736953
+razanj|bracin|736082
+razanj|braljina|736074
+razanj|cerovo|736368
+razanj|crni kao|736376
+razanj|cubura|736384
+razanj|grabovo|736139
+razanj|lipovac|736147
+razanj|macija|736198
+razanj|madjere|736163
+razanj|maletina|736171
+razanj|manastirsko|736180
+razanj|pardik|736201
+razanj|podgorac|736228
+razanj|poslon|736244
+razanj|praskovce|736252
+razanj|pretrkovac|736279
+razanj|razanj|736295
+razanj|rujiste|736309
+razanj|setka|736392
+razanj|skorica|736317
+razanj|smilovac|736325
+razanj|varos|736104
+razanj|vitosevac|736112
+rekovac|bare|737488
+rekovac|belusic|737496
+rekovac|beocic|737925
+rekovac|bogalinac|737500
+rekovac|brajinovac|737518
+rekovac|cikot|737879
+rekovac|dobroselica|737593
+rekovac|dragovo|737607
+rekovac|kalenicki prnjavor|737640
+rekovac|kaludra|737658
+rekovac|kavadar|737631
+rekovac|komarane|737666
+rekovac|lepojevic|737674
+rekovac|locika|738263
+rekovac|lomnica|737682
+rekovac|malesevo|737704
+rekovac|motric|737712
+rekovac|nadrlje|737739
+rekovac|oparic|737747
+rekovac|prevest|737755
+rekovac|rabenovac|737763
+rekovac|ratkovic|737771
+rekovac|rekovac|737780
+rekovac|sekuric|737798
+rekovac|sibnica|737801
+rekovac|siljevica|737810
+rekovac|sljivica|737887
+rekovac|tecic|737844
+rekovac|ursule|737852
+rekovac|velika krusevica|737526
+rekovac|vukmanovac|737569
+rekovac|zupanjevac|737623
+ruma|budjanovci|802956
+ruma|dobrinci|802972
+ruma|donji petrovci|802999
+ruma|grabovci|804088
+ruma|hrtkovci|804096
+ruma|klenak|804134
+ruma|kraljevci|803081
+ruma|mali radinci|803162
+ruma|mardjelos|803219
+ruma|nikinci|804193
+ruma|pavlovci|803243
+ruma|platicevo|804223
+ruma|putinci|803251
+ruma|ruma|803286
+ruma|stejanovci|803324
+ruma|vitojevci|804207
+ruma|voganj|803413
+ruma|zarkovac|803430
+sabac|bela reka|704598
+sabac|bogosavac|744620
+sabac|bojic|744638
+sabac|bukor|744646
+sabac|cerovac|709557
+sabac|culjkovic|745006
+sabac|desic|744727
+sabac|dobric|744735
+sabac|drenovac|704644
+sabac|duvaniste|704679
+sabac|dvoriste|744719
+sabac|gornja vranjska|744689
+sabac|grusic|744697
+sabac|jelenca|744786
+sabac|jevremovac|744778
+sabac|korman|744794
+sabac|krivaja|744808
+sabac|lipolist|704709
+sabac|macvanski pricinovic|704717
+sabac|majur|744816
+sabac|mala vranjska|744824
+sabac|maovi|744832
+sabac|metlic|744867
+sabac|miokus|744875
+sabac|misar|744883
+sabac|mrdjenovac|744891
+sabac|nakucani|744905
+sabac|orasac|744913
+sabac|orid|744921
+sabac|petkovica|704741
+sabac|petlovaca|704750
+sabac|pocerski metkovic|744859
+sabac|pocerski pricinovic|744930
+sabac|predvorica|744948
+sabac|prnjavor|704768
+sabac|radovasnica|744956
+sabac|ribari|704776
+sabac|rumska|744964
+sabac|sabac|745014
+sabac|sevarice|704857
+sabac|sinosevic|744972
+sabac|slepcevic|704792
+sabac|stitar|704865
+sabac|tabanovic|704814
+sabac|varna|744654
+sabac|volujac|744662
+sabac|zabar|744751
+sabac|zablace|744760
+sabac|zminjak|704687
+savski venac|savski venac|704008
+secanj|banatska dubica|802565
+secanj|boka|800961
+secanj|jarkovac|802719
+secanj|jasa tomic|800970
+secanj|konak|800988
+secanj|krajisnik|800996
+secanj|neuzina|801011
+secanj|secanj|801038
+secanj|surjan|801062
+secanj|sutjeska|801054
+senta|batka|802891
+senta|senta|803731
+senta|tornjos|803758
+sid|adasevci|804045
+sid|bacinci|804959
+sid|batrovci|804053
+sid|berkasovo|804983
+sid|bingula|804991
+sid|djipsa|805017
+sid|erdevik|805025
+sid|gibarac|805033
+sid|ilinci|804100
+sid|jamena|804118
+sid|kukujevci|805050
+sid|ljuba|805076
+sid|molovin|805084
+sid|morovic|804185
+sid|privina glava|805106
+sid|sid|805157
+sid|sot|805114
+sid|vasica|804274
+sid|visnjicevo|804282
+sjenica|bacija|739278
+sjenica|bagacice|739251
+sjenica|bare|739260
+sjenica|boljare|739294
+sjenica|bozov potok|739286
+sjenica|brnjica|739308
+sjenica|budjevo|739316
+sjenica|caricina|739812
+sjenica|cedovo|739847
+sjenica|cetanovice|739839
+sjenica|dolice|739391
+sjenica|donje goracice|739405
+sjenica|donje lopize|739413
+sjenica|dragojlovice|739421
+sjenica|drazevice|739430
+sjenica|druzinice|739448
+sjenica|dubnica|739456
+sjenica|duga poljana|739464
+sjenica|dujke|739472
+sjenica|dunisice|739499
+sjenica|fijulj|739804
+sjenica|gornje lopize|739375
+sjenica|gosevo|739383
+sjenica|kamesnica|739553
+sjenica|kijevci|739570
+sjenica|kladnica|739588
+sjenica|krajinovice|739596
+sjenica|krce|739618
+sjenica|krstac|739600
+sjenica|masovice|739626
+sjenica|ponorac|739669
+sjenica|pralja|739677
+sjenica|raskovice|739707
+sjenica|rasno|739693
+sjenica|razdaginja|739685
+sjenica|sare|739855
+sjenica|sjenica|739715
+sjenica|stavalj|739863
+sjenica|stup|739723
+sjenica|sugubine|739731
+sjenica|susure|739871
+sjenica|trijebine|739740
+sjenica|tuzinje|739758
+sjenica|ugao|739774
+sjenica|ursule|739782
+sjenica|uvac|739766
+sjenica|vapa|739324
+sjenica|visnjeva|739332
+sjenica|vrsjenice|739359
+sjenica|zabren|739502
+sjenica|zahumsko|739545
+sjenica|zajecice|739537
+sjenica|zitnice|739529
+smederevo|badljevica|739880
+smederevo|binovac|739898
+smederevo|dobri do|739944
+smederevo|drugovac i|739952
+smederevo|drugovac ii|739979
+smederevo|kolari|739995
+smederevo|kulic|740004
+smederevo|landol|740012
+smederevo|lipe i|740039
+smederevo|lipe ii|740047
+smederevo|lugavcina|740055
+smederevo|lunjevac|740373
+smederevo|mala krsna|740063
+smederevo|malo orasje|740071
+smederevo|mihajlovac|740080
+smederevo|osipaonica|740098
+smederevo|petrijevo|740101
+smederevo|radinac|740110
+smederevo|ralja|740128
+smederevo|salinac|740195
+smederevo|saraorci|708704
+smederevo|seone|740136
+smederevo|skobalj|740144
+smederevo|smederevo|740152
+smederevo|suvodol|740179
+smederevo|udovice|740187
+smederevo|vodanj|739901
+smederevo|vranovo|739910
+smederevo|vrbovac|739928
+smederevo|vucak|739936
+smederevska palanka|azanja|740209
+smederevska palanka|bacinac|740225
+smederevska palanka|banicina|740217
+smederevska palanka|basin|740233
+smederevska palanka|cerovac|740462
+smederevska palanka|glibovac i|740276
+smederevska palanka|glibovac ii|740284
+smederevska palanka|golobok|740292
+smederevska palanka|grcac|740314
+smederevska palanka|grcac palanka|745219
+smederevska palanka|kusadak|740365
+smederevska palanka|mala plana|708631
+smederevska palanka|mramorac|740381
+smederevska palanka|pridvorice|740390
+smederevska palanka|ratari|740411
+smederevska palanka|selevac|740420
+smederevska palanka|smederevska palanka i|740438
+smederevska palanka|smederevska palanka ii|740446
+smederevska palanka|smederevska palanka iii|745260
+smederevska palanka|stojacak|740454
+smederevska palanka|vlaski do|740250
+smederevska palanka|vodice|740268
+sokobanja|beli potok|740489
+sokobanja|blendija|740497
+sokobanja|bogdinac|740519
+sokobanja|cerovica|740756
+sokobanja|citluk|740764
+sokobanja|dugo polje|740543
+sokobanja|jezero|740560
+sokobanja|josanica|740578
+sokobanja|milusinac|740594
+sokobanja|muzinac|740608
+sokobanja|nikolinac|740616
+sokobanja|novo selo|740624
+sokobanja|poruznica|740632
+sokobanja|radenkovac|740667
+sokobanja|resnik|740675
+sokobanja|rujevica|740691
+sokobanja|sarbanovac|740772
+sokobanja|sesalac|740713
+sokobanja|sokobanja|740721
+sokobanja|trgoviste|740730
+sokobanja|trubarevac|740748
+sokobanja|vrbovac|740527
+sokobanja|vrmdza|740535
+sokobanja|zuckovac|740551
+sombor|aleksa santic|803782
+sombor|backi breg|802867
+sombor|backi monostor|803839
+sombor|bezdan|803847
+sombor|conoplja|803855
+sombor|doroslovo|803863
+sombor|gakovo|803871
+sombor|kljajicevo|803880
+sombor|kolut|803898
+sombor|rastina|803944
+sombor|ridjica|802883
+sombor|sombor i|803952
+sombor|sombor ii|805866
+sombor|stanisic|803987
+sombor|stapar|803995
+sombor|svetozar miletic|804002
+sombor|telecka|804037
+sopot|babe|728403
+sopot|djurinci|728462
+sopot|drlupa|728446
+sopot|ducina|728454
+sopot|guberevac|728438
+sopot|mala ivanca|728519
+sopot|mali pozarevac|728527
+sopot|nemenikuce|728560
+sopot|parcani|728578
+sopot|popovic|728586
+sopot|ralja|728616
+sopot|rogaca|728632
+sopot|sibnica|728667
+sopot|slatina|728675
+sopot|sopot|728683
+sopot|stojnik|728691
+srbica|baks|914100
+srbica|banja|914118
+srbica|brocna|914096
+srbica|cirez|913758
+srbica|citak|913766
+srbica|cubrelj|913294
+srbica|donja klina|914126
+srbica|donje obrinje|914134
+srbica|donje prekaze|914142
+srbica|donji obilic|914169
+srbica|dosevac|914177
+srbica|gornja klina|914061
+srbica|gornje prekaze|914070
+srbica|gornji obilic|914088
+srbica|izbica|914185
+srbica|kladernica|914193
+srbica|kostrc|914045
+srbica|kotore|914053
+srbica|kozica|914037
+srbica|kraljica|913774
+srbica|krasalic|913782
+srbica|krasmirovac|913804
+srbica|krusevac|913812
+srbica|kucica|913839
+srbica|lausa|913847
+srbica|leocina|913855
+srbica|likovac|913863
+srbica|ljubovac|913880
+srbica|makrmalj|913898
+srbica|marina|913901
+srbica|mikusnica|913910
+srbica|murga|913928
+srbica|novo poljance|913936
+srbica|novo selo|913944
+srbica|ovcarevo|913979
+srbica|padaliste|913987
+srbica|pluzina|913995
+srbica|prelovac|913561
+srbica|radisevo|913677
+srbica|rakitnica|913685
+srbica|rezalo|913693
+srbica|rudnik|913707
+srbica|srbica|913715
+srbica|srednja klina|913723
+srbica|staro poljance|913731
+srbica|suvo grlo|914002
+srbica|tica|914029
+srbica|trnavce|913952
+srbica|turicevac|902896
+srbica|tusilje|913740
+srbica|vitak|914207
+srbica|vocnjak|914215
+srbobran|nadalj i|804681
+srbobran|nadalj ii|804690
+srbobran|srbobran|803740
+srbobran|turija|803766
+sremska mitrovica|besenovo prnjavor|802930
+sremska mitrovica|besenovo selo|802921
+sremska mitrovica|bosut|804061
+sremska mitrovica|calma|802964
+sremska mitrovica|divos|803235
+sremska mitrovica|grgurevci|803014
+sremska mitrovica|jarak|804126
+sremska mitrovica|kuzmin|804142
+sremska mitrovica|lacarak|804169
+sremska mitrovica|lezimir|803138
+sremska mitrovica|macvanska mitrovica|801712
+sremska mitrovica|mandjelos|803189
+sremska mitrovica|martinci|804177
+sremska mitrovica|nocaj|801739
+sremska mitrovica|radenkovic|801747
+sremska mitrovica|ravnje|801755
+sremska mitrovica|salas nocajski|801763
+sremska mitrovica|sasinci|804266
+sremska mitrovica|sremska mitrovica|804231
+sremska mitrovica|sremska raca|804240
+sremska mitrovica|suljam|803375
+sremska mitrovica|veliki radinci|803391
+sremska mitrovica|zasavica|801771
+sremski karlovci|sremski karlovci|805408
+stara pazova|belegis|805181
+stara pazova|golubinci|805238
+stara pazova|krnjesevci|805289
+stara pazova|nova pazova|805319
+stara pazova|novi banovci|805327
+stara pazova|stara pazova|805424
+stara pazova|stari banovci|805432
+stara pazova|surduk|805467
+stara pazova|vojka|805483
+stari grad|stari grad|704059
+stimlje|belince|913545
+stimlje|crnoljevo|913430
+stimlje|davidovce|913529
+stimlje|djurkovce|913324
+stimlje|donje godance|906301
+stimlje|duga|906328
+stimlje|gornje godance|906093
+stimlje|karacica|905992
+stimlje|laniste|913537
+stimlje|malopoljce|913472
+stimlje|muzicane|913413
+stimlje|petrastica|909327
+stimlje|petrovic|913448
+stimlje|petrovo|913456
+stimlje|racak|913391
+stimlje|rance|913383
+stimlje|rasince|913405
+stimlje|stimlje|913316
+stimlje|topilo devetak|913464
+stimlje|vojinovce|913502
+stimlje|zborce|913499
+strpce|berevce i|912379
+strpce|berevce ii|912387
+strpce|brod|912417
+strpce|donja bitinja|912271
+strpce|drajkovce|912301
+strpce|gornja bitinja|912409
+strpce|gotovusa|912344
+strpce|izance|912646
+strpce|jazince|912654
+strpce|kostanjevo|912611
+strpce|sevce|912590
+strpce|strpce|913634
+strpce|susice|913570
+strpce|vica|912310
+strpce|vrbestica|912328
+subotica|backi vinogradi|804339
+subotica|bajmok|804347
+subotica|bikovo|804363
+subotica|cantavir|804371
+subotica|djurdjin|804410
+subotica|donji grad|804398
+subotica|novi grad|804479
+subotica|palic|804495
+subotica|stari grad|804517
+subotica|tavankut|804525
+subotica|zednik|804533
+surcin|becmen|716022
+surcin|boljevci|716049
+surcin|dobanovci|716057
+surcin|jakovo|716081
+surcin|petrovcic|716103
+surcin|progar|716111
+surcin|surcin|716120
+surdulica|alakince|740799
+surdulica|bacijevce|740802
+surdulica|binovce|740829
+surdulica|bitvrdja|740837
+surdulica|bozica|705403
+surdulica|curkovica|741116
+surdulica|danjino selo|740900
+surdulica|dikava|740918
+surdulica|donje romanovce|740926
+surdulica|drajinci|705616
+surdulica|dugi del|740934
+surdulica|dugojnica|740942
+surdulica|gornja koznica|740888
+surdulica|gornje romanovce|740896
+surdulica|groznatovci|705543
+surdulica|jelasnica|740977
+surdulica|kalabovce|740985
+surdulica|kijevac|740993
+surdulica|klisura|705691
+surdulica|kolunica|705705
+surdulica|kostrosevci|705713
+surdulica|leskova bara|741027
+surdulica|mackatica|741043
+surdulica|masurica|741035
+surdulica|novo selo|741051
+surdulica|palja|705764
+surdulica|rdjavica|741060
+surdulica|stajkovce|741078
+surdulica|strezimirovci|705861
+surdulica|suhi dol|705870
+surdulica|surdulica|741094
+surdulica|suvojnica|741086
+surdulica|topli do|741108
+surdulica|topli dol|705888
+surdulica|vlasina okruglica|740845
+surdulica|vlasina rid|740853
+surdulica|vlasina stojkoviceva|740861
+surdulica|vucadelce|740870
+surdulica|zaguzanje|740969
+suva reka|banja|912255
+suva reka|belanica|912573
+suva reka|blace|912867
+suva reka|budakovo|912875
+suva reka|bukos i|912883
+suva reka|bukos ii|912891
+suva reka|cajdrak|912557
+suva reka|delovce|912999
+suva reka|djinovce|913057
+suva reka|dobrodeljane|913006
+suva reka|donja krusica|913014
+suva reka|dubrava|913022
+suva reka|dulje|913049
+suva reka|dvorane|912972
+suva reka|geljance|912921
+suva reka|gornja krusica|912930
+suva reka|grejcevce|912948
+suva reka|grejkovce|912956
+suva reka|guncat|912964
+suva reka|javor|913065
+suva reka|kostrce|913073
+suva reka|kravoserija|913081
+suva reka|ladrovac|913308
+suva reka|ladrovic|913090
+suva reka|lesane|913103
+suva reka|luznica|913111
+suva reka|macitevo|913120
+suva reka|movljane|913138
+suva reka|musutiste|913146
+suva reka|neprebiste|913154
+suva reka|nisor|913162
+suva reka|papaz|913189
+suva reka|pecane|913197
+suva reka|popovljane|913219
+suva reka|rastane|913227
+suva reka|recane|913235
+suva reka|samodraza|913251
+suva reka|savrovo|913243
+suva reka|selograzde|913260
+suva reka|semetiste|913278
+suva reka|senik|913286
+suva reka|slapuzane|912476
+suva reka|sopina|912484
+suva reka|stara vucina|912492
+suva reka|studencane|912506
+suva reka|suva reka|912514
+suva reka|trnje|912522
+suva reka|tumicina|912549
+suva reka|vranic|912905
+suva reka|vrsevce|912913
+svilajnac|bobovo|738506
+svilajnac|bresje|738514
+svilajnac|crkvenac|738786
+svilajnac|djurinac|738611
+svilajnac|dublje|738590
+svilajnac|dubnica|738603
+svilajnac|glozane|738565
+svilajnac|grabovac|738573
+svilajnac|kupinovac|738638
+svilajnac|kusiljevo|738646
+svilajnac|lukovica|738654
+svilajnac|macevac|738662
+svilajnac|prostinac|738689
+svilajnac|radosin|738697
+svilajnac|roanda|738727
+svilajnac|rocevac|738735
+svilajnac|sedlare|738751
+svilajnac|subotica|738760
+svilajnac|svilajnac|738743
+svilajnac|troponje|738778
+svilajnac|vojska|738549
+svilajnac|vrlane|738557
+svrljig|beloinje|738794
+svrljig|bucum|738816
+svrljig|burdimo|738808
+svrljig|crnoljevica|739227
+svrljig|davidovac i|738905
+svrljig|davidovac ii|738913
+svrljig|djurinac|738930
+svrljig|drajinac|738921
+svrljig|galibabinac|738859
+svrljig|gojmanovac|738867
+svrljig|grbavce|738875
+svrljig|gulijan|738883
+svrljig|gusevac|738891
+svrljig|izvor|738956
+svrljig|kopajkosara|738964
+svrljig|labukovo|740586
+svrljig|lalinac|738972
+svrljig|lozan|738999
+svrljig|lukovo|739006
+svrljig|manojlica|739014
+svrljig|mecji do|739049
+svrljig|merdzelat|739022
+svrljig|nisevac|739065
+svrljig|okoliste|739073
+svrljig|okruglica|739081
+svrljig|palilula|739090
+svrljig|peris|739103
+svrljig|pirkovac|739111
+svrljig|pluzina|739120
+svrljig|popsica|739138
+svrljig|prekonoga|739146
+svrljig|radmirovac|739154
+svrljig|ribare|739162
+svrljig|slivje|739197
+svrljig|sljivovik|739235
+svrljig|svrljig|739189
+svrljig|tijovac|739219
+svrljig|varos|738824
+svrljig|vlahovo|738832
+svrljig|zeljevo|738948
+temerin|backi jarak|802034
+temerin|sirig|802247
+temerin|temerin|802280
+titel|gardinovci|804592
+titel|lok|804665
+titel|mosorin|804673
+titel|sajkas|804711
+titel|titel|804720
+titel|vilovo|804738
+topola|belosavci|701378
+topola|blaznava|701386
+topola|bozurnja|701394
+topola|donja satornja|701513
+topola|donja tresnjevica|701505
+topola|gornja satornja|701491
+topola|gorovic|736490
+topola|gurisevci|727032
+topola|jarmenovci|727121
+topola|jelenac|701530
+topola|junkovac|736554
+topola|kloka|736562
+topola|lipovac|701572
+topola|manojlovci|727202
+topola|maskar|701629
+topola|natalinci|736619
+topola|ovsiste|701653
+topola|pavlovac|736627
+topola|plaskovac|701670
+topola|rajkovac|701688
+topola|sume|736708
+topola|svetlic|719471
+topola|topola selo|701726
+topola|topola varosica|701718
+topola|trnava|736686
+topola|vinca|701424
+topola|vojkovci|727016
+topola|zabare|736546
+topola|zagorica|701521
+trgoviste|babina poljana|711110
+trgoviste|barbace|706604
+trgoviste|crna reka|712469
+trgoviste|crnovce|712493
+trgoviste|crveni grad|712442
+trgoviste|dejance|711420
+trgoviste|djerekarce|711608
+trgoviste|donja trnica|711454
+trgoviste|donji stajevac|711535
+trgoviste|dumbija|711586
+trgoviste|golocevac|711284
+trgoviste|gornja trnica|711314
+trgoviste|gornji stajevac|711381
+trgoviste|gornovac|711292
+trgoviste|kalovo|711659
+trgoviste|kozji dol|711691
+trgoviste|lesnica|711837
+trgoviste|mala reka|707210
+trgoviste|margance|711861
+trgoviste|mezdraja|707236
+trgoviste|novi glog|711977
+trgoviste|novo selo|707295
+trgoviste|petrovac|707341
+trgoviste|prolesje|712060
+trgoviste|radovnica|712078
+trgoviste|rajcevce|707414
+trgoviste|sajince|712515
+trgoviste|saprance|712523
+trgoviste|siroka planina|712531
+trgoviste|sumata trnica|707708
+trgoviste|surlica|712345
+trgoviste|trgoviste|712388
+trgoviste|vladovce|706795
+trgoviste|zladovce|711616
+trstenik|bogdanje|741485
+trstenik|bozurevac|741493
+trstenik|bresno polje|741515
+trstenik|brezovica|741507
+trstenik|bucje|741523
+trstenik|cairi|742074
+trstenik|donja crnisava|741639
+trstenik|donji dubic|741647
+trstenik|donji ribnik|741655
+trstenik|dublje|741663
+trstenik|golubovac|741566
+trstenik|gornja crnisava|741574
+trstenik|gornji dubic|737585
+trstenik|gornji ribnik|741582
+trstenik|grabovac|741612
+trstenik|jasikovica|741671
+trstenik|kamenjaca|741680
+trstenik|loboder|741710
+trstenik|lopas|741736
+trstenik|lozna|741728
+trstenik|mala drenova|741744
+trstenik|mala sugubina|741752
+trstenik|medvedja|741779
+trstenik|mijajlovac|741787
+trstenik|milutovac|741795
+trstenik|odzaci|741841
+trstenik|okruglica|741817
+trstenik|omasnica|741825
+trstenik|osaonica|741833
+trstenik|pajsak|741850
+trstenik|planinica|741868
+trstenik|pocekovina|741892
+trstenik|poljna|741876
+trstenik|popina|741884
+trstenik|prnjavor|741906
+trstenik|rajinac|741914
+trstenik|ridjevstica|741922
+trstenik|riljac|741949
+trstenik|rujisnik|741973
+trstenik|seliste|741981
+trstenik|stari trstenik|742007
+trstenik|stopanja|742015
+trstenik|stragari|742023
+trstenik|stublica|742031
+trstenik|tobolac|742040
+trstenik|trstenik|742058
+trstenik|ugljarevo|742066
+trstenik|velika drenova|741531
+trstenik|veluce|741540
+tutin|arapovice|742104
+tutin|bacica|742112
+tutin|borostica|742139
+tutin|bracak|742147
+tutin|bujkovice|742155
+tutin|carovina|742694
+tutin|crnis|742686
+tutin|cukote|742708
+tutin|delimedje|742236
+tutin|detane|742244
+tutin|devrec|742228
+tutin|djerekare|742325
+tutin|dobri dub|742252
+tutin|dobrinje|742279
+tutin|dolovo|742287
+tutin|draga|742295
+tutin|dubovo|742309
+tutin|dulebe|742317
+tutin|glogovik|742180
+tutin|gluhavica|742198
+tutin|gnila|742201
+tutin|godovo|742210
+tutin|istocni mojstir|742368
+tutin|jelice|742384
+tutin|jezgrovice|742376
+tutin|juzni kocarnik|742392
+tutin|konice|742414
+tutin|kovaci|742406
+tutin|leskova|742422
+tutin|lipica|742449
+tutin|lukavica|742457
+tutin|melaje|742465
+tutin|mitrova|742473
+tutin|morani|742481
+tutin|naboje|742490
+tutin|namga|742503
+tutin|orlje|742511
+tutin|ostrovica|742520
+tutin|paljevo|742538
+tutin|pokrvenik|742546
+tutin|pope|742554
+tutin|pruzanj|742562
+tutin|raduhovce|742589
+tutin|radusa|742597
+tutin|rezevice|742619
+tutin|ribarice|742627
+tutin|rudnica|742635
+tutin|saronje|742716
+tutin|sas|742643
+tutin|spiljani|742724
+tutin|starcevice|742651
+tutin|suvi do|742660
+tutin|tutin|742678
+tutin|velje polje|742163
+tutin|vesenice|742171
+tutin|zapadni mojstir|742350
+tutin|zirce|742333
+tutin|zupa|742341
+ub|banjani|742759
+ub|brezovica|742783
+ub|brgule|742775
+ub|crvena jabuka|743194
+ub|cucuge|743208
+ub|dokmir|742848
+ub|gunjevac|742830
+ub|gvozdenovic|742821
+ub|joseva|731676
+ub|kalenic|742899
+ub|kalinovac|742902
+ub|kozuar|742929
+ub|krsna glava|742937
+ub|liso polje|742953
+ub|loncanik|731706
+ub|milorci|731722
+ub|murgas|742970
+ub|novaci|742996
+ub|paljuvi|743003
+ub|pambukovica|743011
+ub|radljevo|743020
+ub|radusa|743038
+ub|ruklada|743054
+ub|sarbane|743216
+ub|slatina|743089
+ub|sovljak|743097
+ub|stublenica|743127
+ub|takovo|743135
+ub|trlic|743151
+ub|trnjaci|743160
+ub|tulari|743178
+ub|tvrdojevac|743143
+ub|ub|743186
+ub|vrelo|742791
+ub|vrhovine|742805
+ub|vukona|742813
+ub|zvizdar|742856
+urosevac|babljak|913553
+urosevac|balic|912565
+urosevac|biba|912395
+urosevac|burnik|912425
+urosevac|crnilo|913421
+urosevac|doganjevo|912263
+urosevac|donja grlica|912280
+urosevac|donje nerodimlje|912298
+urosevac|dramnjak|912450
+urosevac|gatnje|912441
+urosevac|gornje nerodimlje|912336
+urosevac|grebno|912352
+urosevac|jerli prelez|912689
+urosevac|jerli talinovac|912697
+urosevac|jezerce|912662
+urosevac|kamena glava|912719
+urosevac|kosare|912603
+urosevac|kosin|912751
+urosevac|laskobare|912760
+urosevac|manastirce|912778
+urosevac|miras|913375
+urosevac|mirosavlje|912786
+urosevac|muhadzer prelez|913359
+urosevac|muhadzer talinovac|912808
+urosevac|muhovce|912816
+urosevac|nekodim|912824
+urosevac|papaz|912727
+urosevac|plesina|912735
+urosevac|pojatiste|912743
+urosevac|rahovica|912638
+urosevac|raka|912620
+urosevac|sazlija|912581
+urosevac|slivovo|913642
+urosevac|softovic|913618
+urosevac|sojevo|913669
+urosevac|srpski babus|913332
+urosevac|staro selo|913626
+urosevac|svrcina|913367
+urosevac|tankosic|913588
+urosevac|trn|913596
+urosevac|urosevac|913600
+urosevac|varos selo|912433
+urosevac|zaskok|912832
+urosevac|zlatare|912859
+uzice|bioska|741124
+uzice|buar|741132
+uzice|dobrodo|741191
+uzice|dreznik|741205
+uzice|drijetanj|741213
+uzice|duboko|741221
+uzice|gorjani|741167
+uzice|gostinica|741175
+uzice|gubin do|741183
+uzice|kacer|741272
+uzice|kamenica|741256
+uzice|karan|741264
+uzice|kremna|743810
+uzice|krvavci|741299
+uzice|lelici|741329
+uzice|ljubanje|741337
+uzice|mokra gora|743879
+uzice|nikojevici|741353
+uzice|ponikovica|741361
+uzice|potocanje|741370
+uzice|potpece|741388
+uzice|ravni|741396
+uzice|ribasevina|741400
+uzice|sevojno|741418
+uzice|skrzuti|741426
+uzice|stapari|741434
+uzice|trnava|741477
+uzice|uzice|741442
+uzice|vrutci|741159
+uzice|zbojstica|741230
+uzice|zlakusa|741248
+valjevo|babina luka|707716
+valjevo|bacevci|707732
+valjevo|balinovic|707724
+valjevo|belic|707759
+valjevo|belosevac|707767
+valjevo|beomuzevic|731862
+valjevo|blizonje|707775
+valjevo|bobova|731889
+valjevo|bogatic|707783
+valjevo|brangovic|707791
+valjevo|brankovina|707805
+valjevo|brezovice|707813
+valjevo|bujacic|707821
+valjevo|deguric|707899
+valjevo|divci|707902
+valjevo|divcibare|707929
+valjevo|donja bukovica|731960
+valjevo|donje leskovice|707937
+valjevo|dracic|707945
+valjevo|dupljaj|707953
+valjevo|gola glava|731935
+valjevo|gornja bukovica|731943
+valjevo|gornje leskovice|707864
+valjevo|grabovica|707872
+valjevo|jasenica|708003
+valjevo|joseva|708011
+valjevo|kamenica|731994
+valjevo|klanica|708020
+valjevo|klinci|708038
+valjevo|kotesica|708062
+valjevo|kovacice|708046
+valjevo|kozlicic|708054
+valjevo|kunice|708089
+valjevo|lelic|708097
+valjevo|loznica|708119
+valjevo|lukavac|708127
+valjevo|majinovic|732010
+valjevo|milicinica|732028
+valjevo|mrcic|728128
+valjevo|ogladjenovac|732036
+valjevo|osladic|732052
+valjevo|paklje|708135
+valjevo|paune|728179
+valjevo|petnica|708143
+valjevo|popucke|708151
+valjevo|pricevic|732095
+valjevo|prijezdic|708160
+valjevo|rabas|708178
+valjevo|radjevo selo|708194
+valjevo|ravnje|708186
+valjevo|rebelj|708208
+valjevo|rovni|708216
+valjevo|sandalj|708224
+valjevo|sedlari|708232
+valjevo|sitarice|732117
+valjevo|sovac|708267
+valjevo|stanina reka|732125
+valjevo|stapar|732133
+valjevo|strmna gora|708275
+valjevo|stubo|708283
+valjevo|susica|708291
+valjevo|suvodanje|732141
+valjevo|taor|719056
+valjevo|tubravic|708305
+valjevo|tupanci|732168
+valjevo|valjevo|707830
+valjevo|veselinovac|707848
+valjevo|vlascic|731919
+valjevo|vragocanica|731927
+valjevo|vujinovaca|707856
+valjevo|zabari|707961
+valjevo|zabrdica|707970
+valjevo|zarube|707988
+valjevo|zlataric|707996
+varvarin|bacina|708313
+varvarin|bosnjane|708321
+varvarin|cernica|708577
+varvarin|donji katun|708372
+varvarin|donji krcin|708399
+varvarin|gornji katun|708356
+varvarin|gornji krcin|708364
+varvarin|izbenica|708429
+varvarin|karanovac|708437
+varvarin|mala krusevica|708445
+varvarin|marenovo|708453
+varvarin|maskare|708461
+varvarin|obrez|708470
+varvarin|orasje|708488
+varvarin|pajkovac|708496
+varvarin|parcane|708500
+varvarin|suvaja|708542
+varvarin|toljevac|708569
+varvarin|varvarin selo|708348
+varvarin|varvarin varos|708330
+varvarin|zalogovac|708402
+velika plana|donja livadica|714194
+velika plana|krnjevo|708615
+velika plana|lozovik|708623
+velika plana|markovac|708640
+velika plana|milosevac|708658
+velika plana|novo selo i|745049
+velika plana|novo selo ii|745057
+velika plana|radovanje|708674
+velika plana|rakinac|708682
+velika plana|staro selo|708712
+velika plana|trnovce|708739
+velika plana|velika plana i|708585
+velika plana|velika plana ii|708593
+velika plana|veliko orasje|708607
+veliko gradiste|biskuplje|708747
+veliko gradiste|carevac|709069
+veliko gradiste|cesljeva bara|709077
+veliko gradiste|desina|708780
+veliko gradiste|djurakovo|708801
+veliko gradiste|doljasnica|708798
+veliko gradiste|garevo|708771
+veliko gradiste|kamijevo|708828
+veliko gradiste|kisiljevo|708836
+veliko gradiste|kumane|708852
+veliko gradiste|kurjace|708879
+veliko gradiste|kusice|708887
+veliko gradiste|ljubinje|708895
+veliko gradiste|majilovac|708909
+veliko gradiste|makce|708917
+veliko gradiste|ostrovo|708941
+veliko gradiste|pecanica|708950
+veliko gradiste|popovac|708976
+veliko gradiste|pozezeno|708968
+veliko gradiste|ram|708992
+veliko gradiste|sirakovo|709018
+veliko gradiste|srednjevo|709026
+veliko gradiste|topolovnik|709034
+veliko gradiste|tribrode|709042
+veliko gradiste|veliko gradiste|708763
+veliko gradiste|zatonje|708810
+vitina|balance|900010
+vitina|begunce|900079
+vitina|binac|900176
+vitina|buzovik|900222
+vitina|cerkez sadovina|904643
+vitina|ciflak|904651
+vitina|debelde|903396
+vitina|devaja|903426
+vitina|djelekare|904422
+vitina|donja stubla|903604
+vitina|donje ramnjane|903981
+vitina|drobes|904058
+vitina|gornja budriga|902098
+vitina|gornja stubla|902179
+vitina|gornje ramljane|904538
+vitina|grmovo|902624
+vitina|grncar|902837
+vitina|gusica|902926
+vitina|jerli sadovina|904465
+vitina|kabas|904473
+vitina|klokot|904481
+vitina|letnica|904490
+vitina|ljubiste|904503
+vitina|mijak|904511
+vitina|mogila|904520
+vitina|podgorce|904546
+vitina|pozaranje|904554
+vitina|radivojce|904589
+vitina|ravniste|904562
+vitina|ribnik|904597
+vitina|sasare|904660
+vitina|slatina|904619
+vitina|smira|904627
+vitina|trpeza|900737
+vitina|trstenik|904635
+vitina|veliki goden|900940
+vitina|vitina|900982
+vitina|vrban|901431
+vitina|vrbovac|901466
+vitina|vrnavokolo|901539
+vitina|vrnez|902012
+vitina|zitinje|904457
+vladicin han|bacviste|709573
+vladicin han|balinovce|709565
+vladicin han|belanovce|709581
+vladicin han|belisevo|709590
+vladicin han|bogosevo|709603
+vladicin han|brestovo|709611
+vladicin han|dekutince|709697
+vladicin han|donja koznica|709719
+vladicin han|donje jabukovo|709727
+vladicin han|dupljane|709735
+vladicin han|dzep|710172
+vladicin han|garinje|709654
+vladicin han|gornje jabukovo|709662
+vladicin han|gramadje|709689
+vladicin han|jagnjilo|709760
+vladicin han|jastrebac|709778
+vladicin han|jovac|709786
+vladicin han|kacapun|709808
+vladicin han|kalimance|709794
+vladicin han|kopitarce|709816
+vladicin han|kostomlatica|709832
+vladicin han|krzince|709859
+vladicin han|kukavica|709867
+vladicin han|kunovo|709875
+vladicin han|lebet|741019
+vladicin han|lepenica|709883
+vladicin han|letoviste|709891
+vladicin han|ljutez|709905
+vladicin han|manajle|709921
+vladicin han|manjak|709930
+vladicin han|mazarac|709913
+vladicin han|mrtvica|709956
+vladicin han|ostrovica|709964
+vladicin han|polom|709972
+vladicin han|prekodolce|710016
+vladicin han|priboj|710024
+vladicin han|ravna reka|710032
+vladicin han|rdovo|710059
+vladicin han|repince|710067
+vladicin han|repiste|710075
+vladicin han|ruzic|710083
+vladicin han|solacka sena|710091
+vladicin han|srneci dol|710105
+vladicin han|stubal|710113
+vladicin han|suva morava|710121
+vladicin han|tegoviste|710148
+vladicin han|urvic|710156
+vladicin han|vladicin han|709638
+vladicin han|vrbovo|709646
+vladicin han|zebince|709751
+vladicin han|zitoradje|709743
+vladimirci|beljin|709093
+vladimirci|belotic|709085
+vladimirci|bobovik|709107
+vladimirci|debrc|709239
+vladimirci|dragojevac|744743
+vladimirci|jalovik|709280
+vladimirci|jazovnik|709271
+vladimirci|kaona|709301
+vladimirci|kozarica|709310
+vladimirci|krnic|709344
+vladimirci|krnule|709352
+vladimirci|kujavica|709379
+vladimirci|lojanice|709387
+vladimirci|matijevac|709417
+vladimirci|mehovine|709433
+vladimirci|mesarci|709425
+vladimirci|mrovska|709441
+vladimirci|novo selo|709450
+vladimirci|pejinovic|709468
+vladimirci|provo|709476
+vladimirci|ridjake|709484
+vladimirci|skupljen|709506
+vladimirci|suvo selo|709522
+vladimirci|trbusac|744999
+vladimirci|vladimirci|709131
+vladimirci|vladimirci selo|745227
+vladimirci|vlasanica|709158
+vladimirci|vucevica|709174
+vladimirci|vukosic|709166
+vladimirci|zvezd|709263
+vlasotince|aleksine|710199
+vlasotince|batulovce|710237
+vlasotince|boljare|710253
+vlasotince|borin do|710261
+vlasotince|brezovica|710288
+vlasotince|celiste|711039
+vlasotince|crna bara|711055
+vlasotince|crnatovo|711071
+vlasotince|dadince|710458
+vlasotince|dejan|710482
+vlasotince|dobrovis|710504
+vlasotince|donja lomnica|710547
+vlasotince|donja lopusnja|710555
+vlasotince|donje gare|710563
+vlasotince|donji prisjan|710571
+vlasotince|glozane|710334
+vlasotince|gornja lomnica|710342
+vlasotince|gornja lopusnja|710369
+vlasotince|gornji orah|710385
+vlasotince|gornji prisjan|710393
+vlasotince|gradiste|710407
+vlasotince|gunjetina|710440
+vlasotince|jakovljevo|710601
+vlasotince|jastrebac|710610
+vlasotince|javorje|710598
+vlasotince|komarica|710679
+vlasotince|konopnica|710687
+vlasotince|kozilo|710652
+vlasotince|krusevica|710717
+vlasotince|ladovica|710725
+vlasotince|lipovica|710733
+vlasotince|orasje|710776
+vlasotince|ostrc|710792
+vlasotince|prilepac|710857
+vlasotince|przojne|710849
+vlasotince|ravna gora|710865
+vlasotince|ravni del|710881
+vlasotince|samarnica|710920
+vlasotince|sisave|711080
+vlasotince|skrapez|710954
+vlasotince|sredor|710962
+vlasotince|stajkovce|710989
+vlasotince|stranjevo|710997
+vlasotince|streskovac|711004
+vlasotince|svodje|710938
+vlasotince|vlasotince van varos|710318
+vlasotince|vlasotince varos|710326
+vozdovac|beli potok|703494
+vozdovac|jajinci|703761
+vozdovac|kumodraz|703800
+vozdovac|pinosava|703915
+vozdovac|rakovica selo|703931
+vozdovac|ripanj|703958
+vozdovac|vozdovac|703621
+vozdovac|zuce|703753
+vracar|vracar|703648
+vranje|aleksandrovac|711098
+vranje|barbarusince|711128
+vranje|barelic|711136
+vranje|beli breg|711144
+vranje|bojin del|711152
+vranje|bresnica|711179
+vranje|buljesovce|711195
+vranje|bunusevac|711209
+vranje|bustranje|711217
+vranje|cestelin|712507
+vranje|crni lug|712485
+vranje|cukovac|712418
+vranje|curkovica|712426
+vranje|davidovac|711411
+vranje|dobrejance|711438
+vranje|donja otulja|711446
+vranje|donje punusevce|711489
+vranje|donje trebesinje|711497
+vranje|donje zapsko|711462
+vranje|donji neradovac|711527
+vranje|donji vrtogos|711519
+vranje|drenovac|711543
+vranje|dubnica|711551
+vranje|dulan|711578
+vranje|dupeljevo|711594
+vranje|golemo selo|711276
+vranje|gornja otulja|711306
+vranje|gornje punusevce|711349
+vranje|gornje trebesinje|711357
+vranje|gornje zapsko|711322
+vranje|gornji neradovac|711373
+vranje|gornji vrtogos|711365
+vranje|gradnja|711390
+vranje|gumeriste|711403
+vranje|katun|711667
+vranje|klasnjice|711675
+vranje|kocura|711730
+vranje|kopanjane|711705
+vranje|kruseva glava|711756
+vranje|kupinince|711772
+vranje|lalince|711799
+vranje|lepcince|711829
+vranje|lukovo|711853
+vranje|meckovac|711870
+vranje|mijakovce|711888
+vranje|mijovce|711896
+vranje|milanovo|711900
+vranje|milivojce|711918
+vranje|mostanica|711926
+vranje|nastavce|711934
+vranje|nova brezovica|711969
+vranje|oblicka sena|711985
+vranje|ostra glava|711993
+vranje|pavlovac|712019
+vranje|preobrazenje|712051
+vranje|ranutovac|712086
+vranje|rataje i|712094
+vranje|rataje ii|712108
+vranje|ribince|712116
+vranje|ristovac|712124
+vranje|rozdace|712132
+vranje|rusce|712159
+vranje|sikirje|712175
+vranje|smiljevic|712191
+vranje|soderce|712205
+vranje|srednji del|712213
+vranje|srpsko margance|712221
+vranje|stance|712230
+vranje|stara brezovica|712248
+vranje|stresak|712264
+vranje|stropsko|712272
+vranje|struganica|712299
+vranje|studena|712302
+vranje|surdul|712337
+vranje|suvi dol|712329
+vranje|tesoviste|712353
+vranje|tibuzde|712361
+vranje|trstena|712396
+vranje|tumba|712400
+vranje|urmanica|710164
+vranje|usevce|712434
+vranje|visevce|711225
+vranje|vlase|711233
+vranje|vranje i|711241
+vranje|vranje ii|711250
+vranje|zlatokop|711624
+vranjska banja|babina poljana|711101
+vranjska banja|bujkovac|711187
+vranjska banja|crni vrh|712477
+vranjska banja|duga luka|711560
+vranjska banja|izumno|711632
+vranjska banja|klisurica|711683
+vranjska banja|korbevac|711713
+vranjska banja|korbul|711721
+vranjska banja|kriva feja|711748
+vranjska banja|kumarevo|711764
+vranjska banja|leva reka|711802
+vranjska banja|lipovac|711845
+vranjska banja|nesvrta|711942
+vranjska banja|panevlje|712027
+vranjska banja|prevalac|712043
+vranjska banja|prvonek|712035
+vranjska banja|sebevranje|712167
+vranjska banja|slivnica|712183
+vranjska banja|stari glog|712256
+vranjska banja|toplac|712370
+vranjska banja|vranjska banja|711268
+vrbas|backo dobro polje|802069
+vrbas|kosancic|801615
+vrbas|kucura|801631
+vrbas|ravno selo|802204
+vrbas|savino selo|801682
+vrbas|vrbas|801534
+vrbas|vrbas grad|801569
+vrbas|zmajevo|802301
+vrnjacka banja|goc|741604
+vrnjacka banja|gracac|719668
+vrnjacka banja|lipova|741701
+vrnjacka banja|novo selo|741809
+vrnjacka banja|otroci|719943
+vrnjacka banja|podunavci|719960
+vrnjacka banja|rsavci|741957
+vrnjacka banja|rudjinci|741965
+vrnjacka banja|stanisinci|741990
+vrnjacka banja|stulac|742082
+vrnjacka banja|vranesi|719609
+vrnjacka banja|vrnjacka banja|741558
+vrnjacka banja|vukusica|719633
+vrsac|gudurica|804754
+vrsac|izbiste|800457
+vrsac|jablanka|804762
+vrsac|kustilj|804789
+vrsac|mali zam|804797
+vrsac|malo srediste|804827
+vrsac|markovac|804819
+vrsac|mesic|804835
+vrsac|oresac|800546
+vrsac|parta|800562
+vrsac|pavlis|804843
+vrsac|potporanj|804851
+vrsac|ritisevo|804860
+vrsac|socica i|804878
+vrsac|socica ii|805823
+vrsac|straza|800619
+vrsac|susara|800627
+vrsac|uljma|800635
+vrsac|vatin|804894
+vrsac|veliko srediste|804908
+vrsac|vlajkovac|804916
+vrsac|vojvodinci|804924
+vrsac|vrsac|804932
+vrsac|zagajica|800651
+vucitrn|balince|904678
+vucitrn|banjska|902187
+vucitrn|becic|902748
+vucitrn|bencuk|902420
+vucitrn|bivoljak|902438
+vucitrn|bosljane|902446
+vucitrn|brusnik|902195
+vucitrn|bukos|902209
+vucitrn|cecelija|901385
+vucitrn|dobra luka|902357
+vucitrn|doljak|902365
+vucitrn|donja dubnica|902373
+vucitrn|donja sudimlja|902381
+vucitrn|donje stanovce|902390
+vucitrn|donji svracak|902403
+vucitrn|drvare|902411
+vucitrn|dubovac|902454
+vucitrn|galica|902667
+vucitrn|glavotina|902276
+vucitrn|gojbulja|902284
+vucitrn|gornja dubnica|902292
+vucitrn|gornja sudimlja|902306
+vucitrn|gornje stanovce|902314
+vucitrn|grace|902322
+vucitrn|gumniste|902349
+vucitrn|hercegovo|901377
+vucitrn|jezero|902497
+vucitrn|karace|902519
+vucitrn|kolo|902527
+vucitrn|kunovik|902535
+vucitrn|kurilovo|902543
+vucitrn|lug dubnica|902551
+vucitrn|mijalic|902560
+vucitrn|miroce|902578
+vucitrn|nedakovac|902586
+vucitrn|nevoljane|902594
+vucitrn|novo selo begovo|902608
+vucitrn|novo selo madjunsko|902616
+vucitrn|okrastica|901008
+vucitrn|osljane|901016
+vucitrn|pantina|901024
+vucitrn|pasoma|901032
+vucitrn|pestovo|901059
+vucitrn|priluzje|901326
+vucitrn|resnik|901334
+vucitrn|ropica|901342
+vucitrn|salce|901393
+vucitrn|samodreza|901369
+vucitrn|skocna|901148
+vucitrn|skrovna|901156
+vucitrn|slakovce|901164
+vucitrn|slatina|901172
+vucitrn|sljivovica|901407
+vucitrn|smrekovnica|901199
+vucitrn|stitarica|901415
+vucitrn|strovce|901202
+vucitrn|taradza|901229
+vucitrn|trlabuc|901237
+vucitrn|velika reka|902217
+vucitrn|vesekovce|902233
+vucitrn|viljance|902241
+vucitrn|vrnica|902250
+vucitrn|vucitrn|902268
+vucitrn|zagorje|902489
+vucitrn|zilivoda|902462
+zabalj|curug|804568
+zabalj|djurdjevo|804584
+zabalj|gospodjinci|804614
+zabalj|zabalj|804746
+zabari|aleksandrovac|714143
+zabari|brzohode|714160
+zabari|cetereze|714330
+zabari|kocetin|714224
+zabari|mirijevo|714232
+zabari|oreovica|714259
+zabari|polatna|714275
+zabari|porodin|714283
+zabari|sibnica|714305
+zabari|simicevo|714313
+zabari|svinjarevo|714291
+zabari|ticevac|714321
+zabari|vitezevo|738522
+zabari|vlaski do|714178
+zabari|zabari|745065
+zabari|zabarsko blato|745235
+zagubica|bliznak|714348
+zagubica|breznica|714356
+zagubica|gornjak|714399
+zagubica|izvarica|714429
+zagubica|josanica|714445
+zagubica|krepoljin|714453
+zagubica|krupaja|714461
+zagubica|laznica seliste|714470
+zagubica|laznica selo|714488
+zagubica|mali kamen|714500
+zagubica|medvedjica|714518
+zagubica|milanovac|714526
+zagubica|milatovac|714534
+zagubica|osanica|714542
+zagubica|ribare|714569
+zagubica|sige|714577
+zagubica|suvi do|714585
+zagubica|vukovac|714372
+zagubica|zagubica|714402
+zajecar|borovac|717908
+zajecar|brusnik|705152
+zajecar|dubocane|705209
+zajecar|gamzigrad|715751
+zajecar|glogovica|705195
+zajecar|gornja bela reka|715760
+zajecar|gradskovo|715778
+zajecar|grliste|715786
+zajecar|grljan|715794
+zajecar|halovo|715999
+zajecar|jelasnica|705217
+zajecar|klenovac|705225
+zajecar|koprivnica|705233
+zajecar|lasovo|705047
+zajecar|lenovac|715875
+zajecar|leskovac|715883
+zajecar|lubnica|715891
+zajecar|mala jasikova|705250
+zajecar|mali izvor|718378
+zajecar|mali jasenovac|705268
+zajecar|marinovac|718394
+zajecar|metris|705276
+zajecar|nikolicevo|715913
+zajecar|planinica|705098
+zajecar|prlita|715930
+zajecar|rgotina|715948
+zajecar|salas|745022
+zajecar|selacka|718572
+zajecar|sipikovo|705365
+zajecar|sljivar|716006
+zajecar|tabakovac|705322
+zajecar|trnavac|715972
+zajecar|velika jasikova|705179
+zajecar|veliki izvor|715727
+zajecar|veliki jasenovac|705187
+zajecar|vratarnica|715743
+zajecar|vrazogrnac|715735
+zajecar|vrbica|718009
+zajecar|zagradje|715816
+zajecar|zajecar|745073
+zajecar|zvezdan|715859
+zemun|batajnica|716014
+zemun|ugrinovci|716138
+zemun|zemun|716065
+zemun|zemun polje|716073
+zitiste|banatski dvor|805513
+zitiste|banatsko karadjordjevo|800821
+zitiste|banatsko visnjicevo|800953
+zitiste|begejci|805521
+zitiste|cestereg|800830
+zitiste|hetin|800848
+zitiste|medja|801003
+zitiste|novi itebej|801020
+zitiste|ravni topolovac|805688
+zitiste|srpski itebej|801046
+zitiste|torda|805734
+zitiste|zitiste|805785
+zitoradja|asanovac|714623
+zitoradja|badnjevac|714640
+zitoradja|debeli lug|714950
+zitoradja|djakus|715107
+zitoradja|donje crnatovo|715034
+zitoradja|donji drenovac|715042
+zitoradja|drzanovac|715085
+zitoradja|dubovo|715093
+zitoradja|glasince|714852
+zitoradja|gornje crnatovo|714909
+zitoradja|gornji drenovac|714917
+zitoradja|grudas|714941
+zitoradja|jasenica|715166
+zitoradja|kare|715204
+zitoradja|konjarnik|715247
+zitoradja|lukomir|715301
+zitoradja|novo momcilovo|715409
+zitoradja|pejkovac|715450
+zitoradja|podina|715476
+zitoradja|recica|715522
+zitoradja|samarinovac|715557
+zitoradja|smrdic|715565
+zitoradja|stara bozurna|715581
+zitoradja|staro momcilovo|715603
+zitoradja|studenac|715611
+zitoradja|toponica|715620
+zitoradja|vlahovo|714828
+zitoradja|voljcince|714836
+zitoradja|zitoradja|715131
+zrenjanin|banatski despotovac|800945
+zrenjanin|belo blato|802581
+zrenjanin|botos|802603
+zrenjanin|centa|802620
+zrenjanin|ecka|805530
+zrenjanin|elemir|805548
+zrenjanin|farkazdin|802654
+zrenjanin|jankov most|805556
+zrenjanin|klek|805564
+zrenjanin|knicanin|802727
+zrenjanin|lazarevo|805599
+zrenjanin|lukicevo|805602
+zrenjanin|lukino selo|805629
+zrenjanin|melenci|805637
+zrenjanin|mihajlovo|805645
+zrenjanin|muzlja|805653
+zrenjanin|orlovat|802760
+zrenjanin|perlez|802794
+zrenjanin|slovacki aradac|805696
+zrenjanin|srpski aradac|805491
+zrenjanin|srpski elemir|805700
+zrenjanin|stajicevo|805718
+zrenjanin|taras|805726
+zrenjanin|taras i|805793
+zrenjanin|tomasevac|802824
+zrenjanin|zrenjanin i|805742
+zrenjanin|zrenjanin iii|805777
+zubin potok|banja|907405
+zubin potok|brnjak|907545
+zubin potok|bube|907553
+zubin potok|cabra|906735
+zubin potok|cecevo|906743
+zubin potok|cesanovice|906751
+zubin potok|crepulja|906719
+zubin potok|drainovice|905445
+zubin potok|dren|905259
+zubin potok|gornji jasenovik|907731
+zubin potok|gornji strmac|907758
+zubin potok|jagnjenica|905593
+zubin potok|junake|905623
+zubin potok|kozarevo|905682
+zubin potok|krligate|905771
+zubin potok|lucka reka|905844
+zubin potok|medjedji potok|905909
+zubin potok|oklace|906395
+zubin potok|rezala|906484
+zubin potok|rujiste|906514
+zubin potok|tusice|906654
+zubin potok|varage|907588
+zubin potok|velika kaludra|907600
+zubin potok|velji breg|907596
+zubin potok|vojmislice|907669
+zubin potok|zecevice|905526
+zubin potok|zubin potok|905542
+zubin potok|zupce|905569
+zvecan|banjska|907413
+zvecan|banov do|907391
+zvecan|doljane|907812
+zvecan|grabovac|907707
+zvecan|izvori|905585
+zvecan|jankov potok|905607
+zvecan|korilje|905739
+zvecan|lovac|905828
+zvecan|matica|905895
+zvecan|rudine|906506
+zvecan|sendo|906557
+zvecan|srbovac|906590
+zvecan|valac|907570
+zvecan|veliko rudare|907618
+zvecan|zaza|905461
+zvecan|zerovnica|905470
+zvecan|zitkovac|905488
+zvecan|zvecan|905500
+zvezdara|mali mokri lug|703842
+zvezdara|mirijevo|703885
+zvezdara|veliki mokri lug|703583
+zvezdara|zvezdara|703745

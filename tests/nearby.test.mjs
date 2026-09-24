@@ -387,3 +387,40 @@ test('bug: after searching a remote parcel, the location button loads parcels ar
  app.element('fit').onclick();await flush();
  assert.equal(app.run('nearbyMode'),false,'"show parcel" returns to the remote parcel and its neighbors');assert.equal(calls.length,4);
 });
+
+test('bundled RGZ KO table resolves reference parcels and never returns a wrong KO',()=>{
+ const entries=parseKoTable(fs.readFileSync('public/ko-ids.txt','utf8'));
+ assert(entries.length>5000);
+ assert.equal(new Set(entries.map(e=>e.id)).size,entries.length);
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8'));
+ assert.equal(findKoId(entries,{desc:remote.record.desc}),'728195','Pepeljevac exists in three municipalities; Lajkovac is chosen');
+ assert.equal(findKoId(entries,{desc:fixture.record.desc}),'704059','Stari Grad Belgrade, not Stari Grad Subotica');
+ assert.equal(findKoId(entries,{desc:'ČUKARICA ČUKARICA'}),'704083','value observed in a live eKatastar URL');
+ for(const e of entries){const id=findKoId(entries,{desc:(e.ko+' '+e.opstina).toUpperCase()});assert.equal(id,e.id,e.ko+' / '+e.opstina);}
+});
+
+test('eKatastar KoID: unique matches only, namesakes resolved by municipality, never guessed',()=>{
+ const entries=parseKoTable('# c\nlajkovac|pepeljevac|700001\nstari grad|stari grad|700002\npalilula beograd|palilula|700003\npalilula nis|palilula|700004\naleksandrovac|velika|700005\nkrusevac|velika vrbnica gornja|700006\nx|dupla|700007\ny|dupla|700008\nbad|row|12\n');
+ assert.equal(entries.length,8);
+ assert.equal(findKoId(entries,{desc:'PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'}),'700001');
+ assert.equal(findKoId(entries,{desc:'PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ',ko:'Pepeljevac',municipality:'Lajkovac'}),'700001');
+ assert.equal(findKoId(entries,{desc:'STARI GRAD STARI GRAD СТАРИ ГРАД СТАРИ ГРАД'}),'700002');
+ assert.equal(findKoId(entries,{desc:'PALILULA NIŠ'}),'700004');
+ assert.equal(findKoId(entries,{desc:'PALILULA BEOGRAD'}),'700003');
+ assert.equal(findKoId(entries,{desc:'VELIKA VRBNICA GORNJA KRUŠEVAC'}),'700006');
+ assert.equal(findKoId(entries,{desc:'DUPLA'}),null,'same KO name in two municipalities without a municipality is ambiguous');
+ assert.equal(findKoId(entries,{desc:'NEPOZNATO MESTO'}),null);
+ assert.equal(ekatastarUrl('704083'),'https://katastar.rgz.gov.rs/eKatastarPublic/FindParcela.aspx?KoID=704083');
+});
+
+test('opening a parcel points the eKatastar link at the preselected cadastral municipality',async()=>{
+ const app=await appHarness();
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8'));
+ app.scope.remote=remote;app.run('show(remote)');
+ assert.equal(app.element('ekatastar').href,EKATASTAR_HOME,'generic page until the table is loaded');
+ await until(()=>app.element('ekatastar').href===ekatastarUrl('700001'));
+ assert.match(app.element('ekatastarHint').textContent,/već izabrane/);
+ app.element('ekatastar').onclick();assert.match(app.element('message').textContent,/1227\/2 je kopiran.*Broj parcele/);
+ app.scope.other={...remote,record:{...remote.record,uid:'x',desc:'NEPOZNATO MESTO'}};app.run('show(other)');for(let i=0;i<10;i++)await flush();
+ assert.equal(app.element('ekatastar').href,EKATASTAR_HOME,'unknown KO falls back to the generic page');
+});
