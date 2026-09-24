@@ -115,7 +115,7 @@ test('screenshot regression: 6306 m accuracy shows actionable guidance, then pre
  assert.equal(app.element('retryGps').hidden,false);
  assert.equal(app.reads,1);app.element('retryGps').onclick();await flush();assert.equal(app.reads,2,'retry button requests a new uncached reading');
  assert.doesNotMatch(app.element('emptyTitle').textContent,/Učitavamo/);
- app.element('nearby').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
+ app.element('locate').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
  await app.tick(1000);await app.emit(8);assert.equal(app.queries,1);assert(app.labels.includes(fixture.record.title));assert(app.strokes>0);
  assert.equal(app.element('emptyHint').hidden,true);assert.equal(app.element('mapMode').textContent,'Parcele u okolini');
  app.scope.fixture=structuredClone(fixture);app.run('show(fixture)');await flush();
@@ -128,7 +128,6 @@ test('empty and failed queries stop the map loading message',async()=>{
   const app=await appHarness(search);await app.emit(5);
   assert.equal(app.element('emptyTitle').textContent,title);
   assert.doesNotMatch(app.element('emptyDetail').textContent,/Učitavamo/);
-  assert.equal(app.element('nearby').disabled,false);
  }
 });
 
@@ -169,7 +168,6 @@ test('unreadable geometries report a decoding failure instead of missing cadastr
  const app=await appHarness(async()=>({records:[{...fixture.record,fullGeom:'POLYGON ((bad))'}],total:1}));
  await app.emit(9);
  assert.match(app.element('emptyDetail').textContent,/nisu mogle da se pročitaju/);
- assert.equal(app.element('nearby').disabled,false);
 });
 
 // Synthetic neighboring UTM parcels keep tap coordinates deterministic.
@@ -259,9 +257,9 @@ test('switching remote parcels or returning to GPS ignores late parcel-centered 
  pending[1].resolve({records:[app.scope.b.record,squareRecord('B-neighbor',443040,4919700)],total:2});await flush();
  pending[0].resolve({records:[app.scope.a.record],total:1});await flush();
  assert.equal(app.run('current.record.title'),'B');assert.equal(app.run('nearby[1].record.title'),'B-neighbor');
- app.run('show(a)');assert.equal(pending.length,3);app.element('nearby').onclick();
+ app.run('show(a)');assert.equal(pending.length,3);app.element('locate').onclick();
  pending[2].resolve({records:[app.scope.a.record],total:1});await flush();
- assert.equal(app.run('current'),null);assert.equal(app.run('nearby.length'),0);
+ assert.equal(app.run('current.record.title'),'A','returning to GPS keeps the selected parcel');assert.equal(app.run('nearby.length'),0);
 });
 
 function fakeStorage(app,initial=[]){
@@ -364,4 +362,24 @@ test('basemap toggle shows imagery under parcels, remembers the choice and falls
  const again=await appHarness(undefined,new Map([['basemap','satellite']]));await again.emit(8);await flush();
  assert.equal(again.element('basemap').textContent,'Mapa','choice survives reload');
  again.element('basemap').onclick();assert.equal(again.stored.get('basemap'),'map');assert.equal(again.element('imageryCredit').hidden,true);
+});
+
+test('bug: after searching a remote parcel, the location button loads parcels around the phone again',async()=>{
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8')),calls=[];
+ const local=squareRecord('mine',457300,4962800);
+ const app=await appHarness(async(east,north,radius)=>{calls.push([east,north,radius]);return east>450000?{records:[local],total:1}:{records:[remote.record],total:1};});
+ await app.emit(8,geo.utm34ToWgs84(457315,4962815));assert.equal(calls.length,1);
+ app.scope.liveSearch=async()=>[remote.record];
+ await app.run("searchParcel('1227/2','Pepeljevac','Lajkovac')");await flush();
+ assert.equal(calls.length,2);assert.equal(app.run('nearbyMode'),false);
+ app.element('locate').onclick();await flush();
+ assert.equal(calls.length,3,'the same GPS position is queried again even without 75 m of movement');
+ assert.equal(app.run('nearbyMode'),true);assert.equal(app.run('nearby[0].record.title'),'mine');
+ assert.equal(app.run('current.record.title'),'1227/2');
+ const center=app.run('JSON.stringify(unlocal(view.center,view.origin))');
+ assert.deepEqual(JSON.parse(center).map(n=>+n.toFixed(4)),geo.utm34ToWgs84(457315,4962815).map(n=>+n.toFixed(4)));
+ tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'mine','local parcels are selectable');
+ app.scope.remote=remote;app.run('show(remote,false)');
+ app.element('fit').onclick();await flush();
+ assert.equal(app.run('nearbyMode'),false,'"show parcel" returns to the remote parcel and its neighbors');assert.equal(calls.length,4);
 });
