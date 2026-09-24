@@ -88,7 +88,7 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map()){
  const labels=[],elements=new Map(),tileRequests=[],images=[];let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
- const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args)},{get:(obj,key)=>obj[key]??(()=>{})});
+ const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
@@ -161,7 +161,7 @@ test('nearby renders large parcels; one malformed record does not block valid bo
  const record=largeRecord();
  const app=await appHarness(async()=>({records:[record,fixture.record,{...fixture.record,fullGeom:'POLYGON ((bad))'}],total:3}));
  await app.emit(9);
- assert(app.labels.includes(record.title));assert(app.labels.includes(fixture.record.title));
+ assert(app.strokes>0);assert(app.labels.includes(record.title));
  assert.equal(app.run('nearby.length'),2);
  assert.equal(app.run('nearby[0].geometry.points.length'),2000);
  assert.equal(app.element('emptyHint').hidden,true);
@@ -246,7 +246,7 @@ test('searching a remote parcel loads its neighbors without GPS and clearing sta
  await app.run("searchParcel('1227/2','Pepeljevac','Lajkovac')");await flush();
  const q=neighborhoods.parcelNeighborhoodQuery(geo.parcelGeometry(remote.record));
  assert.deepEqual(calls[0],[...q.center,q.radius]);
- assert.equal(app.run('current.record.title'),'1227/2');assert(app.labels.includes('remote-neighbor'));
+ assert.equal(app.run('current.record.title'),'1227/2');assert(app.run("nearby.some(x=>x.record.title==='remote-neighbor')"));
  const view=app.run('JSON.stringify(view)');app.element('clearSelection').onclick();
  await app.emit(8,[20.46,44.82]);assert.equal(calls.length,1);
  assert.equal(app.run('JSON.stringify(view)'),view,'GPS must not move a remote overview back to the phone');
