@@ -504,3 +504,23 @@ test('mobile navigation opens search and saved panels and preserves map dimensio
  await app.run("searchParcel('1','Stari Grad','Beograd')");
  assert.equal(app.element('app').dataset.view,'map','a search result returns directly to the map');
 });
+
+test('selected parcel has an automatic summary, direct navigation and compact GPS toggle',async()=>{
+ const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800)],total:1}));await app.emit(9);
+ assert.equal(app.element('mapParcelCard').hidden,true);
+ assert.equal(app.element('gps')['aria-pressed'],'true');
+ assert.equal(app.element('gps')['aria-label'],'Isključi GPS');
+ tapAt(app,457315,4962815);
+ assert.equal(app.element('mapParcelCard').hidden,false);
+ assert.equal(app.element('mapParcelTitle').textContent,'Parcela A');
+ assert.match(app.element('mapParcelPlace').textContent,/ha/);
+ let opened=0;app.element('routeDialog').showModal=()=>opened++;
+ app.element('mapRoute').onclick();assert.equal(opened,1);
+ await app.element('mapSave').onclick();
+ assert.match(app.element('mapActionStatus').textContent,/Čuvanje nije uspelo/);
+ assert.equal(app.element('mapSave').disabled,false);
+ app.element('clearSelection').onclick();
+ assert.equal(app.element('mapParcelCard').hidden,true);
+ app.element('mapRoute').onclick();assert.equal(opened,1);
+ app.element('gps').onclick();assert.equal(app.element('gps')['aria-pressed'],'false');
+});
