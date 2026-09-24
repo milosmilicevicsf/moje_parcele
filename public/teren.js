@@ -328,6 +328,14 @@ function updateGps(){
  }
  routes();
 }
+// Owner data is only in eKatastar behind a captcha (registered API access needs an RGZ contract),
+// so the app hands over the parcel number and the user completes the official search.
+$('ekatastar').onclick=()=>{
+ if(!current)return;
+ const place=[current.ko,current.municipality].filter(Boolean).join(', ');
+ navigator.clipboard?.writeText(current.record.title).catch(()=>{});
+ message('Broj parcele '+current.record.title+' je kopiran. U eKatastru izaberite '+(place||'opštinu i katastarsku opštinu')+', nalepite broj i prepišite kod sa slike.');
+};
 $('gps').onclick=()=>startGps();setInterval(()=>{updateGps();draw();},5000);
 function routes(){if(!current)return;const p=current.geometry.points[selection],dest=p.lat+','+p.lon;$('googleRoute').href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(dest)+'&travelmode=driving';$('appleRoute').href='https://maps.apple.com/?daddr='+encodeURIComponent(dest)+'&dirflg=d';if(gps){const b=bearing(gps.coords,[p.lon,p.lat]),dirs=['sever','severoistok','istok','jugoistok','jug','jugozapad','zapad','severozapad'];$('bearingText').textContent=p.name+': '+metres(distance(gps.coords,[p.lon,p.lat]))+' vazdušno · '+Math.round(b)+'° ('+dirs[Math.round(b/45)%8]+')'+(Date.now()-gps.timestamp>30000||watch===null?' · prema poslednjem položaju':'');}}
 $('destination').onchange=()=>{selection=Number($('destination').value);routes();};$('route').onclick=()=>{routes();$('routeDialog').showModal();};$('help').onclick=()=>$('helpDialog').showModal();document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
