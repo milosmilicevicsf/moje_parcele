@@ -3,6 +3,7 @@ import {searchParcel as liveSearch,searchNearby,latinPlace} from './geosrbija.js
 import {local,unlocal,boundary,bearing,distance} from './field-geo.js';
 import {SURROUNDINGS_URL,SATELLITE_TILES,SATELLITE_ATTRIBUTION} from './config.js';
 import {createTileLayer} from './satellite.js';
+import {parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME} from './ekatastar.js';
 import {createNearbyLoader,nearbyFixState} from './nearby-loader.js';
 import {createLocationTracker} from './location-tracker.js';
 import {downloadNeighborhood,readNeighborhood,neighborhoodSummary} from './parcel-neighborhood.js';
@@ -28,7 +29,7 @@ function dbCall(mode,fn){return new Promise((resolve,reject)=>{const t=db.transa
 function idFor(x){return x.record.uid||[x.record.title,x.ko,x.municipality].join('|');}
 function revealMap(){if(innerWidth<760)canvas.scrollIntoView({behavior:'smooth'});}
 async function refreshSaved(){saved=await dbCall('readonly',s=>s.getAll());$('savedCount').textContent=saved.length;$('savedList').replaceChildren();if(!saved.length){const p=document.createElement('p');p.className='small';p.textContent='Još nema sačuvanih parcela.';$('savedList').append(p);}for(const x of saved){const row=document.createElement('div');row.className='saved-row';const b=document.createElement('button');b.textContent=x.record.title+' · '+x.ko;const sub=document.createElement('small');sub.textContent=(x.osm?'Granica i okolina':'Samo granica')+' · '+date(x.savedAt);b.append(sub);b.onclick=()=>{show(x);revealMap();};const del=document.createElement('button');del.textContent='×';del.setAttribute('aria-label','Obriši sačuvanu parcelu '+x.record.title);del.onclick=async()=>{if(confirm('Obrisati preuzetu parcelu '+x.record.title+' sa ovog uređaja?')){try{await dbCall('readwrite',s=>s.delete(x.id));await refreshSaved();status();}catch{message('Brisanje nije uspelo.',true);}}};row.append(b,del);$('savedList').append(row);}}
-function show(x,refit=true){if(refit){nearbyMode=false;nearbyLoader.disable();}current=validPackage(x);const prior=saved.find(p=>p.id===idFor(x));if(!current.osm&&prior?.osm)current.osm=prior.osm;if(!current.neighborhood&&prior?.neighborhood)current.neighborhood=prior.neighborhood;if(!refit&&!current.neighborhood&&mapNeighborhood)current.neighborhood=mapNeighborhood;if(current.osm)mapSurroundings=current.osm;selection=0;following=false;$('parcelCard').hidden=false;$('parcelTitle').textContent=x.record.title;$('parcelPlace').textContent=[x.ko,x.municipality].filter(Boolean).join(' · ');$('area').textContent=(x.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha';$('corners').textContent=x.geometry.points.length;$('source').textContent='GeoSrbija · preuzeto '+date(x.downloadedAt);$('destination').replaceChildren();x.geometry.points.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name+' · '+p.lat.toFixed(6)+', '+p.lon.toFixed(6);$('destination').append(o);});if(refit){openParcelNeighborhood(current);fit();}else draw();status();updateGps();routes();}
+function show(x,refit=true){if(refit){nearbyMode=false;nearbyLoader.disable();}current=validPackage(x);const prior=saved.find(p=>p.id===idFor(x));if(!current.osm&&prior?.osm)current.osm=prior.osm;if(!current.neighborhood&&prior?.neighborhood)current.neighborhood=prior.neighborhood;if(!refit&&!current.neighborhood&&mapNeighborhood)current.neighborhood=mapNeighborhood;if(current.osm)mapSurroundings=current.osm;selection=0;following=false;$('parcelCard').hidden=false;$('parcelTitle').textContent=x.record.title;$('parcelPlace').textContent=[x.ko,x.municipality].filter(Boolean).join(' · ');$('area').textContent=(x.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha';$('corners').textContent=x.geometry.points.length;$('source').textContent='GeoSrbija · preuzeto '+date(x.downloadedAt);$('destination').replaceChildren();x.geometry.points.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name+' · '+p.lat.toFixed(6)+', '+p.lon.toFixed(6);$('destination').append(o);});if(refit){openParcelNeighborhood(current);fit();}else draw();status();updateGps();routes();updateEkatastar(current);}
 // Parcel-centered loading must not depend on GPS permission or move the map back to the user.
 function fetchParcelNeighborhood(x){
  const key=idFor(x)+'|'+x.record.fullGeom;
@@ -329,12 +330,25 @@ function updateGps(){
  routes();
 }
 // Owner data is only in eKatastar behind a captcha (registered API access needs an RGZ contract),
-// so the app hands over the parcel number and the user completes the official search.
+// so the app preselects the cadastral municipality there and hands over the parcel number.
+let koTable=null;
+const loadKoTable=()=>koTable??=fetch('/ko-ids.txt').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.text();}).then(parseKoTable).catch(error=>{koTable=null;throw error;});
+function updateEkatastar(x){
+ const link=$('ekatastar');link.href=EKATASTAR_HOME;link.dataset.koId='';
+ $('ekatastarHint').textContent='Otvara javni eKatastar. Tamo izaberite opštinu i katastarsku opštinu, unesite broj parcele i kod sa slike.';
+ Promise.resolve().then(loadKoTable).then(entries=>{
+  if(current!==x)return;
+  const koId=findKoId(entries,{desc:x.record.desc,ko:x.ko,municipality:x.municipality});
+  if(!koId)return;
+  link.href=ekatastarUrl(koId);link.dataset.koId=koId;
+  $('ekatastarHint').textContent='Opština i katastarska opština biće već izabrane. Nalepite broj parcele (kopira se klikom) i prepišite kod sa slike.';
+ }).catch(()=>{});
+}
 $('ekatastar').onclick=()=>{
  if(!current)return;
- const place=[current.ko,current.municipality].filter(Boolean).join(', ');
  navigator.clipboard?.writeText(current.record.title).catch(()=>{});
- message('Broj parcele '+current.record.title+' je kopiran. U eKatastru izaberite '+(place||'opštinu i katastarsku opštinu')+', nalepite broj i prepišite kod sa slike.');
+ const place=[current.ko,current.municipality].filter(Boolean).join(', ');
+ message('Broj parcele '+current.record.title+' je kopiran. '+($('ekatastar').dataset.koId?'Na eKatastru nalepite broj u polje „Broj parcele“ i prepišite kod sa slike.':'U eKatastru izaberite '+(place||'opštinu i katastarsku opštinu')+', nalepite broj i prepišite kod sa slike.'));
 };
 $('gps').onclick=()=>startGps();setInterval(()=>{updateGps();draw();},5000);
 function routes(){if(!current)return;const p=current.geometry.points[selection],dest=p.lat+','+p.lon;$('googleRoute').href='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(dest)+'&travelmode=driving';$('appleRoute').href='https://maps.apple.com/?daddr='+encodeURIComponent(dest)+'&dirflg=d';if(gps){const b=bearing(gps.coords,[p.lon,p.lat]),dirs=['sever','severoistok','istok','jugoistok','jug','jugozapad','zapad','severozapad'];$('bearingText').textContent=p.name+': '+metres(distance(gps.coords,[p.lon,p.lat]))+' vazdušno · '+Math.round(b)+'° ('+dirs[Math.round(b/45)%8]+')'+(Date.now()-gps.timestamp>30000||watch===null?' · prema poslednjem položaju':'');}}
