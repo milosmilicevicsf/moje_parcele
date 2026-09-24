@@ -105,7 +105,34 @@ function drawEmpty(){
  $('scale').textContent='';$('scale').style.width='0';$('coverage').textContent=gps?imageryNote():'';$('mapMode').textContent=title;
 }
 function setNearbyState(kind,detail=''){nearbyState={kind,detail};draw();}
-function drawNearby(sat){for(const x of nearby){if(current&&idFor(x)===idFor(current))continue;ctx.beginPath();for(const poly of x.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle=sat?'#ffffff12':'#a8b98f26';ctx.fill('evenodd');ctx.strokeStyle=sat?'#ffffffd0':'#7f9668';ctx.lineWidth=1.5;ctx.stroke();if(view.scale>.3){const pts=x.geometry.points,c=pixel([pts.reduce((s,p)=>s+p.lon,0)/pts.length,pts.reduce((s,p)=>s+p.lat,0)/pts.length]);ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=3;ctx.strokeStyle=sat?'#1d2419d0':'#f3f5e8';ctx.strokeText(x.record.title,...c);ctx.fillStyle=sat?'#ffffff':'#4a6140';ctx.fillText(x.record.title,...c);}}}
+function drawNearby(sat,labels){
+ for(const x of nearby){
+  if(current&&idFor(x)===idFor(current))continue;
+  ctx.beginPath();for(const poly of x.geometry.polygons)for(const ring of poly)path(ring,true);
+  ctx.fillStyle=sat?'#ffffff12':'#a8b98f26';ctx.fill('evenodd');
+  ctx.strokeStyle=sat?'#ffffffd0':'#7f9668';ctx.lineWidth=1.5;ctx.stroke();
+  if(view.scale>.3){
+   const pts=x.geometry.points;
+   labels.push({text:x.record.title,point:pixel([pts.reduce((sum,p)=>sum+p.lon,0)/pts.length,pts.reduce((sum,p)=>sum+p.lat,0)/pts.length]),selected:false});
+  }
+ }
+}
+// Prefer the selected parcel and leave room around labels, controls and the GPS card.
+function drawParcelLabels(labels,sat){
+ const mobile=width<760,occupied=[];
+ for(const label of labels.sort((a,b)=>Number(b.selected)-Number(a.selected))){
+  const [x,y]=label.point,text=label.text;
+  ctx.font=label.selected?'bold 11px sans-serif':'bold 11px sans-serif';
+  const half=ctx.measureText(text).width/2+5;
+  const box=[x-half,y-15,x+half,y+5];
+  if(box[0]<(mobile?8:4)||box[2]>width-(mobile?58:5)||box[1]<(mobile?86:60)||box[3]>height-(mobile?95:72))continue;
+  if(occupied.some(other=>box[0]<other[2]+6&&box[2]+6>other[0]&&box[1]<other[3]+4&&box[3]+4>other[1]))continue;
+  occupied.push(box);
+  ctx.textAlign='center';ctx.lineWidth=label.selected?4:3;
+  ctx.strokeStyle=sat?'#1d2419dc':'#f3f5e8';ctx.strokeText(text,x,y);
+  ctx.fillStyle=sat?(label.selected?'#fff6c8':'#ffffff'):'#4a6140';ctx.fillText(text,x,y);
+ }
+}
 function viewBounds(){
  const [west,north]=unlocal([view.center[0]-width/2/view.scale,view.center[1]+height/2/view.scale],view.origin);
  const [east,south]=unlocal([view.center[0]+width/2/view.scale,view.center[1]-height/2/view.scale],view.origin);
@@ -142,9 +169,10 @@ function draw(){
  // Over imagery the OSM buildings and land use would hide what the photo shows.
  const surroundings=current?.osm||mapSurroundings,elements=sat?[]:surroundings?.elements||[];for(const e of elements){if(!e.geometry?.length||e.tags?.highway)continue;const t=e.tags||{},closed=e.geometry.length>2&&e.geometry[0].lat===e.geometry.at(-1).lat&&e.geometry[0].lon===e.geometry.at(-1).lon;ctx.beginPath();path(e.geometry,closed);if(closed){ctx.fillStyle=t.building?'#cecabc':t.natural==='water'||t.landuse==='reservoir'?'#b9d5d5':t.landuse==='forest'||t.natural==='wood'?'#cfdfbc':'#e1e7ce';ctx.fill();}if(t.waterway){ctx.strokeStyle='#9bbfc5';ctx.lineWidth=2;ctx.stroke();}}
  for(const e of elements){if(!e.tags?.highway||!e.geometry?.length)continue;const trail=['path','footway','track','bridleway'].includes(e.tags.highway);ctx.beginPath();path(e.geometry);ctx.lineJoin='round';ctx.strokeStyle=trail?'#a9ad8d':'#c6c5b3';ctx.lineWidth=trail?2:6;ctx.setLineDash(trail?[5,4]:[]);ctx.stroke();ctx.setLineDash([]);if(!trail){ctx.strokeStyle='#fffef4';ctx.lineWidth=3;ctx.stroke();}if(e.tags.name&&view.scale>.12){const p=pixel([e.geometry[Math.floor(e.geometry.length/2)].lon,e.geometry[Math.floor(e.geometry.length/2)].lat]);ctx.font='11px sans-serif';ctx.fillStyle='#7c816b';ctx.textAlign='center';ctx.fillText(e.tags.name,...p);}}
- drawNearby(sat);
+ const labels=[];drawNearby(sat,labels);
  if(current){const line=sat?'#ffd84a':'#436530';ctx.beginPath();for(const poly of current.geometry.polygons)for(const ring of poly)path(ring,true);ctx.fillStyle=sat?'#ffd84a2e':'#bfda7060';ctx.fill('evenodd');ctx.strokeStyle=line;ctx.lineWidth=3;ctx.stroke();
- current.geometry.points.forEach(p=>{const q=pixel([p.lon,p.lat]);ctx.beginPath();ctx.arc(...q,4,0,Math.PI*2);ctx.fillStyle='#fffef4';ctx.fill();ctx.strokeStyle=line;ctx.lineWidth=2;ctx.stroke();if(view.scale>.9){ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.lineWidth=4;ctx.strokeStyle=sat?'#1d2419d9':'#f9faf0';ctx.strokeText(p.name,q[0],q[1]-12);ctx.fillStyle=sat?'#fff6c8':'#36562b';ctx.fillText(p.name,q[0],q[1]-12);}});}
+ current.geometry.points.forEach(p=>{const q=pixel([p.lon,p.lat]);ctx.beginPath();ctx.arc(...q,4,0,Math.PI*2);ctx.fillStyle='#fffef4';ctx.fill();ctx.strokeStyle=line;ctx.lineWidth=2;ctx.stroke();if(view.scale>.9)labels.push({text:p.name,point:[q[0],q[1]-12],selected:true});});}
+ drawParcelLabels(labels,sat);
  drawGps();
  const scale=niceScale(80/view.scale);$('scale').textContent=metres(scale);$('scale').style.width=scale*view.scale+'px';const vc=unlocal(view.center,view.origin),bb=surroundings?.bbox,outside=bb&&(vc[1]<bb[0]||vc[1]>bb[2]||vc[0]<bb[1]||vc[0]>bb[3]);const parcelsNote=!nearbyMode&&parcelNeighborhoodState?parcelNeighborhoodState:!current?'Parcele iz GeoSrbije u krugu od '+NEARBY_RADIUS+' m · dodirnite parcelu da je izaberete':sat?'':surroundings?(outside?'Van preuzete okoline · prikažite parcelu za povratak na mapu':'Preuzeta okolina ~1 km oko parcele · nije satelitski snimak'):'Okolina nije preuzeta. Prikazana je granica na koordinatnoj mreži.';$('coverage').textContent=[imageryNote(),parcelsNote].filter(Boolean).join(' · ');$('mapMode').textContent=current?'Parcela '+current.record.title:'Parcele u okolini';
 }
