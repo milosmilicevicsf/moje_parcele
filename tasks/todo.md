@@ -98,3 +98,17 @@ Sa R≈150 m vraća sve parcele oko tačke sa `fullGeom`. Satelitski snimak (`ba
 - Nova klijentska funkcija, bez servera: isti endpoint kao pretraga, samo prostorni upit. Radi bez `A3TKN` tokena.
 - Neprovereno uživo: pretpostavka da `circle` odgovor sadrži `fullGeom` kao i tekstualna pretraga. Ako ne — fallback: za svaki `uid` uraditi tekstualnu pretragu (skuplje).
 - Sledeći korak po vrednosti: satelitska podloga `basemap.geosrbija.rs` (ss30_2021, EPSG:32634 mreža, bez tokena), keširana kroz service worker kao opaque odgovori.
+
+# Plan 6: satelitski prikaz, povratak na GPS, eKatastar
+
+- [x] `satellite.js`: Esri World Imagery XYZ pločice kroz `pixel()`; `blankTile=false` + prelaz na roditeljsku pločicu (selo nema z19)
+- [x] Dugme Satelit/Mapa (pamti se), kontrastne granice, bez OSM površina preko snimka, bez mreže → obična mapa
+- [x] Bug: posle pretrage udaljene parcele ◎ samo pomera mapu (`nearbyMode` ostaje false) → ◎ vraća GPS režim i odmah učitava; izbor ostaje
+- [x] „Prikaži parcelu“ iz GPS režima vraća udaljenu parcelu sa njenim susedima; uklonjeno dugme „Parcele oko mene“
+- [x] eKatastar: nema javnog API-ja (vlasnici samo uz ugovor sa RGZ-om; javni uvid ima captcha) → link koji kopira broj parcele
+
+## Pregled 6
+- 42/42 testa; regresioni test za bug pada na starom kodu.
+- Browser (lokalni statički server): snimak se poklapa sa granicom 1227/2, zum iznad z18 bez sivih pločica, izbor se pamti, povratak na mapu radi.
+- Esri datum snimka: Pepeljevac 9. 3. 2025, Beograd 9. 4. 2025. GeoSrbija ortofoto je iz 2020–2021.
+- Neprovereno uživo: ◎ protiv prave GeoSrbije (odavde blokirana; pokriveno testom sa imitacijom), link na eKatastar (sajt odavde nedostupan).

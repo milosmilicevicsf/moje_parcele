@@ -8,9 +8,13 @@ import {searchNearby} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
 import * as field from '../public/field-geo.js';
 import * as neighborhoods from '../public/parcel-neighborhood.js';
+import {parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME} from '../public/ekatastar.js';
+import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOOM} from '../public/satellite.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
+async function until(check,tries=50){for(let i=0;i<tries&&!check();i++)await flush();assert(check(),'condition not reached');}
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
 const fixture=JSON.parse(fs.readFileSync('tests/fixtures/belgrade-parcel.json','utf8'));
+const koTableText='# test\nlajkovac|pepeljevac|700001\nstari grad|stari grad|700002\n';
 
 test('coarse, invalid and stale fixes cannot trigger even a forced nearby query',async()=>{
  const calls=[];let time=100000;
@@ -82,20 +86,24 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
  assert.deepEqual(await searchNearby(432954,4909699,150),{records:[],total:0});
 });
 
-async function appHarness(search=async()=>({records:[fixture.record],total:1})){
- const labels=[],elements=new Map();let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
- const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++},{get:(obj,key)=>obj[key]??(()=>{})});
- function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
+async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map()){
+ const labels=[],elements=new Map(),tileRequests=[],images=[];let gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args)},{get:(obj,key)=>obj[key]??(()=>{})});
+ function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
-  SURROUNDINGS_URL:'/api/surroundings',document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
+  createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
+  parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME,fetch:async url=>url==='/ko-ids.txt'?new Response(koTableText):new Response('',{status:404}),
+  localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
+  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
+ return {element,labels,tileRequests,images,stored,get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -111,7 +119,7 @@ test('screenshot regression: 6306 m accuracy shows actionable guidance, then pre
  assert.equal(app.element('retryGps').hidden,false);
  assert.equal(app.reads,1);app.element('retryGps').onclick();await flush();assert.equal(app.reads,2,'retry button requests a new uncached reading');
  assert.doesNotMatch(app.element('emptyTitle').textContent,/Učitavamo/);
- app.element('nearby').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
+ app.element('locate').onclick();await flush();assert.equal(app.queries,0,'button cannot bypass accuracy validation');
  await app.tick(1000);await app.emit(8);assert.equal(app.queries,1);assert(app.labels.includes(fixture.record.title));assert(app.strokes>0);
  assert.equal(app.element('emptyHint').hidden,true);assert.equal(app.element('mapMode').textContent,'Parcele u okolini');
  app.scope.fixture=structuredClone(fixture);app.run('show(fixture)');await flush();
@@ -124,7 +132,6 @@ test('empty and failed queries stop the map loading message',async()=>{
   const app=await appHarness(search);await app.emit(5);
   assert.equal(app.element('emptyTitle').textContent,title);
   assert.doesNotMatch(app.element('emptyDetail').textContent,/Učitavamo/);
-  assert.equal(app.element('nearby').disabled,false);
  }
 });
 
@@ -165,7 +172,6 @@ test('unreadable geometries report a decoding failure instead of missing cadastr
  const app=await appHarness(async()=>({records:[{...fixture.record,fullGeom:'POLYGON ((bad))'}],total:1}));
  await app.emit(9);
  assert.match(app.element('emptyDetail').textContent,/nisu mogle da se pročitaju/);
- assert.equal(app.element('nearby').disabled,false);
 });
 
 // Synthetic neighboring UTM parcels keep tap coordinates deterministic.
@@ -255,9 +261,9 @@ test('switching remote parcels or returning to GPS ignores late parcel-centered 
  pending[1].resolve({records:[app.scope.b.record,squareRecord('B-neighbor',443040,4919700)],total:2});await flush();
  pending[0].resolve({records:[app.scope.a.record],total:1});await flush();
  assert.equal(app.run('current.record.title'),'B');assert.equal(app.run('nearby[1].record.title'),'B-neighbor');
- app.run('show(a)');assert.equal(pending.length,3);app.element('nearby').onclick();
+ app.run('show(a)');assert.equal(pending.length,3);app.element('locate').onclick();
  pending[2].resolve({records:[app.scope.a.record],total:1});await flush();
- assert.equal(app.run('current'),null);assert.equal(app.run('nearby.length'),0);
+ assert.equal(app.run('current.record.title'),'A','returning to GPS keeps the selected parcel');assert.equal(app.run('nearby.length'),0);
 });
 
 function fakeStorage(app,initial=[]){
@@ -319,4 +325,102 @@ test('parcel query radius includes a margin and large parcels/partial records re
  assert.equal(result.parcels.length,1);assert.equal(result.snapshot.skipped,1);
  assert.match(neighborhoods.neighborhoodSummary(result.snapshot),/nepotpun/);
  assert.throws(()=>neighborhoods.readNeighborhood({...result.snapshot,records:new Array(1001)}));
+});
+
+test('satellite tiles: zoom choice, tile grid and URL template',()=>{
+ // ~0.3 m/px at Belgrade needs z19; zooming far out lowers the level; never above the provider maximum.
+ assert.equal(tileZoom(0.2,44.81),MAX_ZOOM);assert.equal(tileZoom(1.1,44.81),17);assert(tileZoom(500,44.81)<=9);
+ const [x,y]=tileAt(20.4604,44.8178,18);
+ assert(tileLon(x,18)<=20.4604&&tileLon(x+1,18)>20.4604);assert(tileLat(y,18)>=44.8178&&tileLat(y+1,18)<44.8178);
+ assert.equal(tileUrl('https://t/{z}/{y}/{x}',[18,x,y]),`https://t/18/${y}/${x}`);
+ assert.equal(tilesFor([20.46,44.81,20.461,44.811],18).length<=4,true);
+ assert.equal(tilesFor([19,42,23,46],18),null,'a whole-country view does not request thousands of tiles');
+});
+
+test('satellite tiles: missing zoom falls back to a scaled-up ancestor',async()=>{
+ const state=new Map(),drawn=[];let changes=0;
+ const layer=createTileLayer({template:'{z}/{x}/{y}',onChange:()=>changes++,load:(url,done)=>{const z=Number(url.split('/')[0]);queueMicrotask(()=>done(z<=18));state.set(url,z);return {url};}});
+ const ctx={drawImage:(image,sx,sy,sw)=>drawn.push([image.url,sw])},pixel=([lon,lat])=>[(lon-20.46)*1e5,(44.82-lat)*1e5];
+ const bounds=[20.4600,44.8170,20.4601,44.8171];
+ let result=layer.draw(ctx,pixel,bounds,0.2);assert(result.pending>0);assert.equal(drawn.length,0);
+ await flush();drawn.length=0;
+ result=layer.draw(ctx,pixel,bounds,0.2);
+ assert(result.pending>0,'z19 is missing, so its z18 parent is requested');await flush();drawn.length=0;
+ result=layer.draw(ctx,pixel,bounds,0.2);
+ assert.equal(result.pending,0);assert.equal(result.missing,0);
+ assert(drawn.length>0&&drawn.every(([url,size])=>url.startsWith('18/')&&size===128),'draws the matching half of the z18 tile');
+ assert(changes>0);
+});
+
+test('basemap toggle shows imagery under parcels, remembers the choice and falls back offline',async()=>{
+ const app=await appHarness();await app.emit(8);
+ assert.equal(app.element('basemap').textContent,'Satelit');assert.equal(app.tileRequests.length,0,'default map requests no imagery');
+ app.element('basemap').onclick();await flush();await flush();
+ assert.equal(app.stored.get('basemap'),'satellite');assert.equal(app.element('basemap').textContent,'Mapa');
+ assert(app.tileRequests.length>0&&app.tileRequests.every(u=>u.startsWith('https://tiles.test/')));
+ assert(app.images.length>0,'loaded tiles are drawn');assert.equal(app.element('imageryCredit').hidden,false);
+ assert.match(app.element('coverage').textContent,/Satelitski snimak/);
+ app.scope.navigator.onLine=false;app.run('draw()');
+ assert.equal(app.element('imageryCredit').hidden,true);assert.match(app.element('coverage').textContent,/zahteva internet/);
+ app.scope.navigator.onLine=true;
+ const again=await appHarness(undefined,new Map([['basemap','satellite']]));await again.emit(8);await flush();
+ assert.equal(again.element('basemap').textContent,'Mapa','choice survives reload');
+ again.element('basemap').onclick();assert.equal(again.stored.get('basemap'),'map');assert.equal(again.element('imageryCredit').hidden,true);
+});
+
+test('bug: after searching a remote parcel, the location button loads parcels around the phone again',async()=>{
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8')),calls=[];
+ const local=squareRecord('mine',457300,4962800);
+ const app=await appHarness(async(east,north,radius)=>{calls.push([east,north,radius]);return east>450000?{records:[local],total:1}:{records:[remote.record],total:1};});
+ await app.emit(8,geo.utm34ToWgs84(457315,4962815));assert.equal(calls.length,1);
+ app.scope.liveSearch=async()=>[remote.record];
+ await app.run("searchParcel('1227/2','Pepeljevac','Lajkovac')");await flush();
+ assert.equal(calls.length,2);assert.equal(app.run('nearbyMode'),false);
+ app.element('locate').onclick();await flush();
+ assert.equal(calls.length,3,'the same GPS position is queried again even without 75 m of movement');
+ assert.equal(app.run('nearbyMode'),true);assert.equal(app.run('nearby[0].record.title'),'mine');
+ assert.equal(app.run('current.record.title'),'1227/2');
+ const center=app.run('JSON.stringify(unlocal(view.center,view.origin))');
+ assert.deepEqual(JSON.parse(center).map(n=>+n.toFixed(4)),geo.utm34ToWgs84(457315,4962815).map(n=>+n.toFixed(4)));
+ tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'mine','local parcels are selectable');
+ app.scope.remote=remote;app.run('show(remote,false)');
+ app.element('fit').onclick();await flush();
+ assert.equal(app.run('nearbyMode'),false,'"show parcel" returns to the remote parcel and its neighbors');assert.equal(calls.length,4);
+});
+
+test('bundled RGZ KO table resolves reference parcels and never returns a wrong KO',()=>{
+ const entries=parseKoTable(fs.readFileSync('public/ko-ids.txt','utf8'));
+ assert(entries.length>5000);
+ assert.equal(new Set(entries.map(e=>e.id)).size,entries.length);
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8'));
+ assert.equal(findKoId(entries,{desc:remote.record.desc}),'728195','Pepeljevac exists in three municipalities; Lajkovac is chosen');
+ assert.equal(findKoId(entries,{desc:fixture.record.desc}),'704059','Stari Grad Belgrade, not Stari Grad Subotica');
+ assert.equal(findKoId(entries,{desc:'ČUKARICA ČUKARICA'}),'704083','value observed in a live eKatastar URL');
+ for(const e of entries){const id=findKoId(entries,{desc:(e.ko+' '+e.opstina).toUpperCase()});assert.equal(id,e.id,e.ko+' / '+e.opstina);}
+});
+
+test('eKatastar KoID: unique matches only, namesakes resolved by municipality, never guessed',()=>{
+ const entries=parseKoTable('# c\nlajkovac|pepeljevac|700001\nstari grad|stari grad|700002\npalilula beograd|palilula|700003\npalilula nis|palilula|700004\naleksandrovac|velika|700005\nkrusevac|velika vrbnica gornja|700006\nx|dupla|700007\ny|dupla|700008\nbad|row|12\n');
+ assert.equal(entries.length,8);
+ assert.equal(findKoId(entries,{desc:'PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'}),'700001');
+ assert.equal(findKoId(entries,{desc:'PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ',ko:'Pepeljevac',municipality:'Lajkovac'}),'700001');
+ assert.equal(findKoId(entries,{desc:'STARI GRAD STARI GRAD СТАРИ ГРАД СТАРИ ГРАД'}),'700002');
+ assert.equal(findKoId(entries,{desc:'PALILULA NIŠ'}),'700004');
+ assert.equal(findKoId(entries,{desc:'PALILULA BEOGRAD'}),'700003');
+ assert.equal(findKoId(entries,{desc:'VELIKA VRBNICA GORNJA KRUŠEVAC'}),'700006');
+ assert.equal(findKoId(entries,{desc:'DUPLA'}),null,'same KO name in two municipalities without a municipality is ambiguous');
+ assert.equal(findKoId(entries,{desc:'NEPOZNATO MESTO'}),null);
+ assert.equal(ekatastarUrl('704083'),'https://katastar.rgz.gov.rs/eKatastarPublic/FindParcela.aspx?KoID=704083');
+});
+
+test('opening a parcel points the eKatastar link at the preselected cadastral municipality',async()=>{
+ const app=await appHarness();
+ const remote=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8'));
+ app.scope.remote=remote;app.run('show(remote)');
+ assert.equal(app.element('ekatastar').href,EKATASTAR_HOME,'generic page until the table is loaded');
+ await until(()=>app.element('ekatastar').href===ekatastarUrl('700001'));
+ assert.match(app.element('ekatastarHint').textContent,/već izabrane/);
+ app.element('ekatastar').onclick();assert.match(app.element('message').textContent,/1227\/2 je kopiran.*Broj parcele/);
+ app.scope.other={...remote,record:{...remote.record,uid:'x',desc:'NEPOZNATO MESTO'}};app.run('show(other)');for(let i=0;i<10;i++)await flush();
+ assert.equal(app.element('ekatastar').href,EKATASTAR_HOME,'unknown KO falls back to the generic page');
 });

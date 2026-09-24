@@ -14,7 +14,7 @@ test('nearby search mirrors the a3 map click request and reads place names from 
  for(const bad of [[NaN,1,10],[1,1,0],[1,1,5000]])assert.throws(()=>nearbyRequest(...bad));
  assert.equal(textRequest('1227/2','Pepeljevac').q,'1227/2 pepeljevac');
  assert.equal(latinPlace('PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'),'Pepeljevac Lajkovac');assert.equal(latinPlace(undefined),'');
- const html=fs.readFileSync('public/teren.html','utf8');assert.match(html,/<button id="nearby"/);
+ const html=fs.readFileSync('public/teren.html','utf8');assert.match(html,/<button id="locate"/);assert.doesNotMatch(html,/id="nearby"/);
 });
 test('surroundings service validates the center, builds a bounded query and a complete package',()=>{
  const center=parseCenter(new URLSearchParams('lat=44.33741&lon=20.15887'));assert.deepEqual(center,[44.337,20.159]);
