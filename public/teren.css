@@ -16,7 +16,11 @@
 .map-summary{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
 .map-label{max-width:100%}
 .map-label i{flex-shrink:0}
-#clearSelection{font-size:13px;min-height:44px}
+#clearSelection,#details{font-size:13px;min-height:44px}
+.summary-actions{display:flex;gap:6px;flex-wrap:wrap;pointer-events:auto}
+#details{background:#174b3b;color:#fff;border-color:#174b3b}
+/* On phones the panel sits under the map: keep the selected parcel directly below it. */
+@media(max-width:760px){aside{display:flex;flex-direction:column}#parcelCard{order:-1;margin:0 0 22px;scroll-margin-top:12px}}
 
 .map-controls .basemap{font-size:11px;padding:5px 2px;margin-top:6px}
 .satellite .empty-hint{place-content:center;justify-items:center}
