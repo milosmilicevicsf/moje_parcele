@@ -253,6 +253,54 @@ test('searching a remote parcel loads its neighbors without GPS and clearing sta
  tapAt(app,433065,4909715);assert.equal(app.run('current.record.title'),'remote-neighbor');
 });
 
+test('tapping an empty remote location places a pin and loads selectable parcels there without GPS',async()=>{
+ const remote=squareRecord('remote',433000,4909700),calls=[];
+ const app=await appHarness(async(east,north,radius)=>{calls.push([east,north,radius]);return {records:[remote],total:1};});
+ const point=geo.utm34ToWgs84(433015,4909745);
+ app.run('view.origin='+JSON.stringify(point)+';view.center=[0,0];view.scale=2;draw()');
+ tapAt(app,433015,4909745);await flush();
+ assert.equal(calls.length,1);assert(Math.abs(calls[0][0]-433015)<1);assert(Math.abs(calls[0][1]-4909745)<1);
+ assert.equal(calls[0][2],150);assert.equal(app.run('nearbyMode'),false);
+ assert.equal(app.run('nearby[0].record.title'),'remote');
+ assert.equal(app.element('mapMode').textContent,'Parcele oko pina');
+ assert.match(app.element('coverage').textContent,/parcela oko pina/);
+ assert.deepEqual([...app.run('mapPin')],point);
+ await app.emit(8,geo.utm34ToWgs84(457315,4962815));
+ assert.equal(calls.length,1,'a GPS fix must not replace manually loaded parcels');
+ tapAt(app,433015,4909715);assert.equal(app.run('current.record.title'),'remote');
+ app.element('locate').onclick();await flush();
+ assert.equal(app.run('mapPin'),null);assert.equal(app.run('nearbyMode'),true);assert.equal(calls.length,2);
+});
+
+test('latest pin wins, a drag does not place a pin, and offline taps do not query',async()=>{
+ const pending=[],app=await appHarness((...args)=>new Promise(resolve=>pending.push({args,resolve})));
+ const a=geo.utm34ToWgs84(433015,4909745),b=geo.utm34ToWgs84(443015,4919745);
+ app.run('view.origin='+JSON.stringify(a)+';view.center=[0,0];view.scale=1;draw()');
+ pointer(app,'pointerdown',[100,100]);pointer(app,'pointermove',[140,100]);pointer(app,'pointerup',[140,100]);
+ assert.equal(pending.length,0);
+ app.run('loadAtPin('+JSON.stringify(a)+');loadAtPin('+JSON.stringify(b)+')');
+ assert.equal(pending.length,2);
+ pending[1].resolve({records:[squareRecord('B',443000,4919700)],total:1});await flush();
+ pending[0].resolve({records:[squareRecord('A',433000,4909700)],total:1});await flush();
+ assert.equal(app.run('nearby[0].record.title'),'B');assert.deepEqual([...app.run('mapPin')],b);
+ app.scope.navigator.onLine=false;
+ const count=pending.length;await app.run('loadAtPin('+JSON.stringify(a)+')');assert.equal(pending.length,count);
+ assert.equal(app.run('nearby[0].record.title'),'B');
+});
+
+test('a late searched-parcel neighborhood cannot replace the pin area',async()=>{
+ const pending=[],app=await appHarness((...args)=>new Promise(resolve=>pending.push({args,resolve})));
+ app.scope.remote={...fixture,record:squareRecord('searched',433000,4909700)};
+ app.run('show(remote)');assert.equal(pending.length,1);
+ const pin=geo.utm34ToWgs84(443015,4919745);
+ app.run('loadAtPin('+JSON.stringify(pin)+')');assert.equal(pending.length,2);
+ pending[1].resolve({records:[squareRecord('pin-neighbor',443000,4919700)],total:1});await flush();
+ pending[0].resolve({records:[squareRecord('old-neighbor',433040,4909700)],total:1});await flush();
+ assert.equal(app.run('current'),null);
+ assert.equal(app.run('nearby[0].record.title'),'pin-neighbor');
+ assert.deepEqual([...app.run('mapPin')],pin);
+});
+
 test('switching remote parcels or returning to GPS ignores late parcel-centered responses',async()=>{
  const pending=[],app=await appHarness((...args)=>new Promise(resolve=>pending.push({args,resolve})));
  app.scope.a={...fixture,record:squareRecord('A',433000,4909700)};
