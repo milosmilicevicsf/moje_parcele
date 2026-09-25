@@ -132,3 +132,23 @@ pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i s
   kratak dodir samo uklanja izbor, dug pritisak učitava 210 parcela oko pina; link za Niš otvoren sa lokacijom u Beogradu;
   „Grosnica I“ popunjava Kragujevac, 1500/1 se prikazuje kao „Grošnica I · Kragujevac“, eKatastar KoID 717177.
 - Neprovereno: pravi telefon (dug pritisak na iOS-u, Android `contextmenu`, sistemski meni za deljenje), `/api/surroundings` (lokalno nije pokretan).
+
+# Plan 8: moje parcele, terenski alati, beleške i vođenje (tačke 3–7 iz pregleda)
+
+- [x] Tačka 5: obim i dužine stranica (`parcel-measure.js`, UTM metri), natpisi stranica na mapi, obim na kartici
+- [x] Tačka 7: predloženo teme najbliže putu ili stazi iz OSM okoline (`roadVertex`), Waze i `geo:` na Androidu (`navigation.js`)
+- [x] Tačka 3: naziv i boja parcele, sačuvane parcele u svakom režimu mape, „Sve moje parcele na mapi“, grupe po mestu sa zbirom (`portfolio.js`)
+- [x] Lična polja se čuvaju odmah (neprimljena parcela se sačuva bez preuzimanja); „Sačuvaj za teren“ koji je već bio u toku ih ne pregazi
+- [x] Tačka 6: beleška, sopstvene tačke (krstić ili GPS), fotografije u zasebnoj IndexedDB prodavnici (baza v2), brisanje parcele briše i fotografije
+- [x] Tačka 4: vođenje pešice (`guide.js`, `compass.js`): strelica i udaljenost, kompas, konus pravca, ekran ne gasne, vibracija na granici i na tački
+- [x] Novi moduli u `sw.js` (v22), testovi, README
+
+## Pregled 8
+- `node --test "tests/*.test.mjs"`: 66/66 (novi `tests/field-tools.test.mjs` za čiste module + testovi aplikacije za svaku funkciju).
+- Uživo (Chromium, emulirana lokacija, prava GeoSrbija): parcela 980 u Nišu dobila naziv, boju, belešku, tačke i dve fotografije;
+  sve vraćeno posle ponovnog učitavanja (baza v2); brisanje parcele obrisalo i fotografije; „Ulaz sa puta“ postao predloženo odredište;
+  vođenje: 40 m, strelica prema severu, posle događaja kompasa (uz dozvolu za senzore) 270°; sveža fotografija dobila lokaciju ±6 m.
+- Nalazi usput: ovaj Chromium ima `DeviceOrientationEvent.requestPermission` i bez dozvole za senzore vraća „denied“; aplikacija tada
+  usmerava strelicu prema severu i nudi dugme „Kompas“. Stari service worker služi stare fajlove dok se nova verzija ne aktivira i stranica
+  ne učita ponovo (postojeće ponašanje, stavka 27 pregleda).
+- Neprovereno: pravi telefon (kompas na iOS-u i Androidu, vibracija, Screen Wake Lock, kamera), zaključavanje ekrana u instaliranoj PWA.
