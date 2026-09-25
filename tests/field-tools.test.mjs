@@ -5,6 +5,7 @@ import {ringSides,perimeter,roadVertex} from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
 import {PALETTE,colorOf,nameOf,totalArea,hectares,parcelCount,photoCount,groupByPlace,groupByOwn} from '../public/portfolio.js';
 import {BACKUP_KIND,backupBlob,readBackup,mergeParcel,toBase64,fromBase64} from '../public/backup.js';
+import {platformOf,locationHelp,permissionStatus} from '../public/location-permission.js';
 import {guidance,createCrossing} from '../public/guide.js';
 import {headingFrom,smoothHeading,createCompass} from '../public/compass.js';
 
@@ -65,6 +66,22 @@ test('a backup carries own data and photos byte for byte, and leaves downloaded 
  assert.equal(readBackup({...data,photos:[...data.photos,{id:'bad',parcel:'A',data:'',coords:['x',1]},null]}).photos.length,1,'malformed photos are dropped');
  assert.equal(readBackup({record:parcel.record,ko:'K',municipality:'M'}),null,'a single exported parcel is not a backup');
  assert.throws(()=>readBackup({kind:BACKUP_KIND}),/oštećena/);
+});
+
+test('steps to allow location match the phone: iPhone in Safari or from the home screen, iPad, Android, desktop',async()=>{
+ const iphone='Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1';
+ const mac='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Safari/605.1.15';
+ assert.equal(platformOf({userAgent:iphone},()=>false),'ios');
+ assert.equal(platformOf({userAgent:iphone,standalone:true},()=>false),'ios-app');
+ assert.equal(platformOf({userAgent:iphone},()=>true),'ios-app','a home-screen app runs standalone');
+ assert.equal(platformOf({userAgent:mac,platform:'MacIntel',maxTouchPoints:5},()=>false),'ios','iPadOS reports a Mac user agent');
+ assert.equal(platformOf({userAgent:mac,platform:'MacIntel',maxTouchPoints:0},()=>false),'desktop');
+ assert.equal(platformOf({userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0 Mobile Safari/537.36'},()=>false),'android');
+ assert.match(locationHelp('ios')[0],/Website Settings → Location → Allow/);assert.match(locationHelp('ios').at(-1),/Safari Websites → While Using the App/);
+ assert.match(locationHelp('ios-app')[0],/Safari Websites/,'the home-screen app has no address bar, so the system setting comes first');
+ assert.match(locationHelp('android')[0],/Dozvole → Lokacija → Dozvoli/);assert.equal(locationHelp('desktop').length,1);
+ assert.equal(await permissionStatus({}),null,'no Permissions API');
+ const status={state:'prompt'};assert.equal(await permissionStatus({permissions:{query:async({name})=>name==='geolocation'?status:null}}),status);
 });
 
 test('importing keeps what is on this phone, fills empty fields and adds missing points',()=>{

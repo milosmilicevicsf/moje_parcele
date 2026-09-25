@@ -13,6 +13,7 @@ import {PALETTE,PERSONAL,colorOf,nameOf,geometryOf,totalArea,hectares,parcelCoun
 import {backupBlob,readBackup,fromBase64,mergeParcel} from './backup.js';
 import {guidance,createCrossing} from './guide.js';
 import {createCompass} from './compass.js';
+import {platformOf,locationHelp,permissionStatus} from './location-permission.js';
 const $=s=>document.getElementById(s), canvas=$('map'),ctx=canvas.getContext('2d');
 // Search radius for the automatically loaded cadastral neighborhood.
 const NEARBY_RADIUS=150;
@@ -31,6 +32,10 @@ const message=(s,error=false)=>{$('message').textContent=s;$('message').classNam
 const metres=m=>m<1000?Math.round(m)+' m':(m/1000).toFixed(1)+' km';
 const length=m=>m<1000?m.toLocaleString('sr-Latn',{maximumFractionDigits:1})+' m':(m/1000).toLocaleString('sr-Latn',{maximumFractionDigits:2})+' km';
 let nearbyMode=true,nearbyState={kind:'waiting',detail:''},gpsError=null;
+// Location is asked for only after a tap. 'granted', 'prompt', 'denied', or null without the Permissions API.
+let locationPermission=null,askClosed=false,askShown='';
+// Chrome's own location button (Chrome 144+) can re-allow a blocked site without its settings; elsewhere the button inside it shows.
+const nativeLocationButton=typeof HTMLGeolocationElement==='function';
 let parcelNeighborhoodVersion=0,mapNeighborhood=null,parcelNeighborhoodState='';
 let mapPin=null,pinRequestVersion=0,searchVersion=0,pinState='';
 const neighborhoodRequests=new Map();
@@ -173,7 +178,7 @@ function drawEmpty(){
   $('coverage').textContent=[imageryNote(),pinState].filter(Boolean).join(' · ');
   $('mapMode').textContent='Parcele oko pina';return;
  }
- drawGps();$('emptyHint').hidden=false;
+ drawGps();$('emptyHint').hidden=!$('locationAsk').hidden;
  const quality=nearbyFixState(gps);
  let title='Parcele oko vas',detail='Dozvolite lokaciju, pronađite parcelu po broju ili držite prst na mapi.';
  if(gpsError){title=gpsError.title;detail=gpsError.detail;}
@@ -190,6 +195,27 @@ function drawEmpty(){
  $('scale').textContent='';$('scale').style.width='0';$('coverage').textContent=gps?imageryNote():'';$('mapMode').textContent=title;
 }
 function setNearbyState(kind,detail=''){nearbyState={kind,detail};draw();}
+// While GPS is off the empty map offers to turn it on; once location is blocked the steps show over any map.
+function updateLocationAsk(){
+ const empty=!current&&!nearby.length&&!(overview&&saved.length)&&!mapPin,denied=locationPermission==='denied';
+ $('locationAsk').hidden=watch!==null||askClosed||!(empty||denied);
+ if($('locationAsk').hidden)return;
+ const platform=platformOf(navigator),shown=platform+'|'+denied;
+ if(shown===askShown)return;
+ askShown=shown;
+ $('locationAskTitle').textContent=denied?'Lokacija je blokirana za ovaj sajt':'Parcele oko vas';
+ $('locationAskText').textContent=denied?(nativeLocationButton?'Dodirnite dugme i izaberite „Dozvoli“.':'Uključite je ovako, pa se vratite ovde; lokacija se uključuje sama.'):'Uključite lokaciju da vidite parcele oko sebe i koliko ste daleko od granice. Koristi se samo dok je aplikacija otvorena i ne čuva se.';
+ $('locationAsk').classList.toggle('retry-first',denied&&nativeLocationButton);$('locationStepsLead').hidden=!(denied&&nativeLocationButton);
+ $('locationSteps').hidden=!denied;
+ $('locationSteps').replaceChildren(...(denied?locationHelp(platform):[]).map(step=>{const li=document.createElement('li');li.textContent=step;return li;}));
+ $('locationTip').hidden=denied||!platform.startsWith('ios');
+}
+$('locationAllow').onclick=()=>startGps();
+$('locationAskClose').onclick=()=>{askClosed=true;draw();};
+if(nativeLocationButton){
+ const button=$('locationElement');button.classList.add('native');
+ button.addEventListener('location',()=>{if(button.position){locationPermission='granted';if(watch===null)startGps();}else if(button.error?.code===1){locationPermission='denied';draw();}});
+}
 function drawNearby(sat,labels){
  for(const x of nearby){
   if(current&&idFor(x)===idFor(current))continue;
@@ -272,6 +298,7 @@ function toggleBasemap(){
 }
 $('basemap').onclick=toggleBasemap;$('imageryCredit').textContent=' · Snimak: '+SATELLITE_ATTRIBUTION;
 function draw(){
+ updateLocationAsk();
  $('mapParcelCard').hidden=!current;$('clearSelection').hidden=!current;$('details').hidden=!current;$('fit').textContent=current?'▱ Prikaži parcelu':overview?(overviewGroup?'▦ Prikaži grupu':'▦ Sve moje parcele'):mapPin&&!nearby.length?'◎ Prikaži pin':'▱ Prikaži parcele';
  const sat=satelliteOn();updateBasemapControls(sat);
  ctx.clearRect(0,0,width,height);ctx.fillStyle=sat?'#3a4234':'#e9eddd';ctx.fillRect(0,0,width,height);
@@ -576,19 +603,21 @@ const locationTracker=createLocationTracker({
   updateGps();draw();
  },
  onPosition:fix=>{
-  const firstFix=!gps;gpsError=null;gps=fix;
+  const firstFix=!gps;gpsError=null;gps=fix;locationPermission='granted';
   if(following&&!current&&!nearby.length){view.origin=gps.coords;view.center=[0,0];}
   else if(following)view.center=local(gps.coords,view.origin);
   if(guide&&current){const change=guide.crossing(fix);if(change){navigator.vibrate?.(change==='entered'?[120,80,120]:[300]);message((change==='entered'?'Ušli ste u parcelu ':'Izašli ste iz parcele ')+current.record.title+'.');}updateGuide();}
   updateGps();queueNearby();draw();if(firstFix&&following)revealMap();
  },
  onError:error=>{
-  gpsError={title:error.code===1?'Lokacija nije dozvoljena':'GPS signal nije dostupan',detail:error.code===1?'Dozvolite lokaciju za ovaj sajt i pregledač.':'Pritisnite „Ponovi lociranje“ ili proverite položaj direktno u Safariju, na otvorenom.'};
+  if(error.code===1)locationPermission='denied';
+  gpsError={title:error.code===1?'Lokacija nije dozvoljena':'GPS signal nije dostupan',detail:error.code===1?'Na mapi je uputstvo kako da je uključite.':'Pritisnite „Ponovi lociranje“ ili proverite položaj direktno u Safariju, na otvorenom.'};
   updateGps();draw();
  }
 });
 function startGps(retry=false){
  if(locationTracker.active&&!retry){locationTracker.stop();following=false;return;}
+ askClosed=false;
  if(!navigator.geolocation){
   gpsError={title:'Lokacija nije dostupna',detail:'Otvorite aplikaciju direktno u Safariju ili Chrome-u.'};
   message(gpsError.detail,true);updateGps();draw();return;
@@ -602,7 +631,17 @@ document.addEventListener('visibilitychange',()=>{
  if(document.visibilityState==='hidden')locationTracker.suspend();
  if(document.visibilityState==='visible'&&locationTracker.active){gpsError=null;locationTracker.resume();updateGps();draw();}
  if(document.visibilityState==='visible'&&guide)void keepAwake(true);
+ if(document.visibilityState==='visible')void permissionStatus(navigator).then(status=>{if(status&&status.state!==locationPermission)permissionChanged(status.state);});
 });
+// Coming back from the settings with location allowed starts GPS where the page was offering it.
+function permissionChanged(state){
+ const offered=!$('locationAsk').hidden;locationPermission=state;
+ if(state==='granted'&&watch===null&&offered)startGps();else draw();
+}
+async function followPermission(){
+ const status=await permissionStatus(navigator);if(!status)return;
+ locationPermission=status.state;status.addEventListener('change',()=>permissionChanged(status.state));
+}
 function updateGps(){
  $('retryGps').textContent=['locating','retrying'].includes(locationPhase)?'Lociranje…':'Ponovi lociranje';
  $('retryGps').disabled=['locating','retrying'].includes(locationPhase);
@@ -787,6 +826,6 @@ function openSharedLink(){
  void loadAtPin(c,p);
 }
 function network(){ $('network').textContent=navigator.onLine?'Veza dostupna':'Bez mreže'; }addEventListener('online',()=>{network();if(!nearbyMode&&current)openParcelNeighborhood(current);else if(watch!==null)queueNearby(true);draw();});addEventListener('offline',()=>{network();draw();});network();
-async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}if(!navigator.onLine&&saved.length){try{show(saved[0]);}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(navigator.onLine)startGps();openSharedLink();if('serviceWorker'in navigator){try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}}
+async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}await followPermission();if(!navigator.onLine&&saved.length){try{show(saved[0]);}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(navigator.onLine&&locationPermission==='granted')startGps();openSharedLink();if('serviceWorker'in navigator){try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}}
 await boot();
 if(document.modelContext?.registerTool){for(const tool of [{name:'list_saved_parcels',description:'Read parcels saved on this device and offline readiness.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:async()=>({parcels:saved.map(x=>({id:x.id,number:x.record.title,ko:x.ko,municipality:x.municipality,surroundingsSaved:!!x.osm})),appOfflineReady:await checkShell()})},{name:'open_saved_parcel',description:'Display a parcel already saved on this device.',inputSchema:{type:'object',properties:{id:{type:'string'}},required:['id'],additionalProperties:false},execute:async input=>{const x=saved.find(x=>x.id===input?.id);if(!x)throw Error('Parcela nije sačuvana.');show(x);return{selected:x.id};}}]){try{await document.modelContext.registerTool(tool);}catch{}}}

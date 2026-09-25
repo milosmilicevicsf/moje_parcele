@@ -181,6 +181,21 @@ button.saved-group:hover{background:none;color:#174b3b;text-decoration:underline
 .placing-bar select{flex:1;min-width:0;margin:0;padding:8px}
 .placing-bar button{min-height:40px;padding:6px 10px;font-size:13px}
 
+/* Asking for location on the empty map. Chrome's own location button accepts only limited styling:
+   contrast of at least 3:1, full opacity, bounded padding. */
+.location-ask{position:absolute;z-index:2;inset:0;margin:auto;width:min(380px,calc(100% - 150px));height:fit-content;max-height:calc(100% - 80px);overflow:auto;display:flex;flex-direction:column;align-items:center;gap:9px;padding:20px 18px 16px;border-radius:14px;background:#fffef9f7;box-shadow:0 4px 18px #0003;text-align:center}
+.location-ask strong{font-size:17px;padding:0 26px}
+.location-ask p,.location-ask small{margin:0;font-size:13px;line-height:1.45;color:#4d5c48}
+.location-ask ol{margin:0;padding-left:20px;text-align:left;font-size:12px;line-height:1.5;color:#2e3f2b}
+.location-ask ol li{margin-bottom:6px}
+.location-ask .close{position:absolute;top:6px;right:8px;float:none}
+.location-ask #locationTip{font-size:12px;color:#6b5a2e}
+.location-ask .steps-lead{font-size:12px;font-weight:650;color:#2e3f2b;align-self:flex-start}
+.location-ask.retry-first .steps-lead,.location-ask.retry-first ol{order:1}
+.location-ask.retry-first>small{order:2}
+geolocation.native{background-color:#174b3b;color:#fff;border:0;border-radius:9px;font-size:15px;font-weight:600;padding:12px 18px}
+@media(max-width:760px){.location-ask{width:auto;left:10px;right:62px}}
+
 /* Walking guidance to a point. */
 .guide-start{width:100%;margin:6px 0 4px}
 .guide{position:absolute;z-index:3;top:84px;left:24px;right:84px;max-width:520px;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:#fffef9f5;box-shadow:0 4px 18px #0003}
