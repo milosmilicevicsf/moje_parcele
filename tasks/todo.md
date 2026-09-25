@@ -167,3 +167,17 @@ pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i s
   uvoz na drugom poreklu zadržao postojeći naziv i dopunio samo grupu; grupa „Moje“ sama na mapi; prikaz na 390 px uredan.
 - Nalaz: polje „Grupa“ je bilo upisano dvaput u `teren.html`; testovi preko `getElementById` to ne vide, snimak ekrana jeste → test jedinstvenih `id`.
 - Neprovereno: Vercel Analytics uživo (lokalno nema `/_vercel/insights`), biranje i preuzimanje fajla na pravom iPhone-u i Androidu, velika kopija sa mnogo fotografija na telefonu.
+
+# Plan 10: dozvola za lokaciju bez odlaska u podešavanja
+
+- [x] Bez pitanja pri otvaranju; Permissions API: dozvoljeno → GPS kreće sam, inače kartica na praznoj mapi sa razlogom i dugmetom
+- [x] Chrome 144+: ugrađeni `<geolocation>` kao dugme (vraća blokiranu dozvolu bez podešavanja); drugde obično dugme i Geolocation API
+- [x] Blokirano: koraci za iPhone Safari, aplikaciju sa početnog ekrana, Android i računar (`location-permission.js`), i preko otvorene parcele; zatvaranje do sledećeg pokušaja
+- [x] Povratak sa dozvoljenom lokacijom sam uključuje GPS (događaj `change` ili nova provera kad se stranica ponovo prikaže)
+- [x] iPhone savet „Website Settings → Location → Allow“ u kartici i u pomoći; `sw.js` v25
+
+## Pregled 10
+- `node --test "tests/*.test.mjs"`: 76/76; test pada ako se vrati pitanje pri otvaranju.
+- Chromium 152 (dozvole kroz DevTools protokol): bez pitanja pri otvaranju; Chromeovo dugme na srpskom i ispravno po njegovim pravilima stila;
+  blokirano → koraci; dozvoljeno → GPS sam, prave parcele oko emuliranog položaja; 390 px sa Android i iPhone oznakom.
+- Neprovereno: pravi iPhone (jednokratna dozvola u Safariju, aplikacija sa početnog ekrana) i pravo Chromeovo pitanje na telefonu.
