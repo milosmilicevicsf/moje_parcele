@@ -3,7 +3,7 @@ import {normalize,parcelGeometry} from './geo.js';
 // Colours that stay readable on the light map and on satellite imagery.
 export const PALETTE=['#e8590c','#1c7ed6','#ae3ec9','#f59f00','#0ca678','#e64980'];
 // The user's own data on a parcel, as opposed to what was downloaded.
-export const PERSONAL=['label','color','note','marks'];
+export const PERSONAL=['label','color','note','marks','group'];
 export const colorOf=x=>PALETTE.includes(x.color)?x.color:PALETTE[0];
 export const nameOf=x=>x.label?x.label+' · '+x.record.title:'Parcela '+x.record.title;
 export const geometryOf=x=>x.geometry||=parcelGeometry(x.record);
@@ -14,14 +14,19 @@ const few=n=>n%10>=2&&n%10<=4&&(n%100<12||n%100>14);
 export const parcelCount=n=>n+' '+(few(n)?'parcele':'parcela');
 export const photoCount=n=>n+' '+(few(n)?'fotografije':'fotografija');
 
-// A searched parcel stores "KO" and "municipality", one picked on the map both words in ko; normalizing joins them.
-export function groupByPlace(items){
+const byName=(a,b)=>(a.label||a.record.title).localeCompare(b.label||b.record.title,'sr',{numeric:true});
+function groupBy(items,keyOf,titleOf){
   const groups=new Map();
   for(const x of items){
-    const key=normalize([x.ko,x.municipality].join(' '));
-    if(!groups.has(key))groups.set(key,{place:[x.ko,x.municipality].filter(Boolean).join(', ')||'Bez mesta',items:[]});
+    const key=keyOf(x);
+    if(!groups.has(key))groups.set(key,{key,title:titleOf(x),items:[]});
     groups.get(key).items.push(x);
   }
-  const byName=(a,b)=>(a.label||a.record.title).localeCompare(b.label||b.record.title,'sr',{numeric:true});
-  return [...groups.values()].sort((a,b)=>a.place.localeCompare(b.place,'sr')).map(g=>({...g,items:g.items.sort(byName)}));
+  return [...groups.values()].map(g=>({...g,items:g.items.sort(byName)}));
 }
+// A searched parcel stores "KO" and "municipality", one picked on the map both words in ko; normalizing joins them.
+export const groupByPlace=items=>groupBy(items,x=>normalize([x.ko,x.municipality].join(' ')),x=>[x.ko,x.municipality].filter(Boolean).join(', ')||'Bez mesta')
+  .sort((a,b)=>a.title.localeCompare(b.title,'sr'));
+// The user's own groups in alphabetical order, then the parcels in none; case and diacritics do not split a group.
+export const groupByOwn=items=>groupBy(items,x=>x.group?'g:'+normalize(x.group):'',x=>x.group||'Bez grupe')
+  .sort((a,b)=>(a.key==='')-(b.key==='')||a.title.localeCompare(b.title,'sr'));

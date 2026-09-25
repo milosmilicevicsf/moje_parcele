@@ -35,6 +35,10 @@ test('surroundings service validates the center, builds a bounded query and a co
  assert.doesNotMatch(fs.readFileSync('public/teren.js','utf8'),/overpass-api\.de/,'browser must not call Overpass directly');
 });
 test('offline worker serves shell without any network and excludes API',async()=>{const handlers={},files=new Map();let networkCalls=0;const cache={addAll:async ps=>ps.forEach(p=>files.set(p,new Response(p))),match:async p=>files.get(p)?.clone()};vm.runInNewContext(fs.readFileSync('public/sw.js','utf8'),{URL,Response,caches:{open:async()=>cache,keys:async()=>[],delete:async()=>true},fetch:()=>{networkCalls++;throw Error('offline');},self:{location:{origin:'https://test.local'},addEventListener:(n,f)=>handlers[n]=f,skipWaiting:async()=>{},clients:{claim:async()=>{}}}});let promise;handlers.install({waitUntil:p=>promise=p});await promise;for(const p of files.keys())assert(fs.existsSync('public'+p),p);handlers.fetch({request:{url:'https://test.local/',method:'GET',mode:'navigate'},respondWith:p=>promise=p});assert.equal(await(await promise).text(),'/teren.html');handlers.fetch({request:{url:'https://test.local/teren.js',method:'GET'},respondWith:p=>promise=p});assert.equal(await(await promise).text(),'/teren.js');let intercepted=false;handlers.fetch({request:{url:'https://test.local/api/parcel',method:'GET'},respondWith:()=>intercepted=true});assert(!intercepted);assert.equal(networkCalls,0);});
+test('every element id in the app page is unique',()=>{
+ const ids=[...fs.readFileSync('public/teren.html','utf8').matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);
+ assert(ids.length>100);assert.deepEqual(ids.filter((id,i)=>ids.indexOf(id)!==i),[]);
+});
 test('the offline shell holds every module the app imports, directly or through another module',()=>{
  const shell=JSON.parse(fs.readFileSync('public/sw.js','utf8').match(/const SHELL=(\[[^\]]*\])/)[1].replaceAll("'",'"')),seen=new Set();
  const visit=file=>{if(seen.has(file))return;seen.add(file);for(const [,dep] of fs.readFileSync('public'+file,'utf8').matchAll(/^import .* from '\.(\/[^']+)';$/gm))visit(dep);};

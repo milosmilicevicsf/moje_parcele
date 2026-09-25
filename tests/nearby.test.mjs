@@ -762,3 +762,26 @@ test('all parcels and photos go into one file; importing it on another phone kee
  await other.element('import').onchange({target:{files:[{size:5,text:async()=>'{nope'}]}});
  assert.equal(other.element('backupStatus').textContent,'Ovo nije rezervna kopija iz ove aplikacije.');
 });
+
+test('saved parcels group by place or by own groups; a group heading shows that group on the map',async()=>{
+ const stored=new Map(),app=await appHarness(async()=>({records:[],total:0}),stored);
+ let rows=[],groupOptions=[];app.element('savedList').replaceChildren=(...items)=>rows=items;app.element('groupList').replaceChildren=(...items)=>groupOptions=items;
+ fakeDb(app,[{...fixture,id:'A',record:squareRecord('A',433000,4909700),group:'Brat'},{...fixture,id:'B',record:squareRecord('B',443000,4919700)},{...fixture,id:'C',record:squareRecord('C',433100,4909700),group:'brat'}]);
+ await app.run('refreshSaved()');
+ const headings=()=>rows.filter(r=>r.className==='saved-group').map(r=>r.textContent);
+ assert.deepEqual(headings(),['Brat · 2 parcele · 0,18 ha ▦','Bez grupe · 1 parcela · 0,09 ha ▦'],'once there are own groups, the list shows them');
+ assert.equal(app.element('groupingOwn')['aria-pressed'],'true');assert.deepEqual(groupOptions.map(o=>o.value),['Brat']);
+ app.element('groupingPlace').onclick();
+ assert.deepEqual(headings(),['Stari Grad, Stari Grad · 3 parcele · 0,27 ha ▦']);assert.equal(stored.get('savedGrouping'),'place');
+ assert.equal(rows.find(r=>r.className==='saved-row').children[0].children.at(-1).textContent.split(' · ')[0],'Brat','the place list names the group');
+ app.element('groupingOwn').onclick();
+ rows.find(r=>r.className==='saved-group'&&r.textContent.startsWith('Brat')).onclick();
+ assert.equal(app.run('overview'),true);assert.equal(app.element('mapMode').textContent,'Brat');assert.equal(app.element('fit').textContent,'▦ Prikaži grupu');
+ assert.match(app.element('coverage').textContent,/^2 parcele · ukupno 0,18 ha/);
+ app.run("show(saved.find(x=>x.id==='B'))");assert.equal(app.element('parcelGroup').value,'');
+ const group=app.element('parcelGroup');group.value='  Komšija ';group.dispatch('change');await flush();await flush();await flush();
+ assert.equal(app.run("stores.parcels.get('B').group"),'Komšija');
+ assert.deepEqual(headings().map(h=>h.split(' · ')[0]),['Brat','Komšija'],'the new group appears at once');
+ group.value='';group.dispatch('change');await flush();await flush();await flush();
+ assert.equal(app.run("stores.parcels.get('B').group"),undefined,'a cleared group stays cleared');
+});

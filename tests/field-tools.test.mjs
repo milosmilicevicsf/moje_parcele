@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {parcelGeometry,utm34ToWgs84} from '../public/geo.js';
 import {ringSides,perimeter,roadVertex} from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
-import {PALETTE,colorOf,nameOf,totalArea,hectares,parcelCount,photoCount,groupByPlace} from '../public/portfolio.js';
+import {PALETTE,colorOf,nameOf,totalArea,hectares,parcelCount,photoCount,groupByPlace,groupByOwn} from '../public/portfolio.js';
 import {BACKUP_KIND,backupBlob,readBackup,mergeParcel,toBase64,fromBase64} from '../public/backup.js';
 import {guidance,createCrossing} from '../public/guide.js';
 import {headingFrom,smoothHeading,createCompass} from '../public/compass.js';
@@ -42,8 +42,11 @@ test('saved parcels: total area, own names and colours, place groups and Serbian
  assert.equal(hectares(totalArea(items)),'0,03 ha');
  assert.equal(nameOf(items[2]),'Voćnjak · 7');assert.equal(nameOf(items[0]),'Parcela 12');
  assert.equal(colorOf(items[2]),PALETTE[1]);assert.equal(colorOf({color:'red'}),PALETTE[0],'unknown colours fall back to the first');
- assert.deepEqual(groupByPlace(items).map(g=>[g.place,g.items.map(x=>x.record.title)]),[['Grošnica I, Kragujevac',['7']],['Pepeljevac, Lajkovac',['3','12']]],
+ assert.deepEqual(groupByPlace(items).map(g=>[g.title,g.items.map(x=>x.record.title)]),[['Grošnica I, Kragujevac',['7']],['Pepeljevac, Lajkovac',['3','12']]],
   'a searched parcel and one picked on the map share their place; numbers sort naturally');
+ const grouped=[pkg('1','K','M',{group:'Brat'}),pkg('2','K','M'),pkg('3','K','M',{group:'brat'}),pkg('4','K','M',{group:'Čika Ana'}),pkg('5','K','M',{group:'---'})];
+ assert.deepEqual(groupByOwn(grouped).map(g=>[g.title,g.items.map(x=>x.record.title)]),[['---',['5']],['Brat',['1','3']],['Čika Ana',['4']],['Bez grupe',['2']]],
+  'own groups alphabetically and parcels without a group last; case does not split a group, a name without letters is still a group');
  assert.deepEqual([1,2,5,11,12,21,22,25].map(parcelCount),['1 parcela','2 parcele','5 parcela','11 parcela','12 parcela','21 parcela','22 parcele','25 parcela']);
  assert.deepEqual([1,3,14,24].map(photoCount),['1 fotografija','3 fotografije','14 fotografija','24 fotografije']);
 });
@@ -66,8 +69,8 @@ test('a backup carries own data and photos byte for byte, and leaves downloaded 
 
 test('importing keeps what is on this phone, fills empty fields and adds missing points',()=>{
  const here={id:'A',label:'Moja',marks:[{id:'1',type:'ulaz'}],osm:{elements:[]}};
- const merged=mergeParcel(here,{id:'A',label:'Njiva',note:'Uz potok',color:PALETTE[2],marks:[{id:'1',type:'kapija'},{id:'2',type:'bunar'}]});
- assert.equal(merged.label,'Moja');assert.equal(merged.note,'Uz potok');assert.equal(merged.color,PALETTE[2]);
+ const merged=mergeParcel(here,{id:'A',label:'Njiva',note:'Uz potok',color:PALETTE[2],group:'Brat',marks:[{id:'1',type:'kapija'},{id:'2',type:'bunar'}]});
+ assert.equal(merged.label,'Moja');assert.equal(merged.note,'Uz potok');assert.equal(merged.color,PALETTE[2]);assert.equal(merged.group,'Brat');
  assert.deepEqual(merged.marks,[{id:'1',type:'ulaz'},{id:'2',type:'bunar'}]);assert(merged.osm,'downloaded surroundings on this phone stay');
  const fresh={id:'B'};assert.equal(mergeParcel(undefined,fresh),fresh);
 });

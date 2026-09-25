@@ -140,7 +140,11 @@
 /* The user's own parcels: summary, place groups, colours. */
 .saved-summary{font-size:13px;margin:8px 0 10px;color:#4d5c48}
 #showAllSaved{width:100%;margin-bottom:6px}
-.saved-group{font-size:12px;letter-spacing:.3px;margin:18px 0 2px;color:#5a6b55}
+.grouping{display:flex;align-items:center;gap:6px;margin:6px 0 4px;font-size:12px;color:#5a6b55}
+.grouping button{min-height:36px;padding:5px 11px;font-size:12px}
+.grouping button[aria-pressed="true"]{background:#174b3b;color:#fff;border-color:#174b3b}
+button.saved-group{display:block;width:100%;min-height:36px;margin:14px 0 0;padding:6px 0 2px;border:0;border-radius:0;background:none;text-align:left;font-size:12px;font-weight:700;letter-spacing:.3px;color:#5a6b55}
+button.saved-group:hover{background:none;color:#174b3b;text-decoration:underline}
 .swatch-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:-1px;box-shadow:0 0 0 1px #0003}
 .own{margin-top:18px;border-top:1px solid #e1e6d8;padding-top:14px}
 .own label{margin-top:10px}

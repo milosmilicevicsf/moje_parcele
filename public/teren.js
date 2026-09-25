@@ -9,7 +9,7 @@ import {createLocationTracker} from './location-tracker.js';
 import {downloadNeighborhood,readNeighborhood,neighborhoodSummary} from './parcel-neighborhood.js';
 import {ringSides,roadVertex} from './parcel-measure.js';
 import {navigationLinks} from './navigation.js';
-import {PALETTE,PERSONAL,colorOf,nameOf,geometryOf,totalArea,hectares,parcelCount,photoCount,groupByPlace} from './portfolio.js';
+import {PALETTE,PERSONAL,colorOf,nameOf,geometryOf,totalArea,hectares,parcelCount,photoCount,groupByPlace,groupByOwn} from './portfolio.js';
 import {backupBlob,readBackup,fromBase64,mergeParcel} from './backup.js';
 import {guidance,createCrossing} from './guide.js';
 import {createCompass} from './compass.js';
@@ -18,7 +18,7 @@ const $=s=>document.getElementById(s), canvas=$('map'),ctx=canvas.getContext('2d
 const NEARBY_RADIUS=150;
 // Projection origin before any parcel is shown; replaced by the parcel or the first GPS fix.
 let current=null, nearby=[], mapSurroundings=null, saved=[], db, shellReady=false, gps=null,watch=null,following=false,selection='',view={origin:[20.9,44.2],center:[0,0],scale:2},width=0,height=0,roadsBusy=false;
-let currentSides=[],destinationPicked=false,overview=false;
+let currentSides=[],destinationPicked=false,overview=false,overviewGroup=null;
 // Personal fields are always written as a whole so that a cleared field stays cleared.
 const own=x=>Object.fromEntries(PERSONAL.map(k=>[k,x[k]]));
 // Points the user marks on a parcel: name and the letter drawn on the map.
@@ -41,7 +41,7 @@ const tiles=createTileLayer({template:SATELLITE_TILES,onChange:queueDraw,load:(u
 // Imagery needs the network; offline the vector map is shown and the preference is kept.
 const satelliteOn=()=>basemap==='satellite'&&navigator.onLine;
 const date=s=>new Date(s).toLocaleDateString('sr-Latn');
-function validPackage(x){if(!x||typeof x.ko!=='string'||typeof x.municipality!=='string'||typeof x.record?.title!=='string'||typeof x.record?.fullGeom!=='string')throw Error('Ovo nije rezervna kopija parcele iz ove aplikacije.');x.geometry=parcelGeometry(x.record);if(x.osm&&(!Array.isArray(x.osm.elements)||x.osm.elements.length>100000))throw Error('Neispravna mapa okoline.');if(typeof x.label!=='string')delete x.label;if(!PALETTE.includes(x.color))delete x.color;if(typeof x.note!=='string')delete x.note;const marks=Array.isArray(x.marks)?x.marks.filter(m=>MARKS[m?.type]&&typeof m.id==='string'&&Number.isFinite(m.lon)&&Number.isFinite(m.lat)):[];if(marks.length)x.marks=marks;else delete x.marks;return x;}
+function validPackage(x){if(!x||typeof x.ko!=='string'||typeof x.municipality!=='string'||typeof x.record?.title!=='string'||typeof x.record?.fullGeom!=='string')throw Error('Ovo nije rezervna kopija parcele iz ove aplikacije.');x.geometry=parcelGeometry(x.record);if(x.osm&&(!Array.isArray(x.osm.elements)||x.osm.elements.length>100000))throw Error('Neispravna mapa okoline.');if(typeof x.label!=='string')delete x.label;if(!PALETTE.includes(x.color))delete x.color;if(typeof x.note!=='string')delete x.note;if(typeof x.group!=='string'||!x.group.trim())delete x.group;else x.group=x.group.trim().slice(0,40);const marks=Array.isArray(x.marks)?x.marks.filter(m=>MARKS[m?.type]&&typeof m.id==='string'&&Number.isFinite(m.lon)&&Number.isFinite(m.lat)):[];if(marks.length)x.marks=marks;else delete x.marks;return x;}
 // Version 2 adds photos in their own store, so listing parcels never loads image data.
 function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open('moje-parcele-teren',2);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('parcels'))d.createObjectStore('parcels',{keyPath:'id'});if(!d.objectStoreNames.contains('photos'))d.createObjectStore('photos',{keyPath:'id'}).createIndex('parcel','parcel');};r.onsuccess=()=>{const d=r.result;d.onversionchange=()=>{d.close();message('Aplikacija je ažurirana u drugom prozoru. Osvežite ovu stranicu.',true);};resolve(d);};r.onerror=()=>reject(r.error);r.onblocked=()=>message('Zatvorite druge otvorene prozore ove aplikacije da bi se završilo ažuriranje.',true);});}
 function dbCall(mode,fn,name='parcels'){return new Promise((resolve,reject)=>{const t=db.transaction(name,mode),r=fn(t.objectStore(name));t.oncomplete=()=>resolve(r.result);t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error||Error('Čuvanje je prekinuto.'));});}
@@ -63,19 +63,33 @@ $('navSaved').onclick=()=>{message('');setMobileView('saved');$('savedPanel').sc
 $('navHelp').onclick=()=>$('helpDialog').showModal();
 $('savedEmptySearch').onclick=()=>$('navSearch').onclick();
 $('backToMap').onclick=revealMap;
-// Saved parcels grouped by place, each with its colour, name and area; the total matters to owners of scattered plots.
 async function refreshSaved(){
  saved=await dbCall('readonly',s=>s.getAll());
+ renderSaved();
+}
+// Grouping by place or by the user's own groups is remembered; until chosen, own groups win once there are any.
+let grouping=(()=>{try{return localStorage.getItem('savedGrouping');}catch{return null;}})();
+function setGrouping(mode){grouping=mode;try{localStorage.setItem('savedGrouping',mode);}catch{}renderSaved();}
+$('groupingPlace').onclick=()=>setGrouping('place');$('groupingOwn').onclick=()=>setGrouping('group');
+// Saved parcels in groups, each with its colour, name and area; the total matters to owners of scattered plots.
+// A group heading shows that group on the map.
+function renderSaved(){
+ const ownGroups=groupByOwn(saved).filter(g=>g.key),mode=['place','group'].includes(grouping)?grouping:ownGroups.length?'group':'place';
  $('savedCount').textContent=saved.length;$('savedEmptySearch').hidden=!!saved.length;$('showAllSaved').hidden=!saved.length;$('exportAll').hidden=!saved.length;
  $('savedSummary').hidden=!saved.length;$('savedSummary').textContent=parcelCount(saved.length)+' · ukupno '+hectares(totalArea(saved));
+ $('savedGrouping').hidden=!saved.length;$('groupingPlace').setAttribute('aria-pressed',String(mode==='place'));$('groupingOwn').setAttribute('aria-pressed',String(mode==='group'));
+ $('groupList').replaceChildren(...ownGroups.map(g=>option(g.title)));
  const rows=[];
  if(!saved.length){const p=document.createElement('p');p.className='small';p.textContent='Još nema sačuvanih parcela.';rows.push(p);}
- for(const group of groupByPlace(saved)){
-  const h=document.createElement('h3');h.className='saved-group';h.textContent=group.place+' · '+hectares(totalArea(group.items));rows.push(h);
+ if(saved.length&&mode==='group'&&!ownGroups.length){const p=document.createElement('p');p.className='small';p.textContent='Grupu parceli dodelite u njenim detaljima, u polju „Grupa“.';rows.push(p);}
+ for(const group of mode==='group'?groupByOwn(saved):groupByPlace(saved)){
+  const h=document.createElement('button');h.type='button';h.className='saved-group';
+  h.textContent=group.title+' · '+parcelCount(group.items.length)+' · '+hectares(totalArea(group.items))+' ▦';
+  h.setAttribute('aria-label','Prikaži na mapi: '+group.title);h.onclick=()=>showAllSaved(group.items,group.title);rows.push(h);
   for(const x of group.items){
    const row=document.createElement('div'),b=document.createElement('button'),dot=document.createElement('span'),sub=document.createElement('small');
    row.className='saved-row';dot.className='swatch-dot';dot.style.background=colorOf(x);
-   sub.textContent=(x.osm?'Granica i okolina':'Samo granica')+' · '+hectares(geometryOf(x).area)+' · '+date(x.savedAt);
+   sub.textContent=[mode==='group'?[x.ko,x.municipality].filter(Boolean).join(', '):x.group,x.osm?'Granica i okolina':'Samo granica',hectares(geometryOf(x).area),date(x.savedAt)].filter(Boolean).join(' · ');
    b.append(dot,x.label?x.label+' · '+x.record.title:x.record.title,sub);b.onclick=()=>{show(x);revealMap();};
    const del=document.createElement('button');del.textContent='×';del.setAttribute('aria-label','Obriši sačuvanu parcelu '+x.record.title);
    del.onclick=async()=>{if(confirm('Obrisati preuzetu parcelu '+x.record.title+' sa ovog uređaja?')){try{await deletePackage(x.id);await refreshSaved();status();draw();}catch{message('Brisanje nije uspelo.',true);}}};
@@ -84,7 +98,7 @@ async function refreshSaved(){
  }
  $('savedList').replaceChildren(...rows);
 }
-function show(x,refit=true){if(guide&&(!current||idFor(x)!==idFor(current)))stopGuide();if(refit){overview=false;mapPin=null;pinRequestVersion++;nearbyMode=false;nearbyLoader.disable();}current=validPackage(x);currentSides=ringSides(current.geometry);const edge=currentSides.reduce((sum,s)=>sum+s.length,0);$('mapActionStatus').hidden=true;$('mapParcelPlace').textContent=[x.ko,x.municipality,(current.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha','obim '+length(edge)].filter(Boolean).join(' · ');const prior=saved.find(p=>p.id===idFor(x));if(!current.osm&&prior?.osm)current.osm=prior.osm;if(!current.neighborhood&&prior?.neighborhood)current.neighborhood=prior.neighborhood;if(!refit&&!current.neighborhood&&mapNeighborhood)current.neighborhood=mapNeighborhood;if(current.osm)mapSurroundings=current.osm;if(prior)for(const k of PERSONAL)current[k]??=prior[k];following=false;$('parcelCard').hidden=false;updateTitles();$('parcelLabel').value=current.label||'';renderColors();$('parcelNote').value=current.note||'';renderMarks();stopPlacing();loadPhotos();$('parcelPlace').textContent=[x.ko,x.municipality].filter(Boolean).join(' · ');$('area').textContent=(x.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha';$('corners').textContent=x.geometry.points.length;$('perimeter').textContent=length(edge);$('sides').replaceChildren(...currentSides.map(s=>{const li=document.createElement('li');li.textContent=s.from+'–'+s.to+' · '+length(s.length)+(s.hole?' · unutrašnja granica':'');return li;}));$('source').textContent='GeoSrbija · preuzeto '+date(x.downloadedAt);destinationPicked=false;fillDestinations();if(refit){openParcelNeighborhood(current);fit();}else draw();status();updateGps();routes();updateEkatastar(current);
+function show(x,refit=true){if(guide&&(!current||idFor(x)!==idFor(current)))stopGuide();if(refit){overview=false;mapPin=null;pinRequestVersion++;nearbyMode=false;nearbyLoader.disable();}current=validPackage(x);currentSides=ringSides(current.geometry);const edge=currentSides.reduce((sum,s)=>sum+s.length,0);$('mapActionStatus').hidden=true;$('mapParcelPlace').textContent=[x.ko,x.municipality,(current.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha','obim '+length(edge)].filter(Boolean).join(' · ');const prior=saved.find(p=>p.id===idFor(x));if(!current.osm&&prior?.osm)current.osm=prior.osm;if(!current.neighborhood&&prior?.neighborhood)current.neighborhood=prior.neighborhood;if(!refit&&!current.neighborhood&&mapNeighborhood)current.neighborhood=mapNeighborhood;if(current.osm)mapSurroundings=current.osm;if(prior)for(const k of PERSONAL)current[k]??=prior[k];following=false;$('parcelCard').hidden=false;updateTitles();$('parcelLabel').value=current.label||'';$('parcelGroup').value=current.group||'';renderColors();$('parcelNote').value=current.note||'';renderMarks();stopPlacing();loadPhotos();$('parcelPlace').textContent=[x.ko,x.municipality].filter(Boolean).join(' · ');$('area').textContent=(x.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha';$('corners').textContent=x.geometry.points.length;$('perimeter').textContent=length(edge);$('sides').replaceChildren(...currentSides.map(s=>{const li=document.createElement('li');li.textContent=s.from+'–'+s.to+' · '+length(s.length)+(s.hole?' · unutrašnja granica':'');return li;}));$('source').textContent='GeoSrbija · preuzeto '+date(x.downloadedAt);destinationPicked=false;fillDestinations();if(refit){openParcelNeighborhood(current);fit();}else draw();status();updateGps();routes();updateEkatastar(current);
  // The desktop panel scrolls on its own; on phones the map stays in view and "Detalji" scrolls down.
  if(innerWidth>=760)$('parcelCard').scrollIntoView({block:'nearest',behavior:'smooth'});}
 // Parcel-centered loading must not depend on GPS permission or move the map back to the user.
@@ -258,7 +272,7 @@ function toggleBasemap(){
 }
 $('basemap').onclick=toggleBasemap;$('imageryCredit').textContent=' · Snimak: '+SATELLITE_ATTRIBUTION;
 function draw(){
- $('mapParcelCard').hidden=!current;$('clearSelection').hidden=!current;$('details').hidden=!current;$('fit').textContent=current?'▱ Prikaži parcelu':overview?'▦ Sve moje parcele':mapPin&&!nearby.length?'◎ Prikaži pin':'▱ Prikaži parcele';
+ $('mapParcelCard').hidden=!current;$('clearSelection').hidden=!current;$('details').hidden=!current;$('fit').textContent=current?'▱ Prikaži parcelu':overview?(overviewGroup?'▦ Prikaži grupu':'▦ Sve moje parcele'):mapPin&&!nearby.length?'◎ Prikaži pin':'▱ Prikaži parcele';
  const sat=satelliteOn();updateBasemapControls(sat);
  ctx.clearRect(0,0,width,height);ctx.fillStyle=sat?'#3a4234':'#e9eddd';ctx.fillRect(0,0,width,height);
  if(sat&&(current||nearby.length||gps||mapPin||overview))imagery=tiles.draw(ctx,pixel,viewBounds(),1/(view.scale*Math.min(2,devicePixelRatio||1)));
@@ -276,7 +290,7 @@ function draw(){
  drawGuide();
  drawGps();
  drawPin();
- const scale=niceScale(80/view.scale);$('scale').textContent=metres(scale);$('scale').style.width=scale*view.scale+'px';const vc=unlocal(view.center,view.origin),bb=surroundings?.bbox,outside=bb&&(vc[1]<bb[0]||vc[1]>bb[2]||vc[0]<bb[1]||vc[0]>bb[3]);const parcelsNote=overview?parcelCount(saved.length)+' · ukupno '+hectares(totalArea(saved))+' · dodirnite parcelu da je otvorite':mapPin?pinState:!nearbyMode&&parcelNeighborhoodState?parcelNeighborhoodState:!current?'Parcele iz GeoSrbije u krugu od '+NEARBY_RADIUS+' m · dodirnite parcelu da je izaberete. Držite prst na praznom mestu za parcele oko te tačke.':sat?'':surroundings?(outside?'Van preuzete okoline · prikažite parcelu za povratak na mapu':'Preuzeta okolina ~1 km oko parcele · nije satelitski snimak'):'Okolina nije preuzeta. Prikazana je granica na koordinatnoj mreži.';$('coverage').textContent=[imageryNote(),parcelsNote].filter(Boolean).join(' · ');$('mapMode').textContent=current?nameOf(current):overview?'Moje parcele':mapPin?'Parcele oko pina':'Parcele u okolini';
+ const scale=niceScale(80/view.scale);$('scale').textContent=metres(scale);$('scale').style.width=scale*view.scale+'px';const vc=unlocal(view.center,view.origin),bb=surroundings?.bbox,outside=bb&&(vc[1]<bb[0]||vc[1]>bb[2]||vc[0]<bb[1]||vc[0]>bb[3]);const parcelsNote=overview?parcelCount(overviewItems().length)+' · ukupno '+hectares(totalArea(overviewItems()))+' · dodirnite parcelu da je otvorite':mapPin?pinState:!nearbyMode&&parcelNeighborhoodState?parcelNeighborhoodState:!current?'Parcele iz GeoSrbije u krugu od '+NEARBY_RADIUS+' m · dodirnite parcelu da je izaberete. Držite prst na praznom mestu za parcele oko te tačke.':sat?'':surroundings?(outside?'Van preuzete okoline · prikažite parcelu za povratak na mapu':'Preuzeta okolina ~1 km oko parcele · nije satelitski snimak'):'Okolina nije preuzeta. Prikazana je granica na koordinatnoj mreži.';$('coverage').textContent=[imageryNote(),parcelsNote].filter(Boolean).join(' · ');$('mapMode').textContent=current?nameOf(current):overview?(overviewGroup?.title||'Moje parcele'):mapPin?'Parcele oko pina':'Parcele u okolini';
 }
 new ResizeObserver(()=>{const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;if(!r.width||!r.height)return;width=r.width;height=r.height;canvas.width=width*d;canvas.height=height*d;ctx.setTransform(d,0,0,d,0,0);draw();}).observe(canvas);
 // Screen position -> lon/lat (inverse of pixel()).
@@ -429,16 +443,20 @@ async function persistCurrent(changes){
  }catch{message('Čuvanje na telefonu nije uspelo.',true);}
 }
 $('parcelLabel').addEventListener('change',()=>void persistCurrent({label:$('parcelLabel').value.trim()||undefined}));
-// All saved parcels at once; tapping one opens it with its neighbours.
-function showAllSaved(){
- if(!saved.length)return;
- stopGuide();overview=true;mapPin=null;pinRequestVersion++;searchVersion++;parcelNeighborhoodVersion++;nearbyMode=false;nearbyLoader.disable();
+$('parcelGroup').addEventListener('change',()=>void persistCurrent({group:$('parcelGroup').value.trim().slice(0,40)||undefined}));
+// The parcels of the group shown in the overview, looked up again so that deleted or regrouped ones drop out.
+const overviewItems=()=>overviewGroup?saved.filter(x=>overviewGroup.ids.has(x.id)):saved;
+// All saved parcels, or one group of them, at once; tapping one opens it with its neighbours.
+function showAllSaved(items=saved,title=''){
+ if(!items.length){items=saved;title='';}
+ if(!items.length)return;
+ stopGuide();overview=true;overviewGroup=title?{title,ids:new Set(items.map(x=>x.id))}:null;mapPin=null;pinRequestVersion++;searchVersion++;parcelNeighborhoodVersion++;nearbyMode=false;nearbyLoader.disable();
  current=null;selection='';currentSides=[];$('parcelCard').hidden=true;$('destination').replaceChildren();stopPlacing();loadPhotos();if($('routeDialog').open)$('routeDialog').close();
  nearby=[];mapSurroundings=null;mapNeighborhood=null;parcelNeighborhoodState='';$('results').replaceChildren();
- revealMap();fitPoints(saved.flatMap(x=>geometryOf(x).points.map(p=>[p.lon,p.lat])),.002);
- message(parcelCount(saved.length)+' · ukupno '+hectares(totalArea(saved))+'. Dodirnite parcelu da je otvorite.');
+ revealMap();fitPoints(items.flatMap(x=>geometryOf(x).points.map(p=>[p.lon,p.lat])),.002);
+ message((title?title+': ':'')+parcelCount(items.length)+' · ukupno '+hectares(totalArea(items))+'. Dodirnite parcelu da je otvorite.');
 }
-$('showAllSaved').onclick=showAllSaved;
+$('showAllSaved').onclick=()=>showAllSaved();
 $('parcelNote').addEventListener('change',()=>void persistCurrent({note:$('parcelNote').value.trim()||undefined}));
 function renderMarks(){
  $('marks').replaceChildren(...(current?.marks||[]).map(m=>{
@@ -546,7 +564,7 @@ function returnToLocation(){
 }
 $('locate').onclick=returnToLocation;
 // From the GPS area, "show parcel" returns to a remote parcel together with its own neighbors.
-$('fit').onclick=()=>{if(current&&nearbyMode&&!nearby.some(x=>idFor(x)===idFor(current)))show(current);else if(mapPin&&!nearby.length){view.center=local(mapPin,view.origin);draw();}else if(overview&&!current)showAllSaved();else fit();};
+$('fit').onclick=()=>{if(current&&nearbyMode&&!nearby.some(x=>idFor(x)===idFor(current)))show(current);else if(mapPin&&!nearby.length){view.center=local(mapPin,view.origin);draw();}else if(overview&&!current)showAllSaved(overviewItems(),overviewGroup?.title);else fit();};
 $('search').onsubmit=e=>{e.preventDefault();searchParcel($('number').value,$('ko').value,$('municipality').value).catch(e=>message(e.name==='TimeoutError'?'GeoSrbija nije odgovorila na vreme. Pokušajte ponovo.':e.message,true));};
 let locationPhase='stopped';
 const locationTracker=createLocationTracker({
