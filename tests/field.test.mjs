@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {boundary,bearing,distance,unlocal} from '../public/field-geo.js';import {parcelGeometry,utm34ToWgs84,wgs84ToUtm34} from '../public/geo.js';import {nearbyRequest,textRequest,latinPlace} from '../public/geosrbija.js';import {parseCenter,bbox,overpassQuery,packageFrom,upstreams,DEFAULT_UPSTREAMS,RequestError} from '../lib/surroundings.js';
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {boundary,bearing,distance,unlocal} from '../public/field-geo.js';import {parcelGeometry,utm34ToWgs84,wgs84ToUtm34} from '../public/geo.js';import {nearbyRequest,textRequest,latinPlace,placeNames} from '../public/geosrbija.js';import {parseCenter,bbox,overpassQuery,packageFrom,upstreams,DEFAULT_UPSTREAMS,RequestError} from '../lib/surroundings.js';
 const origin=[20,44], ring=p=>p.map(x=>unlocal(x,origin));const square=ring([[0,0],[100,0],[100,100],[0,100]]),hole=ring([[40,40],[60,40],[60,60],[40,60]]);
 test('distance uses nearest segment; holes are outside and separate polygons work',()=>{const center=unlocal([50,50],origin),a=boundary(center,[[square]]);assert(a.inside);assert(Math.abs(a.distance-50)<.01);const h=boundary(center,[[square,hole]]);assert(!h.inside);assert(Math.abs(h.distance-10)<.01);const out=boundary(unlocal([150,30],origin),[[square]]);assert(!out.inside);assert(Math.abs(out.distance-50)<.01);assert(boundary(unlocal([250,50],origin),[[square],[ring([[200,0],[300,0],[300,100],[200,100]])]]).inside);});
 test('bearings and long-range distance',()=>{assert(Math.abs(bearing([20,44],[20,45]))<.01);assert(Math.abs(bearing([20,44],[21,44])-90)<1);assert(Math.abs(distance([20,44],[20,45])-111195)<2);});
@@ -18,6 +18,9 @@ test('nearby search mirrors the a3 map click request and reads place names from 
  assert.equal(latinPlace('GROŠNICA I KRAGUJEVAC ГРОШНИЦА I КРАГУЈЕВАЦ'),'Grošnica I Kragujevac');
  assert.equal(latinPlace('ЗРЕЊАНИН I ZRENJANIN I ЗРЕЊАНИН ZRENJANIN'),'Zrenjanin I Zrenjanin');
  assert.equal(latinPlace('PALILULA PALILULA (BEOGRAD) ПАЛИЛУЛА ПАЛИЛУЛА (БЕОГРАД)'),'Palilula Palilula (Beograd)');
+ assert.deepEqual(placeNames('GROŠNICA I KRAGUJEVAC ГРОШНИЦА I КРАГУЈЕВАЦ','grosnica i','kragujevac'),{ko:'Grošnica I',municipality:'Kragujevac'});
+ assert.deepEqual(placeNames('PALILULA PALILULA (BEOGRAD) ПАЛИЛУЛА ПАЛИЛУЛА (БЕОГРАД)','Palilula','Palilula Beograd'),{ko:'Palilula',municipality:'Palilula (Beograd)'});
+ assert.deepEqual(placeNames('GROŠNICA I KRAGUJEVAC ГРОШНИЦА I КРАГУЈЕВАЦ','Grosnica','Kragujevac'),{ko:'Grosnica',municipality:'Kragujevac'},'a KO typed without its numeral keeps the typed names');
  const html=fs.readFileSync('public/teren.html','utf8');assert.match(html,/<button id="locate"/);assert.doesNotMatch(html,/id="nearby"/);
 });
 test('surroundings service validates the center, builds a bounded query and a complete package',()=>{

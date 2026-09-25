@@ -112,3 +112,23 @@ Sa R≈150 m vraća sve parcele oko tačke sa `fullGeom`. Satelitski snimak (`ba
 - Browser (lokalni statički server): snimak se poklapa sa granicom 1227/2, zum iznad z18 bez sivih pločica, izbor se pamti, povratak na mapu radi.
 - Esri datum snimka: Pepeljevac 9. 3. 2025, Beograd 9. 4. 2025. GeoSrbija ortofoto je iz 2020–2021.
 - Neprovereno uživo: ◎ protiv prave GeoSrbije (odavde blokirana; pokriveno testom sa imitacijom), link na eKatastar (sajt odavde nedostupan).
+
+# Plan 7: pretraga sa predlozima, mapa na telefonu, deljenje linkom
+
+Nalaz usput (prostorni upiti u 32 grada): parcele su u šest regionalnih slojeva. Sa samo 586 i 939 „parcele oko mene“,
+pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i svuda u regionima 587/588/589/899.
+
+- [x] `geosrbija.js`: slojevi 586, 587, 588, 589, 899, 939 (bez 49 = obrisi naselja i 910 = adrese)
+- [x] `geo.js` `latinWords`: vojvođanski opis počinje ćirilicom, rimski brojevi su u oba pisma → `latinPlace` i eKatastar KoID rade i za 899
+- [x] Pretraga: `datalist` opština i KO iz `ko-ids.txt`, KO lista po opštini, KO iz jedne opštine popunjava opštinu; `placeNames` vraća dijakritike iz rezultata
+- [x] Mapa: zum točkićem i sa dva prsta oko kursora/prstiju, pomeranje sa dva prsta, crtanje jednom po frejmu
+- [x] Kratak dodir na prazno samo uklanja izbor; pin tek na dug pritisak (550 ms), Android `contextmenu` ili desni klik
+- [x] „Podeli“: `?p=&lat=&lon=` preko Web Share ili kopiranja; otvaranje linka bira parcelu bez GPS-a; opis za pregled linka
+- [x] `sw.js` v18, testovi, README
+
+## Pregled 7
+- `node --test "tests/*.test.mjs"`: 55/55 (4 nova testa + nove provere u postojećim; test pina prebačen na dug pritisak).
+- Uživo (lokalni statički server, Chromium, emulirana lokacija, prava GeoSrbija): Niš 95 parcela, Novi Sad 120 (ranije 0);
+  kratak dodir samo uklanja izbor, dug pritisak učitava 210 parcela oko pina; link za Niš otvoren sa lokacijom u Beogradu;
+  „Grosnica I“ popunjava Kragujevac, 1500/1 se prikazuje kao „Grošnica I · Kragujevac“, eKatastar KoID 717177.
+- Neprovereno: pravi telefon (dug pritisak na iOS-u, Android `contextmenu`, sistemski meni za deljenje), `/api/surroundings` (lokalno nije pokretan).

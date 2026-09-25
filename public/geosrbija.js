@@ -23,6 +23,14 @@ export function nearbyRequest(east,north,radius){
 export function latinPlace(desc){
   return latinWords(desc).map(w=>/^[IVX]+$/.test(w)?w:w.toLowerCase().replace(/\p{L}/u,c=>c.toUpperCase())).join(' ');
 }
+// Names with diacritics for a typed or suggested KO ("grosnica i" in "kragujevac" -> "Grošnica I", "Kragujevac").
+// A KO typed without its numeral would split the place in the wrong word, so the rest must match the municipality.
+export function placeNames(desc,ko,municipality){
+  const words=latinPlace(desc).split(' '),key=normalize(ko),n=key.split(' ').length;
+  const rest=normalize(words.slice(n).join(' ')),place=normalize(municipality);
+  if(!key||normalize(words.slice(0,n).join(' '))!==key||rest!==place&&!rest.startsWith(place+' '))return {ko,municipality};
+  return {ko:words.slice(0,n).join(' '),municipality:words.slice(n).join(' ')};
+}
 const isPolygon=r=>/^(?:MULTI)?POLYGON\b/i.test(String(r.fullGeom||'').trim());
 
 async function call(request){
