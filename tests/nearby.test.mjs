@@ -10,6 +10,8 @@ import * as field from '../public/field-geo.js';
 import * as neighborhoods from '../public/parcel-neighborhood.js';
 import {parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME} from '../public/ekatastar.js';
 import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOOM} from '../public/satellite.js';
+import * as measure from '../public/parcel-measure.js';
+import {navigationLinks} from '../public/navigation.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function until(check,tries=50){for(let i=0;i<tries&&!check();i++)await flush();assert(check(),'condition not reached');}
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
@@ -91,14 +93,14 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
  const labels=[],elements=new Map(),tileRequests=[],images=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
   createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
   parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME,fetch:async url=>url==='/ko-ids.txt'?new Response(koTableText):new Response('',{status:404}),
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
-  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},append(){},replaceChildren(){},setAttribute(){},addEventListener(){}}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
   URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}}};
@@ -594,6 +596,26 @@ test('sharing links to a point inside the parcel; opening the link selects that 
  assert.equal(opened.run('nearbyMode'),false);assert.match(opened.element('message').textContent,/podeljena parcela B/);
  const count=calls.length;await opened.emit(8,geo.utm34ToWgs84(457315,4962815));
  assert.equal(calls.length,count,'a GPS fix does not replace the shared parcel');
+});
+
+test('parcel details show the perimeter and side lengths; navigation suggests the vertex nearest a road',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0}));
+ let sides=[];app.element('sides').replaceChildren=(...items)=>sides=items;
+ const record=squareRecord('A',433000,4909700);
+ app.scope.target={...fixture,record};app.run('show(target)');
+ assert.equal(app.element('perimeter').textContent,'120 m');
+ assert.deepEqual(sides.map(li=>li.textContent),['T1–T2 · 30 m','T2–T3 · 30 m','T3–T4 · 30 m','T4–T1 · 30 m']);
+ assert.match(app.element('mapParcelPlace').textContent,/obim 120 m/);
+ assert.equal(app.run('selection'),'p:0');assert.match(app.element('destinationNote').textContent,/prva tačka/);
+ const node=(e,n)=>{const [lon,lat]=geo.utm34ToWgs84(e,n);return {lon,lat};};
+ app.scope.withRoad={...fixture,record,osm:{elements:[{tags:{highway:'track'},geometry:[node(432990,4909760),node(433010,4909760)]}],bbox:[44,20,45,21]}};
+ app.run('show(withRoad)');
+ assert.equal(app.run('selection'),'p:3','T4 lies next to the track');assert.match(app.element('destinationNote').textContent,/najbliža putu/);
+ assert.match(app.element('wazeRoute').href,/^https:\/\/waze\.com\/ul\?ll=/);assert.equal(app.element('geoRoute').hidden,true,'iOS cannot open geo: links');
+ app.scope.navigator.userAgent='Mozilla/5.0 (Linux; Android 14)';app.run('routes()');
+ assert.equal(app.element('geoRoute').hidden,false);assert.match(app.element('geoRoute').href,/^geo:/);
+ app.element('destination').value='p:1';app.element('destination').onchange();
+ assert.equal(app.run('selection'),'p:1');app.run('fillDestinations()');assert.equal(app.run('selection'),'p:1','a picked point survives a refresh');
 });
 
 test('search suggests municipalities and cadastral municipalities from the RGZ table',async()=>{

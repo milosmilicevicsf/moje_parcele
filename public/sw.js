@@ -1,7 +1,7 @@
 // Reconstruct cached navigation responses: hosting may redirect .html URLs.
 // Returning a redirected response to a manual-redirect navigation causes a network error.
-const CACHE='parcele-shell-v18';
-const SHELL=['/teren.html','/teren.css','/teren.js','/config.js','/satellite.js','/ekatastar.js','/nearby-loader.js','/location-tracker.js','/parcel-neighborhood.js','/geo.js','/geosrbija.js','/field-geo.js','/favicon.svg','/icon-192.png','/icon-512.png','/manifest.webmanifest'];
+const CACHE='parcele-shell-v19';
+const SHELL=['/teren.html','/teren.css','/teren.js','/config.js','/satellite.js','/ekatastar.js','/nearby-loader.js','/location-tracker.js','/parcel-neighborhood.js','/parcel-measure.js','/navigation.js','/geo.js','/geosrbija.js','/field-geo.js','/favicon.svg','/icon-192.png','/icon-512.png','/manifest.webmanifest'];
 self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(SHELL);await self.skipWaiting();})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith('parcele-shell-')&&k!==CACHE)await caches.delete(k);await self.clients.claim();})()));
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin!==self.location.origin||e.request.method!=='GET'||u.pathname.startsWith('/api/'))return;if(SHELL.includes(u.pathname)||e.request.mode==='navigate')e.respondWith((async()=>{const c=await caches.open(CACHE);if(e.request.mode==='navigate'){const shell=await c.match('/teren.html');if(!shell)return fetch(e.request);return new Response(await shell.arrayBuffer(),{status:shell.status,statusText:shell.statusText,headers:shell.headers});}return await c.match(u.pathname)||fetch(e.request);})());});

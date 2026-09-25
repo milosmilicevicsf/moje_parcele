@@ -14,7 +14,8 @@ Phone-first parcel field map. Open `/teren.html` (the root redirects there).
 - User-initiated download of a bounded OpenStreetMap extract (~1 km around parcel center) through the app's own `/api/surroundings` Worker route: roads, tracks, buildings, land use, water. ODbL attribution links remain visible. No standard OSM tile bulk download.
 - Device-local IndexedDB parcels and surroundings, service-worker app shell cache with explicit completeness check. App never reports full offline readiness based on geometry alone.
 - Foreground high-accuracy geolocation, accuracy circle, nearest-boundary distance, inside/outside/uncertain status; stale fixes identified after 30 seconds or GPS stop.
-- External Google/Apple road navigation to a selected vertex; offline straight-line bearing/distance. No offline road-routing engine or background tracking.
+- Parcel details show the perimeter (total boundary length, enclaves included) and every side length from the projected UTM 34N rings; zoomed in, the map labels the sides.
+- External road navigation to a boundary vertex: Google Maps, Apple Maps, Waze, and on Android a `geo:` link that opens any installed map app, including offline ones such as OsmAnd or Organic Maps. The suggested vertex is the one nearest to a drivable road or track in the downloaded OSM surroundings (footpaths do not count); without surroundings it is T1, and a point the user picks stays picked. Offline straight-line bearing/distance. No offline road-routing engine or background tracking.
 - JSON backup export/import; import validates official polygon geometry before use.
 
 ## Data provenance
