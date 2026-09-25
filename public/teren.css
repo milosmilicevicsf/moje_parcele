@@ -136,3 +136,14 @@
 .sides{margin:0 0 6px;font-size:13px}
 .sides summary{cursor:pointer;font-weight:650;padding:6px 0}
 .sides ol{columns:2;column-gap:18px;margin:6px 0 0;padding-left:22px;font-size:12px;line-height:1.7;color:#4d5c48}
+
+/* The user's own parcels: summary, place groups, colours. */
+.saved-summary{font-size:13px;margin:8px 0 10px;color:#4d5c48}
+#showAllSaved{width:100%;margin-bottom:6px}
+.saved-group{font-size:12px;letter-spacing:.3px;margin:18px 0 2px;color:#5a6b55}
+.swatch-dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:-1px;box-shadow:0 0 0 1px #0003}
+.own{margin-top:18px;border-top:1px solid #e1e6d8;padding-top:14px}
+.own label{margin-top:10px}
+.swatches{display:flex;gap:10px;margin:4px 0 6px}
+.swatch{width:32px;height:32px;min-height:32px;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #0003}
+.swatch[aria-pressed="true"]{box-shadow:0 0 0 3px #183d32}

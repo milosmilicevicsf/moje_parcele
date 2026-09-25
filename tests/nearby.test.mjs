@@ -12,6 +12,7 @@ import {parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME} from '../public/ekata
 import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOOM} from '../public/satellite.js';
 import * as measure from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
+import * as portfolio from '../public/portfolio.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function until(check,tries=50){for(let i=0;i<tries&&!check();i++)await flush();assert(check(),'condition not reached');}
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
@@ -93,7 +94,7 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
  const labels=[],elements=new Map(),tileRequests=[],images=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
@@ -616,6 +617,39 @@ test('parcel details show the perimeter and side lengths; navigation suggests th
  assert.equal(app.element('geoRoute').hidden,false);assert.match(app.element('geoRoute').href,/^geo:/);
  app.element('destination').value='p:1';app.element('destination').onchange();
  assert.equal(app.run('selection'),'p:1');app.run('fillDestinations()');assert.equal(app.run('selection'),'p:1','a picked point survives a refresh');
+});
+
+test('own names and colours are stored at once and survive a terrain save that was already running',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',433040,4909700);
+ const app=await appHarness(async()=>({records:[a,b],total:2}));fakeStorage(app);
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ const label=app.element('parcelLabel');label.value='  Njiva kod reke ';label.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').label"),'Njiva kod reke','an unsaved parcel is stored together with its name');
+ assert.equal(app.element('mapParcelTitle').textContent,'Njiva kod reke · A');
+ await app.run('persistCurrent({color:PALETTE[1]})');assert.equal(app.run("storedPackages.get('A').color"),portfolio.PALETTE[1]);
+ app.run('var releaseSurroundings;fetchSurroundings=()=>new Promise(r=>releaseSurroundings=r);var pendingSave=saveCurrent()');
+ label.value='Vinograd';label.dispatch('change');await flush();await flush();
+ app.run('releaseSurroundings({elements:[],bbox:[44,20,45,21]})');await app.run('pendingSave');
+ assert.equal(app.run("storedPackages.get('A').label"),'Vinograd','a name typed during the download is not overwritten');
+ assert.equal(app.run("storedPackages.get('A').color"),portfolio.PALETTE[1]);assert.equal(app.run('current.label'),'Vinograd');
+ assert(app.run("storedPackages.get('A').osm"),'the terrain save itself still completes');
+ label.value='';label.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').label"),undefined,'a cleared name stays cleared');
+});
+
+test('all saved parcels show at once in their colours; tapping one opens it with its neighbours',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',443000,4919700),calls=[];
+ const app=await appHarness(async(...args)=>{calls.push(args);return {records:[],total:0};});
+ fakeStorage(app,[{...fixture,id:'A',record:a,label:'Njiva',color:portfolio.PALETTE[1]},{...fixture,id:'B',record:b}]);
+ app.element('showAllSaved').onclick();
+ assert.equal(app.run('overview'),true);assert.equal(app.run('nearby.length'),0);
+ assert.equal(app.element('mapMode').textContent,'Moje parcele');assert.equal(app.element('fit').textContent,'▦ Sve moje parcele');
+ assert.match(app.element('coverage').textContent,/2 parcele · ukupno 0,18 ha/);
+ assert(app.labels.includes('Njiva')&&app.labels.includes('B'),'own names label the overview');
+ const before=calls.length;tapAt(app,433015,4909715);await flush();
+ assert.equal(app.run('current.record.title'),'A');assert.equal(app.run('overview'),false);
+ assert.equal(app.element('mapParcelTitle').textContent,'Njiva · A');
+ assert(calls.length>before,'the opened parcel loads its neighbours');
 });
 
 test('search suggests municipalities and cadastral municipalities from the RGZ table',async()=>{

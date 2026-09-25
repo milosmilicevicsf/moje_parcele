@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {parcelGeometry,utm34ToWgs84} from '../public/geo.js';
 import {ringSides,perimeter,roadVertex} from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
+import {PALETTE,colorOf,nameOf,totalArea,hectares,parcelCount,groupByPlace} from '../public/portfolio.js';
 
 const ring=(east,north,size)=>[[east,north],[east+size,north],[east+size,north+size],[east,north+size],[east,north]];
 const wkt=rings=>'POLYGON ('+rings.map(r=>'('+r.map(p=>p.join(' ')).join(',')+')').join(',')+')';
@@ -30,6 +31,17 @@ test('the suggested destination is the vertex nearest to a drivable road or trac
  assert.equal(roadVertex(geometry,undefined),null);
  const far={tags:{highway:'primary'},geometry:[node(440000,4909700),node(440100,4909700)]};
  assert.equal(roadVertex(geometry,[far]),null);
+});
+
+test('saved parcels: total area, own names and colours, place groups and Serbian plurals',()=>{
+ const pkg=(title,ko,municipality,extra={})=>({record:{title,fullGeom:wkt([ring(433000,4909700,10)])},ko,municipality,...extra});
+ const items=[pkg('12','Pepeljevac','Lajkovac'),pkg('3','Pepeljevac Lajkovac',''),pkg('7','Grošnica I','Kragujevac',{label:'Voćnjak',color:PALETTE[1]})];
+ assert.equal(hectares(totalArea(items)),'0,03 ha');
+ assert.equal(nameOf(items[2]),'Voćnjak · 7');assert.equal(nameOf(items[0]),'Parcela 12');
+ assert.equal(colorOf(items[2]),PALETTE[1]);assert.equal(colorOf({color:'red'}),PALETTE[0],'unknown colours fall back to the first');
+ assert.deepEqual(groupByPlace(items).map(g=>[g.place,g.items.map(x=>x.record.title)]),[['Grošnica I, Kragujevac',['7']],['Pepeljevac, Lajkovac',['3','12']]],
+  'a searched parcel and one picked on the map share their place; numbers sort naturally');
+ assert.deepEqual([1,2,5,11,12,21,22,25].map(parcelCount),['1 parcela','2 parcele','5 parcela','11 parcela','12 parcela','21 parcela','22 parcele','25 parcela']);
 });
 
 test('navigation links carry the destination and name it for other map apps',()=>{
