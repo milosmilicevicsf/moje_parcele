@@ -652,6 +652,28 @@ test('all saved parcels show at once in their colours; tapping one opens it with
  assert(calls.length>before,'the opened parcel loads its neighbours');
 });
 
+test('a note and own points are stored with the parcel; an entrance becomes the suggested destination',async()=>{
+ const a=squareRecord('A',433000,4909700);
+ const app=await appHarness(async()=>({records:[a],total:1}));fakeStorage(app);
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ const note=app.element('parcelNote');note.value=' Međa uz potok ';note.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').note"),'Međa uz potok');
+ app.element('addMark').onclick();assert.equal(app.element('placing').hidden,false);
+ const gate=geo.utm34ToWgs84(433030,4909715);app.run('view.origin='+JSON.stringify(gate)+';view.center=[0,0]');
+ app.element('markType').value='ulaz';app.element('markHere').onclick();await flush();await flush();
+ assert.equal(app.element('placing').hidden,true);
+ const marks=()=>JSON.parse(app.run("JSON.stringify(storedPackages.get('A').marks||[])"));
+ assert.deepEqual(marks().map(m=>m.type),['ulaz']);assert(Math.abs(marks()[0].lon-gate[0])<1e-9&&Math.abs(marks()[0].lat-gate[1])<1e-9,'the point lies under the crosshair');
+ assert.match(app.run('selection'),/^m:/);assert.match(app.element('destinationNote').textContent,/Ulaz sa puta/);
+ const here=geo.utm34ToWgs84(433010,4909720);await app.emit(8,here);
+ app.element('markType').value='kamen';app.element('markGps').onclick();await flush();await flush();
+ assert.deepEqual(marks().map(m=>m.type),['ulaz','kamen']);assert(Math.abs(marks()[1].lon-here[0])<1e-9,'a boundary stone at the phone position');
+ await app.tick(31000);app.element('markGps').onclick();await flush();
+ assert.equal(marks().length,2);assert.match(app.element('message').textContent,/Nema svežeg/);
+ app.scope.imported={...fixture,record:a,marks:[{id:'x',type:'bogus',lon:1,lat:2},{id:'y',type:'bunar',lon:20.1,lat:44.3},{type:'bunar',lon:20,lat:44}]};
+ assert.equal(app.run('validPackage(imported).marks.length'),1,'an imported backup keeps only well-formed points');
+});
+
 test('search suggests municipalities and cadastral municipalities from the RGZ table',async()=>{
  const app=await appHarness(),lists={};
  for(const id of ['municipalityList','koList'])app.element(id).replaceChildren=(...options)=>lists[id]=options;
