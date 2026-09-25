@@ -4,12 +4,17 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {createNearbyLoader,nearbyFixState} from '../public/nearby-loader.js';
 import {createLocationTracker} from '../public/location-tracker.js';
-import {searchNearby} from '../public/geosrbija.js';
+import {searchNearby,placeNames} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
 import * as field from '../public/field-geo.js';
 import * as neighborhoods from '../public/parcel-neighborhood.js';
 import {parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME} from '../public/ekatastar.js';
 import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOOM} from '../public/satellite.js';
+import * as measure from '../public/parcel-measure.js';
+import {navigationLinks} from '../public/navigation.js';
+import * as portfolio from '../public/portfolio.js';
+import * as guideModule from '../public/guide.js';
+import {createCompass} from '../public/compass.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function until(check,tries=50){for(let i=0;i<tries&&!check();i++)await flush();assert(check(),'condition not reached');}
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
@@ -54,10 +59,11 @@ test('coarse fix invalidates a pending response; recovered fix loads without ano
  release();await flush();assert.equal(calls,2);assert(active());release();await pending;
 });
 
-test('nearby search covers both observed cadastral layers and decodes the real Belgrade record',async t=>{
+test('nearby search covers every regional cadastral layer, never addresses or outlines, and decodes the real Belgrade record',async t=>{
  const rural=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8')).record;
  t.mock.method(globalThis,'fetch',async(url,options)=>{
   const layers=JSON.parse(options.body).request.layers.split(',');
+  assert.deepEqual(layers.filter(Boolean),['586','587','588','589','899','939'],'Niš, Kragujevac and Vojvodina return nothing without their layers');
   return Response.json({d:{success:true,total:2,records:[rural,fixture.record].filter(r=>layers.includes(r.layerId))}});
  });
  const result=await searchNearby(...geo.wgs84ToUtm34(20.4604,44.8178),150);
@@ -86,20 +92,23 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
  assert.deepEqual(await searchNearby(432954,4909699,150),{records:[],total:0});
 });
 
-async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map()){
- const labels=[],elements=new Map(),tileRequests=[],images=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url=''){
+ const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={};let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const compassTarget={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>compassHandlers[type]=fn,removeEventListener:type=>delete compassHandlers[type]};
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
- function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,classList:{toggle(name,on){this[name]=on;},add(){},remove(){}},append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...guideModule,
+  createCompass:options=>createCompass({...options,target:compassTarget,Orientation:{},screenAngle:()=>0}),createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
-  latinPlace:x=>x,searchNearby:async(...args)=>{queries++;return search(...args);},
+  latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
   createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
   parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME,fetch:async url=>url==='/ko-ids.txt'?new Response(koTableText):new Response('',{status:404}),
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
-  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},append(){},replaceChildren(){},setAttribute(){},addEventListener(){}}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
-  ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout};
+  ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
+  URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}}};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
@@ -107,6 +116,7 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
+  compass(event){compassHandlers.deviceorientationabsolute?.(event);},
   run(code){return vm.runInContext(code,scope);},scope};
 }
 
@@ -184,6 +194,10 @@ function tapAt(app,east,north){
  const coords=geo.utm34ToWgs84(east,north),p=app.run('pixel('+JSON.stringify(coords)+')');
  pointer(app,'pointerdown',p);pointer(app,'pointerup',p);
 }
+async function holdAt(app,east,north){
+ const coords=geo.utm34ToWgs84(east,north),p=app.run('pixel('+JSON.stringify(coords)+')');
+ pointer(app,'pointerdown',p);await app.tick(600);pointer(app,'pointerup',p);await flush();
+}
 test('map taps switch parcels and toggle or explicitly clear selection without losing context',async()=>{
  const records=[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)];
  const app=await appHarness(async()=>({records,total:2}));await app.emit(9);
@@ -228,6 +242,47 @@ test('dragging, pinching and cancelled touches never change parcel selection',as
  pointer(app,'pointerdown',[100,100]);pointer(app,'pointercancel',[100,100]);pointer(app,'pointerup',[100,100]);
  assert.equal(app.run('current.record.title'),'A');
 });
+test('a quick tap beside parcels keeps them and never queries; a long press or right click loads another area',async()=>{
+ const records=[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)];
+ const app=await appHarness(async()=>({records,total:2}));await app.emit(9);
+ const queries=app.queries;
+ tapAt(app,457395,4962815);await flush();
+ assert.equal(app.queries,queries);assert.equal(app.run('nearby.length'),2);assert.equal(app.run('mapPin'),null);
+ assert.match(app.element('message').textContent,/držite prst/);
+ tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'A');
+ const view=app.run('JSON.stringify(view)');
+ tapAt(app,457395,4962815);await flush();
+ assert.equal(app.run('current'),null,'a mistaken tap only clears the selection');
+ assert.equal(app.queries,queries);assert.equal(app.run('nearby.length'),2);assert.equal(app.run('JSON.stringify(view)'),view);
+ await holdAt(app,457355,4962815);assert.equal(app.run('current.record.title'),'B','a long press on a parcel selects it');assert.equal(app.queries,queries);
+ await holdAt(app,457395,4962815);
+ assert.equal(app.queries,queries+1,'a long press on an empty spot loads parcels around it');assert.equal(app.run('current'),null);assert(app.run('mapPin'));
+ const map=app.element('map'),empty=()=>app.run('pixel('+JSON.stringify(geo.utm34ToWgs84(457395,4962900))+')');
+ let p=empty(),prevented=false;
+ map.dispatch('pointerdown',{pointerId:5,button:0,clientX:p[0],clientY:p[1]});
+ map.dispatch('contextmenu',{clientX:p[0],clientY:p[1],preventDefault(){prevented=true;}});
+ map.dispatch('pointerup',{pointerId:5,button:0,clientX:p[0],clientY:p[1]});await flush();
+ assert(prevented);assert.equal(app.queries,queries+2,'Android reports a touch long press as a context menu');
+ p=empty();
+ map.dispatch('pointerdown',{pointerId:6,button:2,clientX:p[0],clientY:p[1]});map.dispatch('pointerup',{pointerId:6,button:2,clientX:p[0],clientY:p[1]});
+ map.dispatch('contextmenu',{clientX:p[0]+40,clientY:p[1],preventDefault(){}});await flush();
+ assert.equal(app.queries,queries+3,'a right click loads parcels on desktop');
+});
+test('wheel and pinch zoom keep the point under the cursor or between the fingers in place',async()=>{
+ const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800)],total:1}));await app.emit(9);
+ tapAt(app,457315,4962815);
+ const at=(x,y)=>app.run(`coordsAt(${x},${y})`),same=(a,b)=>Math.abs(a[0]-b[0])<1e-9&&Math.abs(a[1]-b[1])<1e-9;
+ const before=at(200,150),scale=app.run('view.scale');let prevented=false;
+ app.element('map').dispatch('wheel',{deltaY:-100,clientX:200,clientY:150,preventDefault(){prevented=true;}});
+ assert(prevented);assert(Math.abs(app.run('view.scale')/scale-1.2)<1e-9);assert(same(at(200,150),before),'the point under the cursor stays');
+ const start=at(400,300),s0=app.run('view.scale');
+ pointer(app,'pointerdown',[300,300],1);pointer(app,'pointerdown',[500,300],2);
+ pointer(app,'pointermove',[500,300],2);pointer(app,'pointermove',[600,300],2);
+ assert(Math.abs(app.run('view.scale')/s0-1.5)<1e-9,'finger distance 200 -> 300 zooms 1.5x');
+ assert(same(at(450,300),start),'the point between the fingers follows their midpoint');
+ pointer(app,'pointerup',[600,300],2);pointer(app,'pointerup',[300,300],1);
+ assert.equal(app.run('current.record.title'),'A','zooming never changes the selection');
+});
 test('a save completing after selection is cleared does not restore or replace a selected parcel',async()=>{
  const app=await appHarness(async()=>({records:[squareRecord('A',457300,4962800),squareRecord('B',457340,4962800)],total:2}));await app.emit(9);
  app.run("show(nearby[0],false);db={};let releaseSave;fetchSurroundings=()=>new Promise(resolve=>releaseSave=resolve);dbCall=async()=>{};refreshSaved=async()=>{};checkShell=async()=>true;var pendingSave=saveCurrent()");
@@ -253,12 +308,13 @@ test('searching a remote parcel loads its neighbors without GPS and clearing sta
  tapAt(app,433065,4909715);assert.equal(app.run('current.record.title'),'remote-neighbor');
 });
 
-test('tapping an empty remote location places a pin and loads selectable parcels there without GPS',async()=>{
+test('a long press on an empty remote location places a pin and loads selectable parcels there without GPS',async()=>{
  const remote=squareRecord('remote',433000,4909700),calls=[];
  const app=await appHarness(async(east,north,radius)=>{calls.push([east,north,radius]);return {records:[remote],total:1};});
  const point=geo.utm34ToWgs84(433015,4909745);
  app.run('view.origin='+JSON.stringify(point)+';view.center=[0,0];view.scale=2;draw()');
- tapAt(app,433015,4909745);await flush();
+ tapAt(app,433015,4909745);await flush();assert.equal(calls.length,0,'a quick tap does not query');
+ await holdAt(app,433015,4909745);
  assert.equal(calls.length,1);assert(Math.abs(calls[0][0]-433015)<1);assert(Math.abs(calls[0][1]-4909745)<1);
  assert.equal(calls[0][2],150);assert.equal(app.run('nearbyMode'),false);
  assert.equal(app.run('nearby[0].record.title'),'remote');
@@ -444,6 +500,8 @@ test('bundled RGZ KO table resolves reference parcels and never returns a wrong 
  assert.equal(findKoId(entries,{desc:remote.record.desc}),'728195','Pepeljevac exists in three municipalities; Lajkovac is chosen');
  assert.equal(findKoId(entries,{desc:fixture.record.desc}),'704059','Stari Grad Belgrade, not Stari Grad Subotica');
  assert.equal(findKoId(entries,{desc:'ČUKARICA ČUKARICA'}),'704083','value observed in a live eKatastar URL');
+ assert.equal(findKoId(entries,{desc:'ЗРЕЊАНИН I ZRENJANIN I ЗРЕЊАНИН ZRENJANIN'}),'805742','Vojvodina descriptions list Cyrillic first');
+ assert.equal(findKoId(entries,{desc:'PALILULA PALILULA (BEOGRAD) ПАЛИЛУЛА ПАЛИЛУЛА (БЕОГРАД)'}),'703907');
  for(const e of entries){const id=findKoId(entries,{desc:(e.ko+' '+e.opstina).toUpperCase()});assert.equal(id,e.id,e.ko+' / '+e.opstina);}
 });
 
@@ -523,4 +581,139 @@ test('selected parcel has an automatic summary, direct navigation and compact GP
  assert.equal(app.element('mapParcelCard').hidden,true);
  app.element('mapRoute').onclick();assert.equal(opened,1);
  app.element('gps').onclick();assert.equal(app.element('gps')['aria-pressed'],'false');
+});
+
+test('sharing links to a point inside the parcel; opening the link selects that parcel without GPS',async()=>{
+ const records=[squareRecord('A',433000,4909700),squareRecord('B',433040,4909700)];
+ const app=await appHarness(async()=>({records,total:2}));
+ app.scope.target={...fixture,record:records[1]};app.run('show(target)');await flush();
+ let shared;app.scope.navigator.share=async data=>{shared=data;};
+ await app.element('mapShare').onclick();
+ const url=new URL(shared.url),point=[Number(url.searchParams.get('lon')),Number(url.searchParams.get('lat'))];
+ assert.equal(shared.title,'Parcela B');assert.equal(url.origin+url.pathname,'https://test.local/teren.html');assert.equal(url.searchParams.get('p'),'B');
+ assert(field.boundary(point,geo.parcelGeometry(records[1]).polygons).inside,'the shared point lies inside the parcel');
+ delete app.scope.navigator.share;let copied;app.scope.navigator.clipboard={writeText:async text=>{copied=text;}};
+ await app.element('share').onclick();assert.equal(copied,shared.url);assert.match(app.element('message').textContent,/kopiran/);
+ const calls=[];
+ const opened=await appHarness(async(...args)=>{calls.push(args);return {records,total:2};},new Map(),url.search);
+ await until(()=>opened.run('current?.record.title')==='B');
+ const [east,north]=geo.wgs84ToUtm34(...point);
+ assert(Math.abs(calls[0][0]-east)<1&&Math.abs(calls[0][1]-north)<1);assert.equal(calls[0][2],150);
+ assert.equal(opened.run('nearbyMode'),false);assert.match(opened.element('message').textContent,/podeljena parcela B/);
+ const count=calls.length;await opened.emit(8,geo.utm34ToWgs84(457315,4962815));
+ assert.equal(calls.length,count,'a GPS fix does not replace the shared parcel');
+});
+
+test('parcel details show the perimeter and side lengths; navigation suggests the vertex nearest a road',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0}));
+ let sides=[];app.element('sides').replaceChildren=(...items)=>sides=items;
+ const record=squareRecord('A',433000,4909700);
+ app.scope.target={...fixture,record};app.run('show(target)');
+ assert.equal(app.element('perimeter').textContent,'120 m');
+ assert.deepEqual(sides.map(li=>li.textContent),['T1–T2 · 30 m','T2–T3 · 30 m','T3–T4 · 30 m','T4–T1 · 30 m']);
+ assert.match(app.element('mapParcelPlace').textContent,/obim 120 m/);
+ assert.equal(app.run('selection'),'p:0');assert.match(app.element('destinationNote').textContent,/prva tačka/);
+ const node=(e,n)=>{const [lon,lat]=geo.utm34ToWgs84(e,n);return {lon,lat};};
+ app.scope.withRoad={...fixture,record,osm:{elements:[{tags:{highway:'track'},geometry:[node(432990,4909760),node(433010,4909760)]}],bbox:[44,20,45,21]}};
+ app.run('show(withRoad)');
+ assert.equal(app.run('selection'),'p:3','T4 lies next to the track');assert.match(app.element('destinationNote').textContent,/najbliža putu/);
+ assert.match(app.element('wazeRoute').href,/^https:\/\/waze\.com\/ul\?ll=/);assert.equal(app.element('geoRoute').hidden,true,'iOS cannot open geo: links');
+ app.scope.navigator.userAgent='Mozilla/5.0 (Linux; Android 14)';app.run('routes()');
+ assert.equal(app.element('geoRoute').hidden,false);assert.match(app.element('geoRoute').href,/^geo:/);
+ app.element('destination').value='p:1';app.element('destination').onchange();
+ assert.equal(app.run('selection'),'p:1');app.run('fillDestinations()');assert.equal(app.run('selection'),'p:1','a picked point survives a refresh');
+});
+
+test('own names and colours are stored at once and survive a terrain save that was already running',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',433040,4909700);
+ const app=await appHarness(async()=>({records:[a,b],total:2}));fakeStorage(app);
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ const label=app.element('parcelLabel');label.value='  Njiva kod reke ';label.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').label"),'Njiva kod reke','an unsaved parcel is stored together with its name');
+ assert.equal(app.element('mapParcelTitle').textContent,'Njiva kod reke · A');
+ await app.run('persistCurrent({color:PALETTE[1]})');assert.equal(app.run("storedPackages.get('A').color"),portfolio.PALETTE[1]);
+ app.run('var releaseSurroundings;fetchSurroundings=()=>new Promise(r=>releaseSurroundings=r);var pendingSave=saveCurrent()');
+ label.value='Vinograd';label.dispatch('change');await flush();await flush();
+ app.run('releaseSurroundings({elements:[],bbox:[44,20,45,21]})');await app.run('pendingSave');
+ assert.equal(app.run("storedPackages.get('A').label"),'Vinograd','a name typed during the download is not overwritten');
+ assert.equal(app.run("storedPackages.get('A').color"),portfolio.PALETTE[1]);assert.equal(app.run('current.label'),'Vinograd');
+ assert(app.run("storedPackages.get('A').osm"),'the terrain save itself still completes');
+ label.value='';label.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').label"),undefined,'a cleared name stays cleared');
+});
+
+test('all saved parcels show at once in their colours; tapping one opens it with its neighbours',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',443000,4919700),calls=[];
+ const app=await appHarness(async(...args)=>{calls.push(args);return {records:[],total:0};});
+ fakeStorage(app,[{...fixture,id:'A',record:a,label:'Njiva',color:portfolio.PALETTE[1]},{...fixture,id:'B',record:b}]);
+ app.element('showAllSaved').onclick();
+ assert.equal(app.run('overview'),true);assert.equal(app.run('nearby.length'),0);
+ assert.equal(app.element('mapMode').textContent,'Moje parcele');assert.equal(app.element('fit').textContent,'▦ Sve moje parcele');
+ assert.match(app.element('coverage').textContent,/2 parcele · ukupno 0,18 ha/);
+ assert(app.labels.includes('Njiva')&&app.labels.includes('B'),'own names label the overview');
+ const before=calls.length;tapAt(app,433015,4909715);await flush();
+ assert.equal(app.run('current.record.title'),'A');assert.equal(app.run('overview'),false);
+ assert.equal(app.element('mapParcelTitle').textContent,'Njiva · A');
+ assert(calls.length>before,'the opened parcel loads its neighbours');
+});
+
+test('a note and own points are stored with the parcel; an entrance becomes the suggested destination',async()=>{
+ const a=squareRecord('A',433000,4909700);
+ const app=await appHarness(async()=>({records:[a],total:1}));fakeStorage(app);
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ const note=app.element('parcelNote');note.value=' Međa uz potok ';note.dispatch('change');await flush();await flush();
+ assert.equal(app.run("storedPackages.get('A').note"),'Međa uz potok');
+ app.element('addMark').onclick();assert.equal(app.element('placing').hidden,false);
+ const gate=geo.utm34ToWgs84(433030,4909715);app.run('view.origin='+JSON.stringify(gate)+';view.center=[0,0]');
+ app.element('markType').value='ulaz';app.element('markHere').onclick();await flush();await flush();
+ assert.equal(app.element('placing').hidden,true);
+ const marks=()=>JSON.parse(app.run("JSON.stringify(storedPackages.get('A').marks||[])"));
+ assert.deepEqual(marks().map(m=>m.type),['ulaz']);assert(Math.abs(marks()[0].lon-gate[0])<1e-9&&Math.abs(marks()[0].lat-gate[1])<1e-9,'the point lies under the crosshair');
+ assert.match(app.run('selection'),/^m:/);assert.match(app.element('destinationNote').textContent,/Ulaz sa puta/);
+ const here=geo.utm34ToWgs84(433010,4909720);await app.emit(8,here);
+ app.element('markType').value='kamen';app.element('markGps').onclick();await flush();await flush();
+ assert.deepEqual(marks().map(m=>m.type),['ulaz','kamen']);assert(Math.abs(marks()[1].lon-here[0])<1e-9,'a boundary stone at the phone position');
+ await app.tick(31000);app.element('markGps').onclick();await flush();
+ assert.equal(marks().length,2);assert.match(app.element('message').textContent,/Nema svežeg/);
+ app.scope.imported={...fixture,record:a,marks:[{id:'x',type:'bogus',lon:1,lat:2},{id:'y',type:'bunar',lon:20.1,lat:44.3},{type:'bunar',lon:20,lat:44}]};
+ assert.equal(app.run('validPackage(imported).marks.length'),1,'an imported backup keeps only well-formed points');
+});
+
+test('walking guidance: distance and arrow, compass, screen kept on, vibration at the boundary and on arrival',async()=>{
+ const a=squareRecord('A',433000,4909700);
+ const app=await appHarness(async()=>({records:[a],total:1}));
+ const vibrations=[];let locks=0,released=0;
+ app.scope.navigator.vibrate=p=>vibrations.push(p);
+ app.scope.navigator.wakeLock={request:async()=>{locks++;return {release:async()=>{released++;},addEventListener(){}};}};
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ app.element('guideStart').onclick();await flush();
+ assert.equal(app.element('guide').hidden,false);assert.equal(locks,1,'the screen stays on while guiding');
+ const rotation=()=>Number(app.element('guideArrow').style.transform.match(/-?[\d.]+/)[0]),near=(x,y)=>Math.abs(((x-y+540)%360)-180)<2;
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433000,4909660));
+ assert.equal(app.element('guideDistance').textContent,'40 m');assert.match(app.element('guideTarget').textContent,/^T1 · parcela A/);
+ assert(near(rotation(),0),'T1 lies north; without a compass the arrow points north');
+ app.compass({alpha:270,absolute:true});
+ assert(near(rotation(),270),'facing east, the target is to the left');assert.equal(app.element('guideCompass').hidden,true);
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433015,4909715));
+ assert.equal(JSON.stringify(vibrations),'[[120,80,120]]');assert.match(app.element('message').textContent,/Ušli ste u parcelu A/);
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433015,4909702));
+ assert.equal(vibrations.length,1,'within the accuracy of the boundary nothing changes');
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433001,4909701));
+ assert.equal(app.element('guideDistance').textContent,'Na tački ste');assert.equal(vibrations.at(-1),80);
+ app.element('guideNext').onclick();assert.match(app.element('guideTarget').textContent,/^T2/);
+ app.element('guideStop').onclick();await flush();
+ assert.equal(app.element('guide').hidden,true);assert.equal(released,1);assert.equal(app.run('heading'),null);
+});
+
+test('search suggests municipalities and cadastral municipalities from the RGZ table',async()=>{
+ const app=await appHarness(),lists={};
+ for(const id of ['municipalityList','koList'])app.element(id).replaceChildren=(...options)=>lists[id]=options;
+ const m=app.element('municipality'),ko=app.element('ko');m.value='';ko.value='';
+ m.dispatch('focus');await until(()=>lists.koList?.length===2);
+ assert.deepEqual(lists.municipalityList.map(o=>o.value),['Lajkovac','Stari Grad']);
+ assert.deepEqual(lists.koList.map(o=>[o.value,o.label]),[['Pepeljevac','Lajkovac'],['Stari Grad','Stari Grad']]);
+ m.value='lajkovac';m.dispatch('input');assert.deepEqual(lists.koList.map(o=>o.value),['Pepeljevac'],'a known municipality narrows the list');
+ m.value='';ko.value='Stari Grad';ko.dispatch('change');assert.equal(m.value,'Stari Grad','a KO found in one municipality fills it in');
+ const html=fs.readFileSync('public/teren.html','utf8');
+ assert.match(html,/<input id="municipality"[^>]*list="municipalityList"/);assert.match(html,/<input id="ko"[^>]*list="koList"/);
 });

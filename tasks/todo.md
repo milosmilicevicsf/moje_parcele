@@ -112,3 +112,43 @@ Sa R≈150 m vraća sve parcele oko tačke sa `fullGeom`. Satelitski snimak (`ba
 - Browser (lokalni statički server): snimak se poklapa sa granicom 1227/2, zum iznad z18 bez sivih pločica, izbor se pamti, povratak na mapu radi.
 - Esri datum snimka: Pepeljevac 9. 3. 2025, Beograd 9. 4. 2025. GeoSrbija ortofoto je iz 2020–2021.
 - Neprovereno uživo: ◎ protiv prave GeoSrbije (odavde blokirana; pokriveno testom sa imitacijom), link na eKatastar (sajt odavde nedostupan).
+
+# Plan 7: pretraga sa predlozima, mapa na telefonu, deljenje linkom
+
+Nalaz usput (prostorni upiti u 32 grada): parcele su u šest regionalnih slojeva. Sa samo 586 i 939 „parcele oko mene“,
+pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i svuda u regionima 587/588/589/899.
+
+- [x] `geosrbija.js`: slojevi 586, 587, 588, 589, 899, 939 (bez 49 = obrisi naselja i 910 = adrese)
+- [x] `geo.js` `latinWords`: vojvođanski opis počinje ćirilicom, rimski brojevi su u oba pisma → `latinPlace` i eKatastar KoID rade i za 899
+- [x] Pretraga: `datalist` opština i KO iz `ko-ids.txt`, KO lista po opštini, KO iz jedne opštine popunjava opštinu; `placeNames` vraća dijakritike iz rezultata
+- [x] Mapa: zum točkićem i sa dva prsta oko kursora/prstiju, pomeranje sa dva prsta, crtanje jednom po frejmu
+- [x] Kratak dodir na prazno samo uklanja izbor; pin tek na dug pritisak (550 ms), Android `contextmenu` ili desni klik
+- [x] „Podeli“: `?p=&lat=&lon=` preko Web Share ili kopiranja; otvaranje linka bira parcelu bez GPS-a; opis za pregled linka
+- [x] `sw.js` v18, testovi, README
+
+## Pregled 7
+- `node --test "tests/*.test.mjs"`: 55/55 (4 nova testa + nove provere u postojećim; test pina prebačen na dug pritisak).
+- Uživo (lokalni statički server, Chromium, emulirana lokacija, prava GeoSrbija): Niš 95 parcela, Novi Sad 120 (ranije 0);
+  kratak dodir samo uklanja izbor, dug pritisak učitava 210 parcela oko pina; link za Niš otvoren sa lokacijom u Beogradu;
+  „Grosnica I“ popunjava Kragujevac, 1500/1 se prikazuje kao „Grošnica I · Kragujevac“, eKatastar KoID 717177.
+- Neprovereno: pravi telefon (dug pritisak na iOS-u, Android `contextmenu`, sistemski meni za deljenje), `/api/surroundings` (lokalno nije pokretan).
+
+# Plan 8: moje parcele, terenski alati, beleške i vođenje (tačke 3–7 iz pregleda)
+
+- [x] Tačka 5: obim i dužine stranica (`parcel-measure.js`, UTM metri), natpisi stranica na mapi, obim na kartici
+- [x] Tačka 7: predloženo teme najbliže putu ili stazi iz OSM okoline (`roadVertex`), Waze i `geo:` na Androidu (`navigation.js`)
+- [x] Tačka 3: naziv i boja parcele, sačuvane parcele u svakom režimu mape, „Sve moje parcele na mapi“, grupe po mestu sa zbirom (`portfolio.js`)
+- [x] Lična polja se čuvaju odmah (neprimljena parcela se sačuva bez preuzimanja); „Sačuvaj za teren“ koji je već bio u toku ih ne pregazi
+- [x] Tačka 6: beleška, sopstvene tačke (krstić ili GPS), fotografije u zasebnoj IndexedDB prodavnici (baza v2), brisanje parcele briše i fotografije
+- [x] Tačka 4: vođenje pešice (`guide.js`, `compass.js`): strelica i udaljenost, kompas, konus pravca, ekran ne gasne, vibracija na granici i na tački
+- [x] Novi moduli u `sw.js` (v22), testovi, README
+
+## Pregled 8
+- `node --test "tests/*.test.mjs"`: 66/66 (novi `tests/field-tools.test.mjs` za čiste module + testovi aplikacije za svaku funkciju).
+- Uživo (Chromium, emulirana lokacija, prava GeoSrbija): parcela 980 u Nišu dobila naziv, boju, belešku, tačke i dve fotografije;
+  sve vraćeno posle ponovnog učitavanja (baza v2); brisanje parcele obrisalo i fotografije; „Ulaz sa puta“ postao predloženo odredište;
+  vođenje: 40 m, strelica prema severu, posle događaja kompasa (uz dozvolu za senzore) 270°; sveža fotografija dobila lokaciju ±6 m.
+- Nalazi usput: ovaj Chromium ima `DeviceOrientationEvent.requestPermission` i bez dozvole za senzore vraća „denied“; aplikacija tada
+  usmerava strelicu prema severu i nudi dugme „Kompas“. Stari service worker služi stare fajlove dok se nova verzija ne aktivira i stranica
+  ne učita ponovo (postojeće ponašanje, stavka 27 pregleda).
+- Neprovereno: pravi telefon (kompas na iOS-u i Androidu, vibracija, Screen Wake Lock, kamera), zaključavanje ekrana u instaliranoj PWA.

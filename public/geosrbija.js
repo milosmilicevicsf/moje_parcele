@@ -1,12 +1,14 @@
-import {normalize,normalizeNumber,selectRecords} from './geo.js';
+import {normalize,normalizeNumber,selectRecords,latinWords} from './geo.js';
 import {GEOSRBIJA_URL} from './config.js';
 // The public a3.geosrbija.rs search accepts JSON requests without a session or token
 // (verified from captured browser traffic on 2026-09-23). Two request shapes are used:
 // text search ("q") and the spatial "circle" search the map viewer runs on every click.
 const LAYERS='507,941,948,695,694,693,589,587,586,588,939,899,1178,1177,910,49,AdaptiveNames,AdaptiveAddresses,AdaptiveThemes';
-// Public search returns rural parcels from 586 and Belgrade parcels from 939.
-// Query both: a single layer silently returns an empty result in the other area.
-const PARCEL_LAYERS='586,939,';
+// Cadastral parcels are split into regional layers (circle queries in 32 towns, 2026-09-25): 586 west and
+// central Serbia, 587 Kragujevac/Kraljevo/Kruševac, 588 Niš and the east, 589 the south, 899 Vojvodina,
+// 939 Belgrade. A missing layer silently returns an empty result in its region. The same query on 49
+// returns settlement outlines and on 910 addresses, so those stay out.
+const PARCEL_LAYERS='586,587,588,589,899,939,';
 const unreachable='Veza sa GeoSrbija servisom nije uspela. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu. Ako ni tamo ne radi, proverite vezu ili pokušajte kasnije. Ako sajt radi, ponovite pretragu; servis za parcele može biti privremeno nedostupan.';
 
 export function textRequest(parcel,ko){
@@ -17,10 +19,17 @@ export function nearbyRequest(east,north,radius){
   if(![east,north,radius].every(Number.isFinite)||radius<=0||radius>1000)throw new Error('Neispravan prostorni upit.');
   return {srsid:'32634',st:'circle',s:east.toFixed(2)+','+north.toFixed(2)+','+Math.round(radius),start:0,limit:100,layers:PARCEL_LAYERS};
 }
-// "PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ" -> "Pepeljevac Lajkovac" (the Cyrillic half repeats the Latin one).
+// "PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ" -> "Pepeljevac Lajkovac"; "GROŠNICA I KRAGUJEVAC ..." -> "Grošnica I Kragujevac".
 export function latinPlace(desc){
-  const latin=String(desc||'').split(/\s+/).filter(w=>w&&!/[\u0400-\u04FF]/.test(w));
-  return latin.map(w=>w.charAt(0)+w.slice(1).toLowerCase()).join(' ');
+  return latinWords(desc).map(w=>/^[IVX]+$/.test(w)?w:w.toLowerCase().replace(/\p{L}/u,c=>c.toUpperCase())).join(' ');
+}
+// Names with diacritics for a typed or suggested KO ("grosnica i" in "kragujevac" -> "Grošnica I", "Kragujevac").
+// A KO typed without its numeral would split the place in the wrong word, so the rest must match the municipality.
+export function placeNames(desc,ko,municipality){
+  const words=latinPlace(desc).split(' '),key=normalize(ko),n=key.split(' ').length;
+  const rest=normalize(words.slice(n).join(' ')),place=normalize(municipality);
+  if(!key||normalize(words.slice(0,n).join(' '))!==key||rest!==place&&!rest.startsWith(place+' '))return {ko,municipality};
+  return {ko:words.slice(0,n).join(' '),municipality:words.slice(n).join(' ')};
 }
 const isPolygon=r=>/^(?:MULTI)?POLYGON\b/i.test(String(r.fullGeom||'').trim());
 
