@@ -54,10 +54,11 @@ test('coarse fix invalidates a pending response; recovered fix loads without ano
  release();await flush();assert.equal(calls,2);assert(active());release();await pending;
 });
 
-test('nearby search covers both observed cadastral layers and decodes the real Belgrade record',async t=>{
+test('nearby search covers every regional cadastral layer, never addresses or outlines, and decodes the real Belgrade record',async t=>{
  const rural=JSON.parse(fs.readFileSync('tests/fixtures/parcel.json','utf8')).record;
  t.mock.method(globalThis,'fetch',async(url,options)=>{
   const layers=JSON.parse(options.body).request.layers.split(',');
+  assert.deepEqual(layers.filter(Boolean),['586','587','588','589','899','939'],'Niš, Kragujevac and Vojvodina return nothing without their layers');
   return Response.json({d:{success:true,total:2,records:[rural,fixture.record].filter(r=>layers.includes(r.layerId))}});
  });
  const result=await searchNearby(...geo.wgs84ToUtm34(20.4604,44.8178),150);
@@ -444,6 +445,8 @@ test('bundled RGZ KO table resolves reference parcels and never returns a wrong 
  assert.equal(findKoId(entries,{desc:remote.record.desc}),'728195','Pepeljevac exists in three municipalities; Lajkovac is chosen');
  assert.equal(findKoId(entries,{desc:fixture.record.desc}),'704059','Stari Grad Belgrade, not Stari Grad Subotica');
  assert.equal(findKoId(entries,{desc:'ČUKARICA ČUKARICA'}),'704083','value observed in a live eKatastar URL');
+ assert.equal(findKoId(entries,{desc:'ЗРЕЊАНИН I ZRENJANIN I ЗРЕЊАНИН ZRENJANIN'}),'805742','Vojvodina descriptions list Cyrillic first');
+ assert.equal(findKoId(entries,{desc:'PALILULA PALILULA (BEOGRAD) ПАЛИЛУЛА ПАЛИЛУЛА (БЕОГРАД)'}),'703907');
  for(const e of entries){const id=findKoId(entries,{desc:(e.ko+' '+e.opstina).toUpperCase()});assert.equal(id,e.id,e.ko+' / '+e.opstina);}
 });
 

@@ -10,10 +10,14 @@ test('forward UTM matches the inverse and the point a3 sends for the fixture par
  const [e,n]=wgs84ToUtm34(20.1595475,44.3374173);assert(Math.abs(e-433000.45)<.05&&Math.abs(n-4909693.59)<.05);
 });
 test('nearby search mirrors the a3 map click request and reads place names from desc',()=>{
- const r=nearbyRequest(432954.0831709,4909699.6789006,150);assert.deepEqual(r,{srsid:'32634',st:'circle',s:'432954.08,4909699.68,150',start:0,limit:100,layers:'586,939,'});
+ const r=nearbyRequest(432954.0831709,4909699.6789006,150);assert.deepEqual(r,{srsid:'32634',st:'circle',s:'432954.08,4909699.68,150',start:0,limit:100,layers:'586,587,588,589,899,939,'});
  for(const bad of [[NaN,1,10],[1,1,0],[1,1,5000]])assert.throws(()=>nearbyRequest(...bad));
  assert.equal(textRequest('1227/2','Pepeljevac').q,'1227/2 pepeljevac');
  assert.equal(latinPlace('PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ'),'Pepeljevac Lajkovac');assert.equal(latinPlace(undefined),'');
+ // Descriptions observed live on 2026-09-25: roman numerals appear in both halves, Vojvodina lists Cyrillic first.
+ assert.equal(latinPlace('GROŠNICA I KRAGUJEVAC ГРОШНИЦА I КРАГУЈЕВАЦ'),'Grošnica I Kragujevac');
+ assert.equal(latinPlace('ЗРЕЊАНИН I ZRENJANIN I ЗРЕЊАНИН ZRENJANIN'),'Zrenjanin I Zrenjanin');
+ assert.equal(latinPlace('PALILULA PALILULA (BEOGRAD) ПАЛИЛУЛА ПАЛИЛУЛА (БЕОГРАД)'),'Palilula Palilula (Beograd)');
  const html=fs.readFileSync('public/teren.html','utf8');assert.match(html,/<button id="locate"/);assert.doesNotMatch(html,/id="nearby"/);
 });
 test('surroundings service validates the center, builds a bounded query and a complete package',()=>{

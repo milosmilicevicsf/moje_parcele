@@ -25,3 +25,9 @@
 - Kontekst: upit samo nad slojem 586 radio je u Pepeljevcu, ali je vraćao nulu u centru Beograda i na Novom Beogradu. Isti javni servis vraća tamošnje parcele iz sloja 939.
 - Pravilo: proveriti javni upit na gradskoj i ruralnoj referentnoj lokaciji; preuzeti sve potrebne katastarske slojeve. Prazan odgovor opisati kao rezultat upita, bez tvrdnje da nema parcela ili digitalizovanog plana.
 - Pravilo: za lokalnu pretragu proveriti i starost i prijavljenu tačnost GPS položaja. Testirati grub prvi položaj, prelaz na precizan položaj i odgovor koji stigne nakon promene lokacije.
+
+## Dve referentne tačke nisu provera cele zemlje
+- Kontekst: posle dodavanja sloja 939 za Beograd, „parcele oko mene“ su i dalje vraćale nulu u Nišu, Kragujevcu i celoj Vojvodini,
+  jer su parcele podeljene u šest regionalnih slojeva (586, 587, 588, 589, 899, 939). Proveravani su samo Pepeljevac i Beograd.
+- Pravilo: kad servis deli podatke po regionima, uzorkovati celu zemlju (20–30 gradova, sva četiri regiona) sa svim slojevima
+  iz tekstualne pretrage, i spisak slojeva izvesti iz `layerName` u odgovorima, a ne iz dve tačke.

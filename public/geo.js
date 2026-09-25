@@ -26,6 +26,19 @@ const cy='абвгдђежзијклљмнњопрстћуфхцчџш', la=['a'
 export function normalize(s) {
   return String(s).toLowerCase().replace(/[абвгдђежзијклљмнњопрстћуфхцчџш]/g,c=>la[cy.indexOf(c)]).replace(/đ/g,'dj').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9/]+/g,' ').trim().replace(/\s+/g,' ');
 }
+// GeoSrbija descriptions repeat the place in both scripts, in either order ("ЗРЕЊАНИН I ZRENJANIN I ЗРЕЊАНИН ZRENJANIN");
+// roman numerals and other tokens without letters belong to the script of the word before them.
+export function latinWords(desc) {
+  const words=[];let latin=true;
+  for (const w of String(desc||'').split(/\s+/)) {
+    if (!w) continue;
+    const cyrillic=/[\u0400-\u04FF]/.test(w);
+    if (cyrillic) latin=false;
+    else if (!/^[IVX]+$/i.test(w) && /\p{L}/u.test(w)) latin=true;
+    if (latin && !cyrillic) words.push(w);
+  }
+  return words;
+}
 export function normalizeNumber(s) {
   const value=String(s).trim();
   if (!/^\d+(?:\/\d+)?$/.test(value)) throw new Error('Unesite broj parcele, na primer 1227/2.');

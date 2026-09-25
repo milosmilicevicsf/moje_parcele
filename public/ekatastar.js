@@ -1,4 +1,4 @@
-import {normalize} from './geo.js';
+import {normalize,latinWords} from './geo.js';
 // eKatastar opens the parcel form with municipality and cadastral municipality preselected
 // for a KO registry number; the parcel number and captcha stay with the user.
 export const EKATASTAR_HOME='https://katastar.rgz.gov.rs/eKatastarPublic/Default.aspx';
@@ -15,7 +15,7 @@ export function parseKoTable(text){
   return entries;
 }
 // GeoSrbija desc repeats "KO MUNICIPALITY" in Latin and Cyrillic; keep the Latin half.
-function latinDesc(desc){return normalize(String(desc||'').split(/\s+/).filter(w=>w&&!/[\u0400-\u04FF]/.test(w)).join(' '));}
+function latinDesc(desc){return normalize(latinWords(desc).join(' '));}
 const words=s=>new Set(s.split(' ').filter(Boolean));
 // RGZ disambiguates repeated municipality names in parentheses, e.g. "palilula nis".
 function sameMunicipality(entry,text){
