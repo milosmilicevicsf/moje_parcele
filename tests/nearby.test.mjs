@@ -13,6 +13,7 @@ import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOO
 import * as measure from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
 import * as portfolio from '../public/portfolio.js';
+import * as backup from '../public/backup.js';
 import * as guideModule from '../public/guide.js';
 import {createCompass} from '../public/compass.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -93,11 +94,11 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 });
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url=''){
- const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={};let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={},blobs=[],created=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const compassTarget={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>compassHandlers[type]=fn,removeEventListener:type=>delete compassHandlers[type]};
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,classList:{toggle(name,on){this[name]=on;},add(){},remove(){}},append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...guideModule,
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...backup,...guideModule,Blob,URL:{createObjectURL:blob=>{blobs.push(blob);return 'blob:'+blobs.length;},revokeObjectURL(){}},
   createCompass:options=>createCompass({...options,target:compassTarget,Orientation:{},screenAngle:()=>0}),createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
@@ -105,14 +106,14 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
   parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME,fetch:async url=>url==='/ko-ids.txt'?new Response(koTableText):new Response('',{status:404}),
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
-  document:{getElementById:element,querySelectorAll:()=>[],createElement:()=>({style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},append(){},replaceChildren(){},setAttribute(){},addEventListener(){}}),addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  document:{getElementById:element,querySelectorAll:()=>[],body:{append(){}},createElement:tag=>{const e={tag,style:{},dataset:{},children:[],classList:{add(){},remove(){},toggle(){}},append(...items){this.children.push(...items);},replaceChildren(){},setAttribute(name,value){this[name]=value;},addEventListener(){},click(){this.clicked=true;},remove(){}};created.push(e);return e;},addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
   URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}}};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
  vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,tileRequests,images,stored,resize:()=>resize(),get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
+ return {element,labels,tileRequests,images,stored,blobs,created,resize:()=>resize(),get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -716,4 +717,48 @@ test('search suggests municipalities and cadastral municipalities from the RGZ t
  m.value='';ko.value='Stari Grad';ko.dispatch('change');assert.equal(m.value,'Stari Grad','a KO found in one municipality fills it in');
  const html=fs.readFileSync('public/teren.html','utf8');
  assert.match(html,/<input id="municipality"[^>]*list="municipalityList"/);assert.match(html,/<input id="ko"[^>]*list="koList"/);
+});
+
+// IndexedDB with both stores: requests succeed in order and a transaction completes after the last callback.
+function fakeDb(app,parcels=[],photos=[]){
+ app.scope.seed={parcels:structuredClone(parcels),photos};
+ app.run(`var stores={parcels:new Map(seed.parcels.map(x=>[x.id,x])),photos:new Map(seed.photos.map(x=>[x.id,x]))};
+ db={transaction(){
+  const t={pending:0,objectStore(name){
+   const m=stores[name],copy=name==='parcels'?structuredClone:x=>x;
+   const request=value=>{const r={result:value};t.pending++;Promise.resolve().then(()=>{r.onsuccess?.();if(!--t.pending)Promise.resolve().then(()=>t.oncomplete?.());});return r;};
+   return {get:id=>request(copy(m.get(id))),getKey:id=>request(m.has(id)?id:undefined),getAll:()=>request([...m.values()].map(x=>copy(x))),put:x=>{m.set(x.id,copy(x));return request(x.id);},index:()=>({getAll:id=>request([...m.values()].filter(x=>x.parcel===id))})};
+  }};
+  Promise.resolve().then(()=>{if(!t.pending)t.oncomplete?.();});return t;
+ }};`);
+}
+
+test('all parcels and photos go into one file; importing it on another phone keeps what is already there',async()=>{
+ const a=squareRecord('A',433000,4909700),b=squareRecord('B',443000,4919700);
+ const photo={id:'p1',parcel:'A',blob:new Blob([Uint8Array.from([255,216,255,224,1,2])],{type:'image/jpeg'}),at:'2026-09-25T10:00:00.000Z',coords:[20.1,44.3],accuracy:6};
+ const app=await appHarness(async()=>({records:[],total:0}));app.scope.setTimeout=(fn,ms)=>setTimeout(fn,ms).unref();
+ fakeDb(app,[{...fixture,id:'A',record:a,label:'Njiva',marks:[{id:'m1',type:'ulaz',lon:20.1,lat:44.3}],osm:{elements:[{}],bbox:[44,20,45,21]}},{...fixture,id:'B',record:b}],[photo]);
+ await app.run('refreshSaved()');assert.equal(app.element('exportAll').hidden,false);
+ await app.element('exportAll').onclick();
+ const anchor=app.created.find(e=>e.tag==='a'&&e.clicked);assert.match(anchor.download,/^moje-parcele-\d{4}-\d{2}-\d{2}\.json$/);
+ const text=await app.blobs.at(-1).text(),data=JSON.parse(text);
+ assert.deepEqual(data.parcels.map(x=>x.id).sort(),['A','B']);assert.equal(data.photos.length,1);
+ assert(!data.parcels.some(x=>x.osm||x.neighborhood||x.geometry),'downloaded surroundings stay out of the file');
+ assert.match(app.element('backupStatus').textContent,/2 parcele i 1 fotografija/);
+
+ const other=await appHarness(async()=>({records:[],total:0}));
+ fakeDb(other,[{...fixture,id:'B',record:b,label:'Moja'}]);await other.run('refreshSaved()');
+ const upload={size:text.length,text:async()=>text},stored=id=>JSON.parse(other.run(`JSON.stringify(stores.parcels.get('${id}'))`));
+ await other.element('import').onchange({target:{files:[upload]}});
+ assert.equal(stored('A').label,'Njiva');assert.deepEqual(stored('A').marks.map(m=>m.type),['ulaz']);assert.equal(stored('A').osm,undefined);
+ assert.equal(stored('B').label,'Moja','a name on this phone is not overwritten');
+ const copy=other.run("stores.photos.get('p1')");assert.equal(copy.parcel,'A');assert.deepEqual([...copy.coords],[20.1,44.3]);
+ assert.deepEqual(new Uint8Array(await copy.blob.arrayBuffer()),new Uint8Array(await photo.blob.arrayBuffer()));
+ assert.equal(other.run('saved.length'),2);
+ assert.match(other.element('backupStatus').textContent,/Nove parcele: 1 · već na telefonu: 1 · nove fotografije: 1\..*zadržale su svoje podatke.*Sačuvaj za teren/);
+ await other.element('import').onchange({target:{files:[upload]}});
+ assert.match(other.element('backupStatus').textContent,/Nove parcele: 0 · već na telefonu: 2 · nove fotografije: 0/,'importing twice adds nothing');
+ assert.equal(other.run('stores.photos.size'),1);
+ await other.element('import').onchange({target:{files:[{size:5,text:async()=>'{nope'}]}});
+ assert.equal(other.element('backupStatus').textContent,'Ovo nije rezervna kopija iz ove aplikacije.');
 });

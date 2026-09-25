@@ -9,7 +9,8 @@ import {createLocationTracker} from './location-tracker.js';
 import {downloadNeighborhood,readNeighborhood,neighborhoodSummary} from './parcel-neighborhood.js';
 import {ringSides,roadVertex} from './parcel-measure.js';
 import {navigationLinks} from './navigation.js';
-import {PALETTE,colorOf,nameOf,geometryOf,totalArea,hectares,parcelCount,groupByPlace} from './portfolio.js';
+import {PALETTE,PERSONAL,colorOf,nameOf,geometryOf,totalArea,hectares,parcelCount,photoCount,groupByPlace} from './portfolio.js';
+import {backupBlob,readBackup,fromBase64,mergeParcel} from './backup.js';
 import {guidance,createCrossing} from './guide.js';
 import {createCompass} from './compass.js';
 const $=s=>document.getElementById(s), canvas=$('map'),ctx=canvas.getContext('2d');
@@ -18,8 +19,8 @@ const NEARBY_RADIUS=150;
 // Projection origin before any parcel is shown; replaced by the parcel or the first GPS fix.
 let current=null, nearby=[], mapSurroundings=null, saved=[], db, shellReady=false, gps=null,watch=null,following=false,selection='',view={origin:[20.9,44.2],center:[0,0],scale:2},width=0,height=0,roadsBusy=false;
 let currentSides=[],destinationPicked=false,overview=false;
-// The user's own data on a parcel; always written as a whole so that a cleared field stays cleared.
-const PERSONAL=['label','color','note','marks'],own=x=>Object.fromEntries(PERSONAL.map(k=>[k,x[k]]));
+// Personal fields are always written as a whole so that a cleared field stays cleared.
+const own=x=>Object.fromEntries(PERSONAL.map(k=>[k,x[k]]));
 // Points the user marks on a parcel: name and the letter drawn on the map.
 const MARKS={ulaz:['Ulaz sa puta','U'],kapija:['Kapija','K'],kamen:['Međni kamen','M'],bunar:['Bunar','B'],ostalo:['Druga tačka','•']};
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
@@ -65,7 +66,7 @@ $('backToMap').onclick=revealMap;
 // Saved parcels grouped by place, each with its colour, name and area; the total matters to owners of scattered plots.
 async function refreshSaved(){
  saved=await dbCall('readonly',s=>s.getAll());
- $('savedCount').textContent=saved.length;$('savedEmptySearch').hidden=!!saved.length;$('showAllSaved').hidden=!saved.length;
+ $('savedCount').textContent=saved.length;$('savedEmptySearch').hidden=!!saved.length;$('showAllSaved').hidden=!saved.length;$('exportAll').hidden=!saved.length;
  $('savedSummary').hidden=!saved.length;$('savedSummary').textContent=parcelCount(saved.length)+' · ukupno '+hectares(totalArea(saved));
  const rows=[];
  if(!saved.length){const p=document.createElement('p');p.className='small';p.textContent='Još nema sačuvanih parcela.';rows.push(p);}
@@ -698,7 +699,49 @@ function fillDestinations(){
 }
 function routes(){if(!current)return;const t=destinationPoint(),links=navigationLinks([t.lon,t.lat],'Parcela '+current.record.title+' · '+t.name);$('googleRoute').href=links.google;$('appleRoute').href=links.apple;$('wazeRoute').href=links.waze;$('geoRoute').href=links.geo;$('geoRoute').hidden=!/Android/i.test(navigator.userAgent||'');if(gps){const b=bearing(gps.coords,[t.lon,t.lat]),dirs=['sever','severoistok','istok','jugoistok','jug','jugozapad','zapad','severozapad'];$('bearingText').textContent=t.name+': '+metres(distance(gps.coords,[t.lon,t.lat]))+' vazdušno · '+Math.round(b)+'° ('+dirs[Math.round(b/45)%8]+')'+(Date.now()-gps.timestamp>30000||watch===null?' · prema poslednjem položaju':'');}}
 $('destination').onchange=()=>{selection=$('destination').value;destinationPicked=true;routes();};$('route').onclick=()=>{routes();$('routeDialog').showModal();};$('help').onclick=()=>$('helpDialog').showModal();document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
-$('export').onclick=()=>{if(!current)return;const x=structuredClone(current);delete x.geometry;const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(x)],{type:'application/json'}));a.href=url;document.body.append(a);a.download='parcela-'+x.record.title.replace('/','-')+'.json';a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);};$('import').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>15000000)throw Error('Datoteka je veća od 15 MB.');const x=validPackage(JSON.parse(await f.text()));show(x);setMobileView('details');message('Kopija je otvorena. Pritisnite „Sačuvaj za teren“ da je zadržite na ovom uređaju.');}catch(e){message(e.message,true);}finally{$('import').value='';}};
+function download(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
+$('export').onclick=()=>{if(!current)return;const x=structuredClone(current);delete x.geometry;download(new Blob([JSON.stringify(x)],{type:'application/json'}),'parcela-'+x.record.title.replace('/','-')+'.json');};
+const backupStatus=(s,error=false)=>{$('backupStatus').hidden=!s;$('backupStatus').textContent=s;$('backupStatus').className='small'+(error?' error':'');};
+const fileSize=n=>n<1e6?Math.max(1,Math.round(n/1e3))+' kB':(n/1e6).toLocaleString('sr-Latn',{maximumFractionDigits:1})+' MB';
+const today=()=>{const d=new Date();return [d.getFullYear(),d.getMonth()+1,d.getDate()].map(n=>String(n).padStart(2,'0')).join('-');};
+async function exportAll(){
+ if(!db||!saved.length)return;
+ $('exportAll').disabled=true;backupStatus('Pripremam rezervnu kopiju…');
+ try{
+  const parcels=await dbCall('readonly',s=>s.getAll()),photos=await dbCall('readonly',s=>s.getAll(),'photos')||[];
+  const file=await backupBlob(parcels,photos);
+  download(file,'moje-parcele-'+today()+'.json');
+  backupStatus('Rezervna kopija: '+parcelCount(parcels.length)+(photos.length?' i '+photoCount(photos.length):'')+' · '+fileSize(file.size)+'. Sačuvajte fajl van telefona (Google Drive, mejl), a na drugom telefonu ga otvorite sa „Uvezi iz fajla“.');
+ }catch(e){backupStatus('Izvoz nije uspeo: '+e.message,true);}
+ finally{$('exportAll').disabled=false;}
+}
+$('exportAll').onclick=exportAll;
+// Everything is written in one transaction, so a failed import leaves the phone as it was.
+function storeImport(parcels,photos){return new Promise((resolve,reject)=>{
+ const t=db.transaction(['parcels','photos'],'readwrite'),store=t.objectStore('parcels'),photoStore=t.objectStore('photos'),counts={added:0,existing:0,photos:0};
+ for(const x of parcels){const r=store.get(x.id);r.onsuccess=()=>{counts[r.result?'existing':'added']++;store.put(mergeParcel(r.result,x));};}
+ for(const p of photos){const r=photoStore.getKey(p.id);r.onsuccess=()=>{if(r.result===undefined){photoStore.put(p);counts.photos++;}};}
+ t.oncomplete=()=>resolve(counts);t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error||Error('Uvoz je prekinut.'));
+});}
+async function importBackup(backup){
+ if(!db)throw Error('Čuvanje nije dostupno u ovom pregledaču.');
+ const parcels=new Map(),ids=new Map(),now=new Date().toISOString();let skipped=0;
+ for(const raw of backup.parcels){
+  try{const x=validPackage(structuredClone(raw)),id=idFor(x);ids.set(typeof raw.id==='string'?raw.id:id,id);if(!parcels.has(id))parcels.set(id,{...x,id,savedAt:typeof x.savedAt==='string'?x.savedAt:now});}
+  catch{skipped++;}
+ }
+ const photos=[];
+ for(const p of backup.photos){
+  if(!ids.has(p.parcel))continue;
+  try{photos.push({id:p.id,parcel:ids.get(p.parcel),blob:fromBase64(p.data,p.type),at:typeof p.at==='string'?p.at:now,coords:p.coords??null,accuracy:Number.isFinite(p.accuracy)?p.accuracy:null});}catch{skipped++;}
+ }
+ const counts=await storeImport([...parcels.values()],photos);
+ if(navigator.storage?.persist)navigator.storage.persist().catch(()=>false);
+ await refreshSaved();
+ const open=current&&saved.find(x=>x.id===idFor(current));if(open)show(open,false);else draw();
+ backupStatus('Uvoz je završen. Nove parcele: '+counts.added+' · već na telefonu: '+counts.existing+' · nove fotografije: '+counts.photos+(skipped?' · neispravno i preskočeno: '+skipped:'')+'.'+(counts.existing?' Parcele koje su već bile na telefonu zadržale su svoje podatke; dopunjena su samo prazna polja.':'')+' Putevi i okolne parcele nisu u kopiji: za rad bez mreže otvorite parcelu i pritisnite „Sačuvaj za teren“.');
+}
+$('import').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>150e6)throw Error('Datoteka je veća od 150 MB.');let data;try{data=JSON.parse(await f.text());}catch{throw Error('Ovo nije rezervna kopija iz ove aplikacije.');}const backup=readBackup(data);if(backup){backupStatus('Uvozim rezervnu kopiju…');await importBackup(backup);return;}const x=validPackage(data);show(x);setMobileView('details');message('Kopija je otvorena. Pritisnite „Sačuvaj za teren“ da je zadržite na ovom uređaju.');}catch(e){backupStatus(e.message,true);}finally{$('import').value='';}};
 // A shared link names the parcel and a point inside it; opening it runs the long-press query there and selects the parcel.
 function shareUrl(x){
  const pts=x.geometry.points,avg=[pts.reduce((s,p)=>s+p.lon,0)/pts.length,pts.reduce((s,p)=>s+p.lat,0)/pts.length];

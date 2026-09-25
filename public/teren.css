@@ -147,6 +147,13 @@
 .swatches{display:flex;gap:10px;margin:4px 0 6px}
 .swatch{width:32px;height:32px;min-height:32px;padding:0;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #0003}
 .swatch[aria-pressed="true"]{box-shadow:0 0 0 3px #183d32}
+.backup{margin-top:26px;border-top:1px solid #e1e6d8;padding-top:14px}
+.backup>p{margin:8px 0}
+.backup-actions{display:flex;gap:8px}
+.backup-actions>*{flex:1}
+.backup .import{display:flex;align-items:center;justify-content:center;min-height:44px;margin:0;border:1px solid #d5dbcd;border-radius:9px;background:#fffdf7;font-size:14px;font-weight:600;text-decoration:none}
+.backup .import:hover{background:#eaf0df}
+.backup .error{color:#9d3b25}
 
 /* Note, own points and photos. */
 .own textarea{display:block;width:100%;min-height:72px;margin-top:7px;padding:10px;border:1px solid #cdd5c4;border-radius:7px;background:#fffef9;font:inherit;font-size:16px;color:#183d32;resize:vertical}
