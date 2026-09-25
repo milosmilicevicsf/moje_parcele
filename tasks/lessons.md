@@ -26,6 +26,12 @@
 - Pravilo: proveriti javni upit na gradskoj i ruralnoj referentnoj lokaciji; preuzeti sve potrebne katastarske slojeve. Prazan odgovor opisati kao rezultat upita, bez tvrdnje da nema parcela ili digitalizovanog plana.
 - Pravilo: za lokalnu pretragu proveriti i starost i prijavljenu tačnost GPS položaja. Testirati grub prvi položaj, prelaz na precizan položaj i odgovor koji stigne nakon promene lokacije.
 
+## Posle izmene HTML-a pogledati stranicu, ne samo testove
+- Kontekst: polje „Grupa“ završilo je dvaput u `teren.html` (fajl je praktično jedan red). Testovi traže elemente preko `getElementById`,
+  koji vraća prvi element, pa su prolazili; duplikat se video tek na snimku ekrana.
+- Pravilo: posle izmene HTML-a proveriti DOM ili snimak u pregledaču; test jedinstvenih `id` sada čuva `teren.html`.
+- Pravilo: pre provere u pregledaču odjaviti service worker i obrisati keš kad se `sw.js` nije promenio, inače se vidi stara stranica.
+
 ## Dve referentne tačke nisu provera cele zemlje
 - Kontekst: posle dodavanja sloja 939 za Beograd, „parcele oko mene“ su i dalje vraćale nulu u Nišu, Kragujevcu i celoj Vojvodini,
   jer su parcele podeljene u šest regionalnih slojeva (586, 587, 588, 589, 899, 939). Proveravani su samo Pepeljevac i Beograd.

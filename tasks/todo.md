@@ -152,3 +152,18 @@ pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i s
   usmerava strelicu prema severu i nudi dugme „Kompas“. Stari service worker služi stare fajlove dok se nova verzija ne aktivira i stranica
   ne učita ponovo (postojeće ponašanje, stavka 27 pregleda).
 - Neprovereno: pravi telefon (kompas na iOS-u i Androidu, vibracija, Screen Wake Lock, kamera), zaključavanje ekrana u instaliranoj PWA.
+
+# Plan 9: rezervna kopija svih parcela, grupe, Vercel Analytics
+
+- [x] `backup.js`: jedan JSON fajl sa svim parcelama, ličnim podacima i fotografijama (base64), bez preuzete okoline (`osm`, `neighborhood`)
+- [x] Uvoz: rezervna kopija ili jedna parcela; jedna transakcija; postojeća parcela zadržava svoje podatke, dopunjuju se prazna polja, tačke i fotografije; dvostruki uvoz ne dodaje ništa
+- [x] Grupe: polje „Grupa“ sa predlozima, prekidač Po mestu / Po grupama (pamti se), naslov grupe prikazuje tu grupu na mapi
+- [x] Vercel Web Analytics kao HTML skripta (stranice nisu React); `beforeSend` briše query (broj parcele i tačka iz deljenog linka); README više ne tvrdi da nema analitike
+- [x] `sw.js` v24 sa `backup.js`; test da je svaki modul koji aplikacija uvozi u kešu; test jedinstvenih `id` u `teren.html`
+
+## Pregled 9
+- `node --test "tests/*.test.mjs"`: 73/73; svaki od tri commita prolazi i sam (70, 72, 73).
+- Pregledač (Chromium, dva lokalna porekla kao dva telefona): izvoz 3 parcele i 1 fotografije (6 kB, fotografija bajt po bajt ista);
+  uvoz na drugom poreklu zadržao postojeći naziv i dopunio samo grupu; grupa „Moje“ sama na mapi; prikaz na 390 px uredan.
+- Nalaz: polje „Grupa“ je bilo upisano dvaput u `teren.html`; testovi preko `getElementById` to ne vide, snimak ekrana jeste → test jedinstvenih `id`.
+- Neprovereno: Vercel Analytics uživo (lokalno nema `/_vercel/insights`), biranje i preuzimanje fajla na pravom iPhone-u i Androidu, velika kopija sa mnogo fotografija na telefonu.
