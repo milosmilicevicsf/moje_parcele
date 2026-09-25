@@ -169,3 +169,17 @@
 .placing-bar{position:absolute;left:10px;right:10px;bottom:40px;display:flex;gap:6px;padding:8px;border-radius:12px;background:#fffef9f2;box-shadow:0 3px 14px #0003;pointer-events:auto}
 .placing-bar select{flex:1;min-width:0;margin:0;padding:8px}
 .placing-bar button{min-height:40px;padding:6px 10px;font-size:13px}
+
+/* Walking guidance to a point. */
+.guide-start{width:100%;margin:6px 0 4px}
+.guide{position:absolute;z-index:3;top:84px;left:24px;right:84px;max-width:520px;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:#fffef9f5;box-shadow:0 4px 18px #0003}
+.guide-arrow{flex:none;width:60px;height:60px;fill:#174b3b;transition:transform .25s ease-out}
+.guide.waiting .guide-arrow{fill:#a4ad9f}
+.guide-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.guide-text strong{font-size:26px;line-height:1.1}
+.guide-text span{font-size:13px;font-weight:650}
+.guide-text small{font-size:11px;line-height:1.3;color:#5f6d58}
+.guide-actions{display:grid;grid-template-columns:repeat(2,40px);gap:4px}
+.guide-actions button{min-height:36px;padding:0;font-size:18px}
+.guide-actions #guideCompass{grid-column:span 2;font-size:12px}
+@media(max-width:760px){.guide{top:58px;left:10px;right:62px}.guide-arrow{width:52px;height:52px}.guide-text strong{font-size:22px}}

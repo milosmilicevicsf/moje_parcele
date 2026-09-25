@@ -4,6 +4,8 @@ import {parcelGeometry,utm34ToWgs84} from '../public/geo.js';
 import {ringSides,perimeter,roadVertex} from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
 import {PALETTE,colorOf,nameOf,totalArea,hectares,parcelCount,groupByPlace} from '../public/portfolio.js';
+import {guidance,createCrossing} from '../public/guide.js';
+import {headingFrom,smoothHeading,createCompass} from '../public/compass.js';
 
 const ring=(east,north,size)=>[[east,north],[east+size,north],[east+size,north+size],[east,north+size],[east,north]];
 const wkt=rings=>'POLYGON ('+rings.map(r=>'('+r.map(p=>p.join(' ')).join(',')+')').join(',')+')';
@@ -42,6 +44,33 @@ test('saved parcels: total area, own names and colours, place groups and Serbian
  assert.deepEqual(groupByPlace(items).map(g=>[g.place,g.items.map(x=>x.record.title)]),[['Grošnica I, Kragujevac',['7']],['Pepeljevac, Lajkovac',['3','12']]],
   'a searched parcel and one picked on the map share their place; numbers sort naturally');
  assert.deepEqual([1,2,5,11,12,21,22,25].map(parcelCount),['1 parcela','2 parcele','5 parcela','11 parcela','12 parcela','21 parcela','22 parcele','25 parcela']);
+});
+
+test('guidance distance and arrow; boundary crossings ignore changes within the GPS accuracy',()=>{
+ const fix=(e,n,accuracy=5)=>({coords:utm34ToWgs84(e,n),accuracy}),t=utm34ToWgs84(433000,4909700),near=(a,b)=>Math.abs(((a-b+540)%360)-180)<2;
+ const g=guidance(fix(433000,4909660),t);
+ assert(Math.abs(g.distance-40)<.1);assert(near(g.rotation,0));assert(!g.arrived);
+ assert(near(guidance(fix(433000,4909660),t,90).rotation,270),'with the phone facing east, north is to the left');
+ assert(guidance(fix(433001,4909701),t).arrived,'within the accuracy counts as arrived');
+ const cross=createCrossing(squareGeometry().polygons);
+ assert.equal(cross(fix(433015,4909650)),null,'the first fix only sets the state');
+ assert.equal(cross(fix(433015,4909715)),'entered');
+ assert.equal(cross(fix(433015,4909702)),null,'2 m from the boundary with ±5 m says nothing');
+ assert.equal(cross(fix(433015,4909650)),'left');
+});
+
+test('compass heading from iOS and Android events, smoothed across north, started only with permission',async()=>{
+ assert.equal(headingFrom({webkitCompassHeading:45}),45);
+ assert.equal(headingFrom({alpha:90,absolute:true}),270,'Android alpha grows counter-clockwise');
+ assert.equal(headingFrom({alpha:90,absolute:false}),null,'relative orientation is no compass');
+ assert.equal(headingFrom({alpha:0,absolute:true},90),90,'landscape adds the screen angle');
+ assert(Math.abs(smoothHeading(350,10,.5))<1e-9,'350° to 10° passes through north, not south');
+ const handlers={},seen=[],target={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>handlers[type]=fn,removeEventListener:type=>delete handlers[type]};
+ assert.equal(await createCompass({onHeading:h=>seen.push(h),target,Orientation:{requestPermission:async()=>'denied'}}).start(),false);
+ assert.equal(await createCompass({onHeading:()=>{},target,Orientation:undefined}).start(),false,'no DeviceOrientationEvent, no compass');
+ const compass=createCompass({onHeading:h=>seen.push(h),target,Orientation:{requestPermission:async()=>'granted'},screenAngle:()=>0});
+ assert.equal(await compass.start(),true);handlers.deviceorientationabsolute({alpha:270,absolute:true});
+ assert.equal(compass.heading,90);compass.stop();assert.equal(seen.at(-1),null);assert(!handlers.deviceorientationabsolute);
 });
 
 test('navigation links carry the destination and name it for other map apps',()=>{

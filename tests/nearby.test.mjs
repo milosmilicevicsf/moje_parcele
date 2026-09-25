@@ -13,6 +13,8 @@ import {createTileLayer,tileZoom,tileAt,tileLon,tileLat,tilesFor,tileUrl,MAX_ZOO
 import * as measure from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
 import * as portfolio from '../public/portfolio.js';
+import * as guideModule from '../public/guide.js';
+import {createCompass} from '../public/compass.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function until(check,tries=50){for(let i=0;i<tries&&!check();i++)await flush();assert(check(),'condition not reached');}
 const fix=(coords=[20,44],accuracy=5,timestamp=0)=>({coords,accuracy,timestamp});
@@ -91,10 +93,12 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 });
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url=''){
- const labels=[],elements=new Map(),tileRequests=[],images=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={};let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const compassTarget={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>compassHandlers[type]=fn,removeEventListener:type=>delete compassHandlers[type]};
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
- function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
+ function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,classList:{toggle(name,on){this[name]=on;},add(){},remove(){}},append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...guideModule,
+  createCompass:options=>createCompass({...options,target:compassTarget,Orientation:{},screenAngle:()=>0}),createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
@@ -112,6 +116,7 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
+  compass(event){compassHandlers.deviceorientationabsolute?.(event);},
   run(code){return vm.runInContext(code,scope);},scope};
 }
 
@@ -672,6 +677,32 @@ test('a note and own points are stored with the parcel; an entrance becomes the 
  assert.equal(marks().length,2);assert.match(app.element('message').textContent,/Nema svežeg/);
  app.scope.imported={...fixture,record:a,marks:[{id:'x',type:'bogus',lon:1,lat:2},{id:'y',type:'bunar',lon:20.1,lat:44.3},{type:'bunar',lon:20,lat:44}]};
  assert.equal(app.run('validPackage(imported).marks.length'),1,'an imported backup keeps only well-formed points');
+});
+
+test('walking guidance: distance and arrow, compass, screen kept on, vibration at the boundary and on arrival',async()=>{
+ const a=squareRecord('A',433000,4909700);
+ const app=await appHarness(async()=>({records:[a],total:1}));
+ const vibrations=[];let locks=0,released=0;
+ app.scope.navigator.vibrate=p=>vibrations.push(p);
+ app.scope.navigator.wakeLock={request:async()=>{locks++;return {release:async()=>{released++;},addEventListener(){}};}};
+ app.scope.target={...fixture,record:a};app.run('show(target)');await flush();
+ app.element('guideStart').onclick();await flush();
+ assert.equal(app.element('guide').hidden,false);assert.equal(locks,1,'the screen stays on while guiding');
+ const rotation=()=>Number(app.element('guideArrow').style.transform.match(/-?[\d.]+/)[0]),near=(x,y)=>Math.abs(((x-y+540)%360)-180)<2;
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433000,4909660));
+ assert.equal(app.element('guideDistance').textContent,'40 m');assert.match(app.element('guideTarget').textContent,/^T1 · parcela A/);
+ assert(near(rotation(),0),'T1 lies north; without a compass the arrow points north');
+ app.compass({alpha:270,absolute:true});
+ assert(near(rotation(),270),'facing east, the target is to the left');assert.equal(app.element('guideCompass').hidden,true);
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433015,4909715));
+ assert.equal(JSON.stringify(vibrations),'[[120,80,120]]');assert.match(app.element('message').textContent,/Ušli ste u parcelu A/);
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433015,4909702));
+ assert.equal(vibrations.length,1,'within the accuracy of the boundary nothing changes');
+ await app.tick(1000);await app.emit(5,geo.utm34ToWgs84(433001,4909701));
+ assert.equal(app.element('guideDistance').textContent,'Na tački ste');assert.equal(vibrations.at(-1),80);
+ app.element('guideNext').onclick();assert.match(app.element('guideTarget').textContent,/^T2/);
+ app.element('guideStop').onclick();await flush();
+ assert.equal(app.element('guide').hidden,true);assert.equal(released,1);assert.equal(app.run('heading'),null);
 });
 
 test('search suggests municipalities and cadastral municipalities from the RGZ table',async()=>{
