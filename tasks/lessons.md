@@ -32,6 +32,10 @@
 - Pravilo: posle izmene HTML-a proveriti DOM ili snimak u pregledaču; test jedinstvenih `id` sada čuva `teren.html`.
 - Pravilo: pre provere u pregledaču odjaviti service worker i obrisati keš kad se `sw.js` nije promenio, inače se vidi stara stranica.
 
+## Provera da test hvata grešku ide korak po korak
+- Kontekst: vraćanje starog koda, pokretanje testa i ponovna ispravka poslati su istovremeno; ispravka je stigla pre testa, pa je test „prošao“ i sa greškom.
+- Pravilo: izmena, test i vraćanje idu jedno za drugim, i posle vraćanja proveriti da je fajl opet ispravan.
+
 ## Dve referentne tačke nisu provera cele zemlje
 - Kontekst: posle dodavanja sloja 939 za Beograd, „parcele oko mene“ su i dalje vraćale nulu u Nišu, Kragujevcu i celoj Vojvodini,
   jer su parcele podeljene u šest regionalnih slojeva (586, 587, 588, 589, 899, 939). Proveravani su samo Pepeljevac i Beograd.

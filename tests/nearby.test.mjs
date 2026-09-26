@@ -14,6 +14,7 @@ import * as measure from '../public/parcel-measure.js';
 import {navigationLinks} from '../public/navigation.js';
 import * as portfolio from '../public/portfolio.js';
 import * as backup from '../public/backup.js';
+import * as locationPermission from '../public/location-permission.js';
 import * as guideModule from '../public/guide.js';
 import {createCompass} from '../public/compass.js';
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -93,12 +94,13 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
  assert.deepEqual(await searchNearby(432954,4909699,150),{records:[],total:0});
 });
 
-async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url=''){
+async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url='',{permission='granted',...extra}={}){
+ const permissionState={state:permission,listeners:[],addEventListener(type,fn){this.listeners.push(fn);}};
  const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={},blobs=[],created=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
  const compassTarget={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>compassHandlers[type]=fn,removeEventListener:type=>delete compassHandlers[type]};
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,classList:{toggle(name,on){this[name]=on;},add(){},remove(){}},append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
- const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...backup,...guideModule,Blob,URL:{createObjectURL:blob=>{blobs.push(blob);return 'blob:'+blobs.length;},revokeObjectURL(){}},
+ const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...backup,...locationPermission,...guideModule,Blob,URL:{createObjectURL:blob=>{blobs.push(blob);return 'blob:'+blobs.length;},revokeObjectURL(){}},
   createCompass:options=>createCompass({...options,target:compassTarget,Orientation:{},screenAngle:()=>0}),createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
@@ -106,14 +108,15 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
   parseKoTable,findKoId,ekatastarUrl,EKATASTAR_HOME,fetch:async url=>url==='/ko-ids.txt'?new Response(koTableText):new Response('',{status:404}),
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
-  document:{getElementById:element,querySelectorAll:()=>[],body:{append(){}},createElement:tag=>{const e={tag,style:{},dataset:{},children:[],classList:{add(){},remove(){},toggle(){}},append(...items){this.children.push(...items);},replaceChildren(){},setAttribute(name,value){this[name]=value;},addEventListener(){},click(){this.clicked=true;},remove(){}};created.push(e);return e;},addEventListener(){}},navigator:{onLine:true,geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
+  document:{getElementById:element,querySelectorAll:()=>[],body:{append(){}},createElement:tag=>{const e={tag,style:{},dataset:{},children:[],classList:{add(){},remove(){},toggle(){}},append(...items){this.children.push(...items);},replaceChildren(){},setAttribute(name,value){this[name]=value;},addEventListener(){},click(){this.clicked=true;},remove(){}};created.push(e);return e;},addEventListener(){}},navigator:{onLine:true,permissions:{query:async()=>permissionState},geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
   ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
-  URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}}};
+  URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}},...extra};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
- vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,'function');
- return {element,labels,tileRequests,images,stored,blobs,created,resize:()=>resize(),get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
+ vm.runInContext(source,scope);await flush();assert.equal(typeof gpsCallback,permission==='granted'?'function':'undefined','location starts on its own only when it is already allowed');
+ return {element,labels,tileRequests,images,stored,blobs,created,resize:()=>resize(),get watching(){return typeof gpsCallback==='function';},
+  async setPermission(state){permissionState.state=state;for(const fn of permissionState.listeners)fn();await flush();},get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
   async fail(code){gpsFailure({code});await flush();},
@@ -717,6 +720,45 @@ test('search suggests municipalities and cadastral municipalities from the RGZ t
  m.value='';ko.value='Stari Grad';ko.dispatch('change');assert.equal(m.value,'Stari Grad','a KO found in one municipality fills it in');
  const html=fs.readFileSync('public/teren.html','utf8');
  assert.match(html,/<input id="municipality"[^>]*list="municipalityList"/);assert.match(html,/<input id="ko"[^>]*list="koList"/);
+});
+
+test('location is asked for only after a tap; a blocked site shows steps for its phone and resumes once allowed',async()=>{
+ const app=await appHarness(undefined,new Map(),'',{permission:'prompt'});
+ assert.equal(app.element('locationAsk').hidden,false);assert.equal(app.element('emptyHint').hidden,true,'the card replaces the empty-map text');
+ assert.equal(app.element('locationAskTitle').textContent,'Parcele oko vas');assert.equal(app.element('locationSteps').hidden,true);
+ assert.equal(app.element('locationTip').hidden,true,'the iPhone tip is only for iPhones');
+ app.element('locationAllow').onclick();await flush();
+ assert.equal(app.watching,true);assert.equal(app.element('locationAsk').hidden,true,'with GPS on the card goes away');
+ await app.emit(8);assert.equal(app.queries,1,'parcels around the phone load after the tap');
+
+ const iphone=await appHarness(undefined,new Map(),'',{permission:'prompt'});
+ iphone.scope.navigator.userAgent='Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 Version/18.5 Mobile/15E148 Safari/604.1';iphone.run('draw()');
+ assert.equal(iphone.element('locationTip').hidden,false,'Safari asks on every visit until the site is set to Allow');
+
+ const blocked=await appHarness(undefined,new Map(),'',{permission:'denied'});
+ let steps=[];blocked.element('locationSteps').replaceChildren=(...items)=>steps=items;
+ blocked.scope.navigator.userAgent='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/150.0 Mobile Safari/537.36';blocked.run('draw()');
+ assert.equal(blocked.element('locationAskTitle').textContent,'Lokacija je blokirana za ovaj sajt');assert.equal(blocked.element('locationSteps').hidden,false);
+ assert.match(steps[0].textContent,/Dozvole → Lokacija → Dozvoli/);
+ await blocked.setPermission('granted');
+ assert.equal(blocked.watching,true,'coming back from the settings with location allowed starts GPS');
+
+ const chrome=await appHarness(undefined,new Map(),'',{permission:'denied',HTMLGeolocationElement:function(){}});
+ assert.match(chrome.element('locationAskText').textContent,/Dodirnite dugme i izaberite „Dozvoli“/,'Chrome\'s own button re-allows a blocked site');
+ const button=chrome.element('locationElement');button.position={coords:{latitude:44.8178,longitude:20.4604,accuracy:5}};button.dispatch('location',{});await flush();
+ assert.equal(chrome.watching,true,'a position from Chrome\'s button starts GPS');
+});
+
+test('refusing location while a parcel is open shows the steps over the map; they can be closed until the next try',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0}));
+ app.scope.target={...fixture,record:squareRecord('A',433000,4909700)};app.run('show(target)');
+ assert.equal(app.element('locationAsk').hidden,true);
+ await app.fail(1);
+ assert.equal(app.element('locationAsk').hidden,false);assert.equal(app.element('locationAskTitle').textContent,'Lokacija je blokirana za ovaj sajt');
+ assert.match(app.element('gpsDetail').textContent,/uputstvo/);
+ app.element('locationAskClose').onclick();assert.equal(app.element('locationAsk').hidden,true);
+ app.element('gps').onclick();await app.fail(1);
+ assert.equal(app.element('locationAsk').hidden,false,'a new attempt shows the steps again');
 });
 
 // IndexedDB with both stores: requests succeed in order and a transaction completes after the last callback.
