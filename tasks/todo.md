@@ -201,3 +201,18 @@ Na telefonu je panel sa porukama iza mape, pa poruke (i greške) korisnik nije v
 - Uživo (Chromium, emulirana lokacija, prava GeoSrbija, 390 i 360 px): Pepeljevac GPS + 12 ćelija, ekran pun parcela; pomeranje učita samo nove ćelije; posle osvežavanja ćelije sa uređaja bez ijednog zahteva; bez mreže imenuje neučitano područje i samo ga učita kad se veza vrati; blokirana GeoSrbija → „Pokušaj ponovo“ radi; Niš 12 ćelija, pretraga popunjena „Niš "Bubanj"“ / Medijana, samo broj 980 nađen.
 - Nalazi usput: statusna linija je sakrivala učitavanje ispod poruke (sada spinner i uz poruku) i dugme „Pokušaj ponovo“ ispod poruke o grešci (sada ostaje); poruka „Veza sa GeoSrbija…“ od pet redova prekrivala je mapu (sada prva rečenica); ćelija koja visi čekala je 35 s (sada 15 s).
 - Neprovereno: pravi telefon (iOS i Android), slab signal na terenu, trajanje IndexedDB kvote na iPhone-u.
+
+# Plan 12: koliko zauzima, koliko traje, kako da se ne izgubi
+
+Merenje (Chromium, prava GeoSrbija): deo mape 20–135 kB, 79 delova centra Beograda ≈ 5 MB na disku, granica od 300 delova ≈ 20 MB;
+aplikacija 0,24 MB; parcela bez okoline 6 kB; fotografija posle smanjenja 41–139 kB. Trajno čuvanje u test Chromium-u: odbijeno.
+
+- [x] Blok „Rezervna kopija i prostor“: zauzeto, broj delova mape, da li pregledač sme sam da obriše, poslednja rezervna kopija
+- [x] iPhone Safari: upozorenje o brisanju posle 7 dana i koraci do početnog ekrana i prenosa podataka; ista napomena posle čuvanja
+- [x] „Obriši parcele učitane sa mape“ (sačuvano ostaje); `persist()` i pri pokretanju sa početnog ekrana kad ima sačuvanih parcela
+- [x] Test (sve navedeno, sa `fakeDb` koji ima i prodavnicu `cells`), `sw.js` v27, README
+
+## Pregled 12
+- `pnpm test`: 90/90; test pada kad se ukloni pamćenje datuma rezervne kopije.
+- Pregledač (390 px): blok se vidi u Sačuvanim parcelama; sa iPhone oznakom pregledača upozorenje je u obojenom okviru i ne lomi raspored.
+- Neprovereno: da li Safari na pravom iPhone-u daje trajno čuvanje aplikaciji sa početnog ekrana (WebKit kaže da odlučuje po heuristici).
