@@ -778,15 +778,15 @@ test('refusing location while a parcel is open shows the steps over the map; the
  assert.equal(app.element('locationAsk').hidden,false,'a new attempt shows the steps again');
 });
 
-// IndexedDB with both stores: requests succeed in order and a transaction completes after the last callback.
-function fakeDb(app,parcels=[],photos=[]){
- app.scope.seed={parcels:structuredClone(parcels),photos};
- app.run(`var stores={parcels:new Map(seed.parcels.map(x=>[x.id,x])),photos:new Map(seed.photos.map(x=>[x.id,x]))};
+// IndexedDB with all stores: requests succeed in order and a transaction completes after the last callback.
+function fakeDb(app,parcels=[],photos=[],cells=[]){
+ app.scope.seed={parcels:structuredClone(parcels),photos,cells};
+ app.run(`var stores={parcels:new Map(seed.parcels.map(x=>[x.id,x])),photos:new Map(seed.photos.map(x=>[x.id,x])),cells:new Map(seed.cells.map(x=>[x.key,x]))};
  db={transaction(){
   const t={pending:0,objectStore(name){
    const m=stores[name],copy=name==='parcels'?structuredClone:x=>x;
    const request=value=>{const r={result:value};t.pending++;Promise.resolve().then(()=>{r.onsuccess?.();if(!--t.pending)Promise.resolve().then(()=>t.oncomplete?.());});return r;};
-   return {get:id=>request(copy(m.get(id))),getKey:id=>request(m.has(id)?id:undefined),getAll:()=>request([...m.values()].map(x=>copy(x))),put:x=>{m.set(x.id,copy(x));return request(x.id);},index:()=>({getAll:id=>request([...m.values()].filter(x=>x.parcel===id))})};
+   return {get:id=>request(copy(m.get(id))),getKey:id=>request(m.has(id)?id:undefined),getAll:()=>request([...m.values()].map(x=>copy(x))),put:x=>{m.set(x.id,copy(x));return request(x.id);},count:()=>request(m.size),clear:()=>{m.clear();return request(undefined);},index:()=>({getAll:id=>request([...m.values()].filter(x=>x.parcel===id))})};
   }};
   Promise.resolve().then(()=>{if(!t.pending)t.oncomplete?.();});return t;
  }};`);
@@ -820,6 +820,27 @@ test('all parcels and photos go into one file; importing it on another phone kee
  assert.equal(other.run('stores.photos.size'),1);
  await other.element('import').onchange({target:{files:[{size:5,text:async()=>'{nope'}]}});
  assert.equal(other.element('backupStatus').textContent,'Ovo nije rezervna kopija iz ove aplikacije.');
+});
+
+test('the saved list says what the phone holds, whether the browser may delete it and when the last backup was made',async()=>{
+ const stored=new Map(),app=await appHarness(async()=>({records:[],total:0}),stored);app.scope.setTimeout=(fn,ms)=>setTimeout(fn,ms).unref();
+ let persisted=false;app.scope.navigator.storage={estimate:async()=>({usage:6.3*1048576,quota:5e10}),persisted:async()=>persisted,persist:async()=>persisted};
+ fakeDb(app,[{...fixture,id:'A',record:squareRecord('A',433000,4909700),note:'Međa uz potok'}],[],[{key:'1:1'},{key:'1:2'},{key:'2:1'}]);
+ await app.run('refreshSaved()');await flush();
+ assert.equal(app.element('storageSummary').textContent,'Zauzeto na telefonu: 6,3 MB. Parcele sa mape pamte se za 3 područja od 250 × 250 m.');
+ assert.match(app.element('storageSafety').textContent,/može sam da obriše.*Rezervna kopija još nije napravljena/);
+ assert.equal(app.element('storageIos').hidden,true,'the Safari warning is for iPhones only');assert.equal(app.element('clearMapCache').hidden,false);
+ await app.element('exportAll').onclick();await flush();
+ assert(stored.get('lastBackup'));assert.match(app.element('storageSafety').textContent,/Poslednja rezervna kopija: danas/);
+ persisted=true;app.scope.navigator.userAgent='Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 Version/18.5 Mobile/15E148 Safari/604.1';
+ await app.run('renderStorage()');
+ assert.match(app.element('storageSafety').textContent,/^Trajno čuvanje je uključeno/);assert.equal(app.element('storageIos').hidden,false);
+ app.scope.confirm=()=>true;await app.element('clearMapCache').onclick();await flush();
+ assert.equal(app.run('stores.cells.size'),0);assert.equal(app.run('stores.parcels.size'),1,'saved parcels, notes and photos stay');
+ assert.equal(app.element('clearMapCache').hidden,true);assert.match(app.element('backupStatus').textContent,/obrisane/);
+ app.scope.target={...fixture,record:squareRecord('B',443000,4919700)};app.run('show(target)');
+ const label=app.element('parcelLabel');label.value='Njiva';label.dispatch('change');await flush();await flush();
+ assert.match(app.element('message').textContent,/sačuvana na ovom telefonu.*Na iPhone-u dodajte aplikaciju na početni ekran/,'Safari on an iPhone is told how to keep what it saves');
 });
 
 test('saved parcels group by place or by own groups; a group heading shows that group on the map',async()=>{
@@ -948,4 +969,31 @@ test('where the browser offers installation, one tap installs the app',async()=>
  assert(event.prevented,'the browser banner waits for our button');assert.equal(app.element('install').hidden,false);
  await app.element('install').onclick();assert.equal(prompted,1);assert.equal(app.element('install').hidden,true);
  await app.fire('beforeinstallprompt',event);await app.fire('appinstalled');assert.equal(app.element('install').hidden,true);
+ assert.match(app.element('message').textContent,/ikonice na početnom ekranu/);
+});
+
+const IPHONE='Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Version/26.0 Mobile/15E148 Safari/604.1';
+function trackDialog(app){const dialog=app.element('installDialog');let opened=0;dialog.showModal=()=>{opened++;dialog.open=true;};dialog.close=()=>{dialog.open=false;};return ()=>opened;}
+test('once there is something to lose, a phone is offered the home screen: one tap on Android, the steps and an export on iPhone',async()=>{
+ const stored=new Map(),app=await appHarness(async()=>({records:[],total:0}),stored),opened=trackDialog(app);
+ app.scope.navigator.userAgent=IPHONE;fakeStorage(app);
+ app.scope.target={...fixture,record:squareRecord('A',433000,4909700)};app.run('show(target)');await flush();
+ assert.equal(app.run('suggestInstall()'),false,'nothing saved yet, nothing to lose');
+ await app.run('saveCurrent()');
+ assert.equal(opened(),1);assert.match(app.element('installText').textContent,/7 dana/);
+ assert.equal(app.element('installSteps').hidden,false);assert.equal(app.element('installExport').hidden,false);assert.equal(app.element('installNow').hidden,true,'Safari has no install button to press');
+ app.element('installLater').onclick();await app.run('saveCurrent()');assert.equal(opened(),1,'not again within two weeks');
+ await app.tick(15*864e5);app.run('suggestInstall()');assert.equal(opened(),2,'two weeks later it may ask again');
+
+ const android=await appHarness(async()=>({records:[],total:0})),androidOpened=trackDialog(android);let prompted=0;
+ android.scope.navigator.userAgent='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/150.0 Mobile Safari/537.36';
+ fakeStorage(android,[{...fixture,id:'A',record:squareRecord('A',433000,4909700)}]);
+ await android.fire('beforeinstallprompt',{preventDefault(){},prompt(){prompted++;},userChoice:Promise.resolve({outcome:'accepted'})});
+ assert.equal(androidOpened(),1,'Chrome offering installation is the moment once parcels are saved');
+ assert.equal(android.element('installNow').hidden,false);assert.equal(android.element('installSteps').hidden,true);
+ await android.element('installNow').onclick();assert.equal(prompted,1);assert.equal(android.element('installDialog').open,false);
+
+ const home=await appHarness(async()=>({records:[],total:0}),new Map(),'',{matchMedia:query=>({matches:query==='(display-mode: standalone)'})}),homeOpened=trackDialog(home);
+ home.scope.navigator.userAgent=IPHONE;fakeStorage(home,[{...fixture,id:'A',record:squareRecord('A',433000,4909700)}]);
+ assert.equal(home.run('suggestInstall()'),false);assert.equal(homeOpened(),0,'an app opened from the home screen is never asked');
 });
