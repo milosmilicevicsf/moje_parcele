@@ -84,7 +84,7 @@ function setMobileView(view){
 function revealMap(){setMobileView('map');if(innerWidth<760)canvas.scrollIntoView({behavior:'smooth'});}
 $('navMap').onclick=revealMap;
 $('navSearch').onclick=()=>{message('');setMobileView('search');prefillPlace();$('searchPanel').scrollIntoView({block:'start'});};
-$('navSaved').onclick=()=>{message('');setMobileView('saved');$('savedPanel').scrollIntoView({block:'start'});};
+$('navSaved').onclick=()=>{message('');setMobileView('saved');void renderStorage();$('savedPanel').scrollIntoView({block:'start'});};
 $('navHelp').onclick=()=>$('helpDialog').showModal();
 $('savedEmptySearch').onclick=()=>$('navSearch').onclick();
 $('backToMap').onclick=revealMap;
@@ -122,6 +122,7 @@ function renderSaved(){
   }
  }
  $('savedList').replaceChildren(...rows);
+ void renderStorage();
 }
 function show(x,refit=true){if(guide&&(!current||idFor(x)!==idFor(current)))stopGuide();if(refit){overview=false;mapPin=null;pinRequestVersion++;nearbyMode=false;nearbyLoader.disable();}current=validPackage(x);try{localStorage.setItem('lastParcel',idFor(current));}catch{}currentSides=ringSides(current.geometry);const edge=currentSides.reduce((sum,s)=>sum+s.length,0);$('mapActionStatus').hidden=true;$('mapParcelPlace').textContent=[x.ko,x.municipality,(current.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha','obim '+length(edge)].filter(Boolean).join(' · ');const prior=saved.find(p=>p.id===idFor(x));if(!current.osm&&prior?.osm)current.osm=prior.osm;if(!current.neighborhood&&prior?.neighborhood)current.neighborhood=prior.neighborhood;if(!refit&&!current.neighborhood&&mapNeighborhood)current.neighborhood=mapNeighborhood;if(current.osm)mapSurroundings=current.osm;if(prior)for(const k of PERSONAL)current[k]??=prior[k];following=false;$('parcelCard').hidden=false;updateTitles();$('parcelLabel').value=current.label||'';$('parcelGroup').value=current.group||'';renderColors();$('parcelNote').value=current.note||'';renderMarks();stopPlacing();loadPhotos();$('parcelPlace').textContent=[x.ko,x.municipality].filter(Boolean).join(' · ');$('area').textContent=(x.geometry.area/10000).toLocaleString('sr-Latn',{maximumFractionDigits:3})+' ha';$('corners').textContent=x.geometry.points.length;$('perimeter').textContent=length(edge);$('sides').replaceChildren(...currentSides.map(s=>{const li=document.createElement('li');li.textContent=s.from+'–'+s.to+' · '+length(s.length)+(s.hole?' · unutrašnja granica':'');return li;}));$('source').textContent='GeoSrbija · preuzeto '+date(x.downloadedAt);destinationPicked=false;fillDestinations();if(refit){openParcelNeighborhood(current);fit();}else draw();status();updateGps();routes();updateEkatastar(current);
  // The desktop panel scrolls on its own; on phones the map stays in view and "Detalji" scrolls down.
@@ -529,7 +530,7 @@ async function saveCurrent(){
   if(current&&idFor(current)===x.id){Object.assign(x,own(current));current=x;mapSurroundings=x.osm||mapSurroundings;fillDestinations();routes();}
   shellReady=await checkShell();if(navigator.storage?.persist)await navigator.storage.persist().catch(()=>false);
   status();draw();
-  message('Parcela '+x.record.title+' je sačuvana.'+(x.neighborhood?' Sačuvane su i granice okolnih parcela.':'')+(x.osm?' Putevi i okolina su sačuvani.':'')+' '+warnings.join(' ')+(!shellReady?' Offline otvaranje aplikacije još nije potvrđeno.':''),!!warnings.length||!shellReady,true);
+  message('Parcela '+x.record.title+' je sačuvana.'+(x.neighborhood?' Sačuvane su i granice okolnih parcela.':'')+(x.osm?' Putevi i okolina su sačuvani.':'')+' '+warnings.join(' ')+(!shellReady?' Offline otvaranje aplikacije još nije potvrđeno.':'')+iosNote(),!!warnings.length||!shellReady,true);
   return{id:x.id,boundarySaved:true,nearbyParcelsSaved:!!x.neighborhood,surroundingsSaved:!!x.osm,appOfflineReady:shellReady};
  }finally{roadsBusy=false;$('save').disabled=false;}
 }
@@ -555,7 +556,7 @@ async function persistCurrent(changes){
  try{
   await dbCall('readwrite',store=>{const r=store.get(id);r.onsuccess=()=>store.put(r.result?{...r.result,...own(copy)}:{...copy,id,savedAt:new Date().toISOString()});return r;});
   await refreshSaved();status();draw();
-  if(!known)message('Parcela '+x.record.title+' je sačuvana na ovom telefonu. Za puteve i okolinu pritisnite „Sačuvaj za teren“.');
+  if(!known)message('Parcela '+x.record.title+' je sačuvana na ovom telefonu. Za puteve i okolinu pritisnite „Sačuvaj za teren“.'+iosNote());
  }catch{message('Čuvanje na telefonu nije uspelo.',true);}
 }
 $('parcelLabel').addEventListener('change',()=>void persistCurrent({label:$('parcelLabel').value.trim()||undefined}));
@@ -877,10 +878,30 @@ async function exportAll(){
   const parcels=await dbCall('readonly',s=>s.getAll()),photos=await dbCall('readonly',s=>s.getAll(),'photos')||[];
   const file=await backupBlob(parcels,photos);
   download(file,'moje-parcele-'+today()+'.json');
+  try{localStorage.setItem('lastBackup',new Date().toISOString());}catch{}
   backupStatus('Rezervna kopija: '+parcelCount(parcels.length)+(photos.length?' i '+photoCount(photos.length):'')+' · '+fileSize(file.size)+'. Sačuvajte fajl van telefona (Google Drive, mejl), a na drugom telefonu ga otvorite sa „Uvezi iz fajla“.');
  }catch(e){backupStatus('Izvoz nije uspeo: '+e.message,true);}
- finally{$('exportAll').disabled=false;}
+ finally{$('exportAll').disabled=false;void renderStorage();}
 }
+// What this device holds, whether the browser may delete it on its own, and when it was last copied off the phone.
+const megabytes=n=>(n/1048576).toLocaleString('sr-Latn',{maximumFractionDigits:1})+' MB';
+const areaCount=n=>n+' '+(n%10===1&&n%100!==11?'područje':'područja');
+async function renderStorage(){
+ const storage=navigator.storage,[estimate,persisted,cells]=await Promise.all([storage?.estimate?.().catch(()=>null),storage?.persisted?.().catch(()=>false),db?dbCall('readonly',s=>s.count(),'cells').catch(()=>0):0]);
+ const last=storedValue('lastBackup'),days=last?Math.floor((Date.now()-Date.parse(last))/864e5):null;
+ $('storageSummary').textContent=[Number.isFinite(estimate?.usage)?'Zauzeto na telefonu: '+megabytes(estimate.usage)+'.':'',cells?'Parcele sa mape pamte se za '+areaCount(cells)+' od 250 × 250 m.':''].filter(Boolean).join(' ');
+ $('storageSafety').textContent=[persisted?'Trajno čuvanje je uključeno: pregledač ove podatke ne briše sam.':'Pregledač može sam da obriše ove podatke kad telefonu ponestane prostora.',last?'Poslednja rezervna kopija: '+(days<1?'danas':'pre '+days+' dana')+'.':saved.length?'Rezervna kopija još nije napravljena.':''].filter(Boolean).join(' ');
+ $('storageIos').hidden=platformOf(navigator)!=='ios';
+ $('clearMapCache').hidden=!cells;
+}
+$('clearMapCache').onclick=async()=>{
+ if(!db||!confirm('Obrisati parcele učitane pomeranjem mape? Sačuvane parcele, beleške i fotografije ostaju.'))return;
+ try{await dbCall('readwrite',s=>s.clear(),'cells');backupStatus('Parcele učitane sa mape su obrisane sa telefona. Ponovo se učitavaju kad pomerite mapu uz internet.');}
+ catch{backupStatus('Brisanje nije uspelo.',true);}
+ void renderStorage();
+};
+// Safari keeps an iPhone site's data only while it is visited; a home-screen app keeps it.
+const iosNote=()=>platformOf(navigator)==='ios'?' Na iPhone-u dodajte aplikaciju na početni ekran, inače Safari posle 7 dana bez posete briše sačuvano (više u Sačuvanim parcelama).':'';
 $('exportAll').onclick=exportAll;
 // Everything is written in one transaction, so a failed import leaves the phone as it was.
 function storeImport(parcels,photos){return new Promise((resolve,reject)=>{
@@ -948,6 +969,8 @@ let installPrompt=null;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('install').hidden=false;});
 addEventListener('appinstalled',()=>{installPrompt=null;$('install').hidden=true;});
 $('install').onclick=async()=>{const e=installPrompt;if(!e)return;installPrompt=null;$('install').hidden=true;e.prompt();try{await e.userChoice;}catch{}};
-async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}await followPermission();if(!navigator.onLine&&saved.length){try{openOffline();}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(locationPermission==='granted'&&(navigator.onLine||!current))startGps();openSharedLink();if('serviceWorker'in navigator){watchUpdates();try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}}
+// Browsers grant lasting storage mostly to apps opened from the home screen, so the request is made there too.
+const installed=()=>!!globalThis.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
+async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}if(saved.length&&installed())await navigator.storage?.persist?.().catch(()=>false);await followPermission();if(!navigator.onLine&&saved.length){try{openOffline();}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(locationPermission==='granted'&&(navigator.onLine||!current))startGps();openSharedLink();if('serviceWorker'in navigator){watchUpdates();try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}}
 await boot();
 if(document.modelContext?.registerTool){for(const tool of [{name:'list_saved_parcels',description:'Read parcels saved on this device and offline readiness.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:async()=>({parcels:saved.map(x=>({id:x.id,number:x.record.title,ko:x.ko,municipality:x.municipality,surroundingsSaved:!!x.osm})),appOfflineReady:await checkShell()})},{name:'open_saved_parcel',description:'Display a parcel already saved on this device.',inputSchema:{type:'object',properties:{id:{type:'string'}},required:['id'],additionalProperties:false},execute:async input=>{const x=saved.find(x=>x.id===input?.id);if(!x)throw Error('Parcela nije sačuvana.');show(x);return{selected:x.id};}}]){try{await document.modelContext.registerTool(tool);}catch{}}}
