@@ -531,6 +531,7 @@ async function saveCurrent(){
   shellReady=await checkShell();if(navigator.storage?.persist)await navigator.storage.persist().catch(()=>false);
   status();draw();
   message('Parcela '+x.record.title+' je sačuvana.'+(x.neighborhood?' Sačuvane su i granice okolnih parcela.':'')+(x.osm?' Putevi i okolina su sačuvani.':'')+' '+warnings.join(' ')+(!shellReady?' Offline otvaranje aplikacije još nije potvrđeno.':'')+iosNote(),!!warnings.length||!shellReady,true);
+  suggestInstall();
   return{id:x.id,boundarySaved:true,nearbyParcelsSaved:!!x.neighborhood,surroundingsSaved:!!x.osm,appOfflineReady:shellReady};
  }finally{roadsBusy=false;$('save').disabled=false;}
 }
@@ -927,6 +928,7 @@ async function importBackup(backup){
  await refreshSaved();
  const open=current&&saved.find(x=>x.id===idFor(current));if(open)show(open,false);else draw();
  backupStatus('Uvoz je završen. Nove parcele: '+counts.added+' · već na telefonu: '+counts.existing+' · nove fotografije: '+counts.photos+(skipped?' · neispravno i preskočeno: '+skipped:'')+'.'+(counts.existing?' Parcele koje su već bile na telefonu zadržale su svoje podatke; dopunjena su samo prazna polja.':'')+' Putevi i okolne parcele nisu u kopiji: za rad bez mreže otvorite parcelu i pritisnite „Sačuvaj za teren“.');
+ suggestInstall();
 }
 $('import').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>150e6)throw Error('Datoteka je veća od 150 MB.');let data;try{data=JSON.parse(await f.text());}catch{throw Error('Ovo nije rezervna kopija iz ove aplikacije.');}const backup=readBackup(data);if(backup){backupStatus('Uvozim rezervnu kopiju…');await importBackup(backup);return;}const x=validPackage(data);show(x);setMobileView('details');message('Kopija je otvorena. Pritisnite „Sačuvaj za teren“ da je zadržite na ovom uređaju.');}catch(e){backupStatus(e.message,true);}finally{$('import').value='';}};
 // A shared link names the parcel and a point inside it; opening it runs the long-press query there and selects the parcel.
@@ -966,11 +968,26 @@ function watchUpdates(){
 }
 // Chrome and Edge offer installation through this event; Safari only through its share menu (see help).
 let installPrompt=null;
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('install').hidden=false;});
-addEventListener('appinstalled',()=>{installPrompt=null;$('install').hidden=true;});
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('install').hidden=false;if(saved.length)suggestInstall();});
+addEventListener('appinstalled',()=>{installPrompt=null;$('install').hidden=true;message('Aplikacija je instalirana. Ubuduće je otvarajte sa ikonice na početnom ekranu.');});
 $('install').onclick=async()=>{const e=installPrompt;if(!e)return;installPrompt=null;$('install').hidden=true;e.prompt();try{await e.userChoice;}catch{}};
 // Browsers grant lasting storage mostly to apps opened from the home screen, so the request is made there too.
 const installed=()=>!!globalThis.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
-async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}if(saved.length&&installed())await navigator.storage?.persist?.().catch(()=>false);await followPermission();if(!navigator.onLine&&saved.length){try{openOffline();}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(locationPermission==='granted'&&(navigator.onLine||!current))startGps();openSharedLink();if('serviceWorker'in navigator){watchUpdates();try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}}
+// A website cannot put itself on the home screen: Chrome opens its install dialog after a tap, Safari only
+// from its own menu. So a phone is offered it once there is something to lose, at most every two weeks.
+const INSTALL_PAUSE=14*864e5;
+function suggestInstall(){
+ const platform=platformOf(navigator),ios=platform==='ios',asked=Date.parse(storedValue('installAskedAt')||'');
+ if(installed()||!saved.length||!(ios||platform==='android'&&installPrompt)||Date.now()-asked<INSTALL_PAUSE||$('installDialog').open)return false;
+ try{localStorage.setItem('installAskedAt',new Date(Date.now()).toISOString());}catch{}
+ $('installText').textContent=ios?'Safari na iPhone-u briše podatke stranice posle 7 dana bez posete, zajedno sa sačuvanim parcelama i fotografijama. Aplikacija sa početnog ekrana to ne radi i otvara se kao obična aplikacija, i bez interneta.':'Jednim dodirom aplikacija dobija ikonicu na početnom ekranu i otvara se kao obična aplikacija, i bez interneta. Sačuvane parcele su i u njoj, ne treba ih prenositi.';
+ for(const id of ['installSteps','installMove','installExport'])$(id).hidden=!ios;
+ $('installNow').hidden=ios;$('installLater').textContent=ios?'Razumem':'Kasnije';
+ $('installDialog').showModal?.();return true;
+}
+$('installNow').onclick=()=>{$('installDialog').close();return $('install').onclick();};
+$('installExport').onclick=()=>{$('installDialog').close();return exportAll();};
+$('installLater').onclick=()=>$('installDialog').close();
+async function boot(){try{db=await openDb();await refreshSaved();}catch{message('Lokalno čuvanje nije dostupno. Proverite podešavanja pregledača.',true);}if(saved.length&&installed())await navigator.storage?.persist?.().catch(()=>false);await followPermission();if(!navigator.onLine&&saved.length){try{openOffline();}catch(e){message('Nije moguće otvoriti sačuvanu parcelu: '+e.message,true);}}else draw();if(locationPermission==='granted'&&(navigator.onLine||!current))startGps();openSharedLink();if('serviceWorker'in navigator){watchUpdates();try{await navigator.serviceWorker.register('/sw.js');await navigator.serviceWorker.ready;shellReady=await checkShell();status();}catch{shellReady=false;status();}}suggestInstall();}
 await boot();
 if(document.modelContext?.registerTool){for(const tool of [{name:'list_saved_parcels',description:'Read parcels saved on this device and offline readiness.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute:async()=>({parcels:saved.map(x=>({id:x.id,number:x.record.title,ko:x.ko,municipality:x.municipality,surroundingsSaved:!!x.osm})),appOfflineReady:await checkShell()})},{name:'open_saved_parcel',description:'Display a parcel already saved on this device.',inputSchema:{type:'object',properties:{id:{type:'string'}},required:['id'],additionalProperties:false},execute:async input=>{const x=saved.find(x=>x.id===input?.id);if(!x)throw Error('Parcela nije sačuvana.');show(x);return{selected:x.id};}}]){try{await document.modelContext.registerTool(tool);}catch{}}}

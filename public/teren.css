@@ -204,6 +204,12 @@ geolocation.native{background-color:#174b3b;color:#fff;border:0;border-radius:9p
 @keyframes map-spin{to{transform:rotate(360deg)}}
 .map-status button{flex:none;min-height:34px;padding:4px 12px;border:0;border-radius:14px;background:#fff;color:#183d32;font-size:13px;white-space:nowrap}
 
+/* Suggestion to add the app to the home screen. */
+.install-steps li{margin-bottom:10px}
+.share-icon{width:18px;height:18px;vertical-align:-3px;color:#1c7ed6}
+.install-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.install-actions button{flex:1 1 140px}
+
 /* What the phone holds and whether the browser may delete it. */
 .storage-warning{color:#7a3420;background:#fbeee6;border-radius:8px;padding:8px 10px}
 .text-button{min-height:36px;margin-top:6px;padding:6px 0;border:0;background:none;font-size:13px;font-weight:600;text-decoration:underline;color:#5a6b55}
