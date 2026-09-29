@@ -35,6 +35,15 @@
 ## Provera da test hvata grešku ide korak po korak
 - Kontekst: vraćanje starog koda, pokretanje testa i ponovna ispravka poslati su istovremeno; ispravka je stigla pre testa, pa je test „prošao“ i sa greškom.
 - Pravilo: izmena, test i vraćanje idu jedno za drugim, i posle vraćanja proveriti da je fajl opet ispravan.
+- Ponovljeno 2026-09-29 u drugom obliku: izmena testa i pokretanje testova poslati su zajedno, pa je test pročitao stari fajl i „pao“; ličilo je na nestabilan test. Pravilo: nijedna komanda koja čita fajl ne ide u isti paket sa izmenom tog fajla.
+
+## Poruka koja se ne vidi nije poruka
+- Kontekst: na telefonu je panel sa `#message` sakriven iza mape. Poruke „63 parcela…“, „Učitavam parcele oko pina…“ i greške GeoSrbije išle su tamo, pa korisnik na mapi nije video ni napredak ni grešku. Testovi su proveravali tekst `#message`, ne da li je vidljiv.
+- Pravilo: za svaku poruku proveriti gde je korisnik kad ona stigne (prikaz „Mapa“ na 390 px) i da li je taj element tamo vidljiv; proveriti na snimku ekrana, ne samo tekstom.
+
+## Merenje u Playwright-u na stranici sa service worker-om
+- Kontekst: `page.on('request')` nije video zahteve ka GeoSrbiji kad je stranicu kontrolisao service worker, a `context.on('request')` je neke prijavio dvaput; izgledalo je da aplikacija šalje isti upit dva puta. Posle `route.abort()` i `unrouteAll` zahtevi u istoj sesiji visili su 15–35 s. Emulirana lokacija čuva vreme kad je postavljena, pa je posle 30 s aplikacija s pravom smatra zastarelom.
+- Pravilo: zahteve brojati u samoj stranici (omotač oko `fetch` preko `addInitScript` i Resource Timing); posle presretanja zahteva zatvoriti pregledač pre merenja vremena; lokaciju postaviti ponovo neposredno pre svakog učitavanja.
 
 ## Dve referentne tačke nisu provera cele zemlje
 - Kontekst: posle dodavanja sloja 939 za Beograd, „parcele oko mene“ su i dalje vraćale nulu u Nišu, Kragujevcu i celoj Vojvodini,
