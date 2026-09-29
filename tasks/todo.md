@@ -181,3 +181,23 @@ pin i okolne parcele vraćaju nulu u Nišu, Kragujevcu, Novom Sadu, Subotici i s
 - Chromium 152 (dozvole kroz DevTools protokol): bez pitanja pri otvaranju; Chromeovo dugme na srpskom i ispravno po njegovim pravilima stila;
   blokirano → koraci; dozvoljeno → GPS sam, prave parcele oko emuliranog položaja; 390 px sa Android i iPhone oznakom.
 - Neprovereno: pravi iPhone (jednokratna dozvola u Safariju, aplikacija sa početnog ekrana) i pravo Chromeovo pitanje na telefonu.
+
+# Plan 11: parcele za ceo prikaz mape, bez dugog pritiska; jasnija mapa na telefonu
+
+Nalaz (uživo, 2026-09-29): krug od 177 m ima 80–170 parcela i u selu i u centru grada; servis prima strane do 1.000 zapisa.
+Na telefonu je panel sa porukama iza mape, pa poruke (i greške) korisnik nije video.
+
+- [x] `area-loader.js`: ćelije 250 m u UTM 34N, krug 177 m po ćeliji, čeka da mapa stane (300 ms), 3 zahteva odjednom, najbliže prvo, 10% unapred; najviše 36 ćelija, dalje „uvećajte“; greška → ponovo posle 20 s ili dugmetom; najviše 150 ćelija u memoriji
+- [x] Ćelije na uređaju (IndexedDB v3, prodavnica `cells`, 300 najnovijih): ponovna poseta odmah, i bez mreže ili kad GeoSrbija ne radi; starije od 7 dana se prikažu i osveže u pozadini
+- [x] `geosrbija.js`: strane od 500 (i dalje najviše 1.000 zapisa); zahtev za ćeliju ističe posle 15 s, pretraga posle 35 s
+- [x] Crtanje: sve parcele u jednoj putanji, preskaču se one van ekrana; dodir proverava prvo pravougaonik parcele
+- [x] Statusna linija na mapi: učitavanje, „uvećajte“, bez mreže, „GeoSrbija ne odgovara“ + „Pokušaj ponovo“; poruke na telefonu (duge skraćene na prvu rečenicu)
+- [x] Pretraga: mesto sa mape ili poslednje pretraženo, pa se kuca samo broj; bez mreže se otvara poslednja parcela; GPS kreće i bez mreže kad nema sačuvane parcele
+- [x] „Nova verzija · Osveži“, dugme „Instaliraj“, veća slova na telefonu, `pnpm test`
+- [x] `sw.js` v26, testovi, README (i zašto nema sopstvene kopije svih parcela)
+
+## Pregled 11
+- `pnpm test`: 89/89 (5 za `area-loader.js`, 8 novih za aplikaciju, 3 izmenjena za strane od 500). Oba glavna testa aplikacije padaju kad se ukloni `updateArea()` iz `draw()`.
+- Uživo (Chromium, emulirana lokacija, prava GeoSrbija, 390 i 360 px): Pepeljevac GPS + 12 ćelija, ekran pun parcela; pomeranje učita samo nove ćelije; posle osvežavanja ćelije sa uređaja bez ijednog zahteva; bez mreže imenuje neučitano područje i samo ga učita kad se veza vrati; blokirana GeoSrbija → „Pokušaj ponovo“ radi; Niš 12 ćelija, pretraga popunjena „Niš "Bubanj"“ / Medijana, samo broj 980 nađen.
+- Nalazi usput: statusna linija je sakrivala učitavanje ispod poruke (sada spinner i uz poruku) i dugme „Pokušaj ponovo“ ispod poruke o grešci (sada ostaje); poruka „Veza sa GeoSrbija…“ od pet redova prekrivala je mapu (sada prva rečenica); ćelija koja visi čekala je 35 s (sada 15 s).
+- Neprovereno: pravi telefon (iOS i Android), slab signal na terenu, trajanje IndexedDB kvote na iPhone-u.
