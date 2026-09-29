@@ -9,6 +9,9 @@ const LAYERS='507,941,948,695,694,693,589,587,586,588,939,899,1178,1177,910,49,A
 // 939 Belgrade. A missing layer silently returns an empty result in its region. The same query on 49
 // returns settlement outlines and on 910 addresses, so those stay out.
 const PARCEL_LAYERS='586,587,588,589,899,939,';
+// Spatial pages of up to 1,000 records are accepted (checked 2026-09-29). 500 keeps a 150 m circle or a
+// map cell in one request, even in a town centre, and a page around 500 kB.
+const PAGE=500,MAX_RECORDS=1000;
 const unreachable='Veza sa GeoSrbija servisom nije uspela. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu. Ako ni tamo ne radi, proverite vezu ili pokušajte kasnije. Ako sajt radi, ponovite pretragu; servis za parcele može biti privremeno nedostupan.';
 
 export function textRequest(parcel,ko){
@@ -17,7 +20,7 @@ export function textRequest(parcel,ko){
 // east/north in EPSG:32634, radius in metres.
 export function nearbyRequest(east,north,radius){
   if(![east,north,radius].every(Number.isFinite)||radius<=0||radius>1000)throw new Error('Neispravan prostorni upit.');
-  return {srsid:'32634',st:'circle',s:east.toFixed(2)+','+north.toFixed(2)+','+Math.round(radius),start:0,limit:100,layers:PARCEL_LAYERS};
+  return {srsid:'32634',st:'circle',s:east.toFixed(2)+','+north.toFixed(2)+','+Math.round(radius),start:0,limit:PAGE,layers:PARCEL_LAYERS};
 }
 // "PEPELJEVAC LAJKOVAC ПЕПЕЉЕВАЦ ЛАЈКОВАЦ" -> "Pepeljevac Lajkovac"; "GROŠNICA I KRAGUJEVAC ..." -> "Grošnica I Kragujevac".
 export function latinPlace(desc){
@@ -33,8 +36,8 @@ export function placeNames(desc,ko,municipality){
 }
 const isPolygon=r=>/^(?:MULTI)?POLYGON\b/i.test(String(r.fullGeom||'').trim());
 
-async function call(request){
-  const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),35000);
+async function call(request,timeout=35000){
+  const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),timeout);
   try {
     const response=await fetch(GEOSRBIJA_URL,{
       method:'POST',signal:controller.signal,
@@ -47,7 +50,7 @@ async function call(request){
     if(data?.success!==true||!Array.isArray(data.records))throw new Error('GeoSrbija nije vratila uspešan rezultat. Servis je možda privremeno nedostupan ili je promenio interfejs.');
     return data;
   } catch(error) {
-    if(error.name==='AbortError')throw new Error('GeoSrbija servis nije odgovorio za 35 sekundi. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu da proverite dostupnost, pa pokušajte ponovo.');
+    if(error.name==='AbortError')throw new Error('GeoSrbija servis nije odgovorio za '+Math.round(timeout/1000)+' sekundi. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu da proverite dostupnost, pa pokušajte ponovo.');
     if(error.name==='SyntaxError')throw new Error('GeoSrbija servis je vratio nečitljiv odgovor. Pokušajte kasnije.');
     throw error;
   } finally {clearTimeout(timer);}
@@ -64,12 +67,12 @@ export async function searchParcel(parcel,ko,municipality) {
 }
 
 // Parcels whose boundary lies within `radius` metres of a UTM point; the map viewer uses 12 m for a click.
-export async function searchNearby(east,north,radius) {
+export async function searchNearby(east,north,radius,timeout) {
   const request=nearbyRequest(east,north,radius), records=[], seen=new Set();
   let total=0;
   // Bound work even if the upstream ignores pagination or reports a bogus total.
-  for(let page=0;page<10;page++){
-    const data=await call({...request,start:page*request.limit});
+  for(let page=0;page*PAGE<MAX_RECORDS;page++){
+    const data=await call({...request,start:page*request.limit},timeout);
     total=Math.max(total,Number(data.total)||0);
     let added=0;
     for(const record of data.records.filter(r=>typeof r.title==='string'&&isPolygon(r))){

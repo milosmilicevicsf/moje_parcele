@@ -196,6 +196,31 @@ button.saved-group:hover{background:none;color:#174b3b;text-decoration:underline
 geolocation.native{background-color:#174b3b;color:#fff;border:0;border-radius:9px;font-size:15px;font-weight:600;padding:12px 18px}
 @media(max-width:760px){.location-ask{width:auto;left:10px;right:62px}}
 
+/* One status line over the map: loading, zoom in, offline, errors and passing messages.
+   left/right with an auto margin keeps a short line centred without narrowing a long one. */
+.map-status{position:absolute;z-index:3;left:12px;right:12px;bottom:44px;width:fit-content;max-width:calc(100% - 24px);margin:0 auto;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:18px;background:#183d32f0;color:#fff;font-size:13px;line-height:1.35;box-shadow:0 3px 14px #0003}
+.map-status.error{background:#8a3a22f0}
+.map-status.busy #mapStatusText::before{content:"";display:inline-block;width:10px;height:10px;margin-right:8px;border:2px solid #ffffff70;border-top-color:#fff;border-radius:50%;vertical-align:-1px;animation:map-spin .8s linear infinite}
+@keyframes map-spin{to{transform:rotate(360deg)}}
+.map-status button{flex:none;min-height:34px;padding:4px 12px;border:0;border-radius:14px;background:#fff;color:#183d32;font-size:13px;white-space:nowrap}
+
+/* Search within the place already on the map; install where the browser offers it. */
+.search-hint{margin:-4px 0 12px;color:#4d6a4a}
+.install{font-weight:700;color:#174b3b}
+@media(max-width:760px){#install:not([hidden])+#help{display:none}}
+
+/* Phones are read outdoors: nothing essential below 12 px. */
+@media(max-width:760px){
+ .map-footer{font-size:11px}
+ .map-footer .gps-text strong{font-size:13px}
+ .map-footer .gps-text span{font-size:12px;line-height:1.3}
+ .map-footer #retryGps,.map-sources,.sources-content,.map-parcel-heading span,#mapActionStatus,#fit{font-size:12px}
+ .map-parcel-heading strong{font-size:16px}
+ .map-parcel-actions button{font-size:13px}
+ .badge{font-size:11px}
+ .mobile-nav button{font-size:12px}
+}
+
 /* Walking guidance to a point. */
 .guide-start{width:100%;margin:6px 0 4px}
 .guide{position:absolute;z-index:3;top:84px;left:24px;right:84px;max-width:520px;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:#fffef9f5;box-shadow:0 4px 18px #0003}

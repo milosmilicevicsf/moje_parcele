@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createNearbyLoader,nearbyFixState} from '../public/nearby-loader.js';
+import {createAreaLoader,CELL,CELL_RADIUS,cellCenter} from '../public/area-loader.js';
 import {createLocationTracker} from '../public/location-tracker.js';
 import {searchNearby,placeNames} from '../public/geosrbija.js';
 import * as geo from '../public/geo.js';
@@ -74,19 +75,29 @@ test('nearby search covers every regional cadastral layer, never addresses or ou
  assert(geometry.area>0);assert(geometry.points.every(p=>Math.abs(p.lat-44.8178)<.01&&Math.abs(p.lon-20.4604)<.01));
 });
 
-test('nearby service paginates and deduplicates geometry',async t=>{
+test('nearby service paginates in pages of 500 and deduplicates geometry',async t=>{
  const starts=[],record=i=>({uid:String(i),title:String(i),fullGeom:'POLYGON ((1 1,2 1,2 2,1 1))'});
  t.mock.method(globalThis,'fetch',async(url,options)=>{
-  const {request}=JSON.parse(options.body);starts.push(request.start);
-  return Response.json({d:{success:true,total:102,records:request.start===0?Array.from({length:100},(_,i)=>record(i)):[record(99),record(100)]}});
+  const {request}=JSON.parse(options.body);starts.push(request.start);assert.equal(request.limit,500);
+  return Response.json({d:{success:true,total:502,records:request.start===0?Array.from({length:500},(_,i)=>record(i)):[record(499),record(500)]}});
  });
  const result=await searchNearby(432954,4909699,150);
- assert.deepEqual(starts,[0,100]);assert.equal(result.records.length,101);assert.equal(result.total,102);
+ assert.deepEqual(starts,[0,500]);assert.equal(result.records.length,501);assert.equal(result.total,502);
 });
 
-test('an upstream that repeats the first page cannot loop forever',async t=>{
- let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return Response.json({success:true,total:10000,records:Array.from({length:100},(_,i)=>({uid:String(i),title:String(i),fullGeom:'POLYGON ((1 1,2 1,2 2,1 1))'}))});});
- const result=await searchNearby(432954,4909699,150);assert.equal(calls,2);assert.equal(result.records.length,100);assert.equal(result.total,10000);
+test('an upstream that repeats the first page cannot loop forever, and a result stops at 1,000 records',async t=>{
+ let calls=0;t.mock.method(globalThis,'fetch',async()=>{calls++;return Response.json({success:true,total:10000,records:Array.from({length:500},(_,i)=>({uid:String(i),title:String(i),fullGeom:'POLYGON ((1 1,2 1,2 2,1 1))'}))});});
+ const result=await searchNearby(432954,4909699,150);assert.equal(calls,2);assert.equal(result.records.length,500);assert.equal(result.total,10000);
+ calls=0;t.mock.method(globalThis,'fetch',async(url,options)=>{const {start}=JSON.parse(options.body).request;calls++;return Response.json({success:true,total:10000,records:Array.from({length:500},(_,i)=>({uid:String(start+i),title:String(i),fullGeom:'POLYGON ((1 1,2 1,2 2,1 1))'}))});});
+ const capped=await searchNearby(432954,4909699,1000);assert.equal(calls,2);assert.equal(capped.records.length,1000);assert.equal(capped.total,10000,'the true total shows the result is partial');
+});
+
+test('a spatial query that hangs fails after the timeout it was given',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ t.mock.method(globalThis,'fetch',(url,options)=>new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(Object.assign(Error('aborted'),{name:'AbortError'})))));
+ let settled=false;const pending=searchNearby(432954,4909699,177,15000);pending.catch(()=>{}).finally(()=>settled=true);
+ t.mock.timers.tick(14999);await flush();assert.equal(settled,false);
+ t.mock.timers.tick(1);await assert.rejects(pending,/nije odgovorio za 15 sekundi/);
 });
 
 test('empty spatial result is data, not evidence that a cadastral plan is missing',async t=>{
@@ -96,13 +107,15 @@ test('empty spatial result is data, not evidence that a cadastral plan is missin
 
 async function appHarness(search=async()=>({records:[fixture.record],total:1}),stored=new Map(),url='',{permission='granted',...extra}={}){
  const permissionState={state:permission,listeners:[],addEventListener(type,fn){this.listeners.push(fn);}};
- const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={},blobs=[],created=[];let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now();
+ const labels=[],elements=new Map(),tileRequests=[],images=[],compassHandlers={},blobs=[],created=[],windowListeners={};let resize,gpsCallback,gpsFailure,queries=0,strokes=0,reads=0,interval,time=Date.now(),areaTask=null;
  const compassTarget={ondeviceorientationabsolute:null,addEventListener:(type,fn)=>compassHandlers[type]=fn,removeEventListener:type=>delete compassHandlers[type]};
  const context2d=new Proxy({strokeText:text=>labels.push(text),stroke:()=>strokes++,drawImage:(...args)=>images.push(args),measureText:text=>({width:text.length*7})},{get:(obj,key)=>obj[key]??(()=>{})});
  function element(id){if(!elements.has(id))elements.set(id,{textContent:'',style:{},hidden:false,classList:{toggle(name,on){this[name]=on;},add(){},remove(){}},append(){},replaceChildren(){},scrollIntoView(){},setPointerCapture(){},listeners:new Map(),addEventListener(type,fn){const handlers=this.listeners.get(type)||[];handlers.push(fn);this.listeners.set(type,handlers);},dispatch(type,event){for(const fn of this.listeners.get(type)||[])fn(event);},close(){this.open=false;},setAttribute(name,value){this[name]=value;},dataset:{},parentElement:{classList:{toggle(name,on){this[name]=on;}}},getBoundingClientRect:()=>({width:800,height:600,left:0,top:0}),getContext:()=>context2d});return elements.get(id);}
  const scope={...geo,...field,...neighborhoods,...measure,navigationLinks,...portfolio,...backup,...locationPermission,...guideModule,Blob,URL:{createObjectURL:blob=>{blobs.push(blob);return 'blob:'+blobs.length;},revokeObjectURL(){}},
   createCompass:options=>createCompass({...options,target:compassTarget,Orientation:{},screenAngle:()=>0}),createLocationTracker:options=>createLocationTracker({...options,now:()=>time,setTimer:()=>1,clearTimer(){}}),nearbyFixState:(f,n=time)=>nearbyFixState(f,n),
   createNearbyLoader:options=>createNearbyLoader({...options,online:()=>scope.navigator.onLine,now:()=>time}),
+  // Loading for the map view waits for a resting map; tests decide when it rests (app.area()).
+  createAreaLoader:options=>createAreaLoader({...options,schedule:fn=>{areaTask=fn;return 1;},cancel:()=>{areaTask=null;},now:()=>time,online:()=>scope.navigator.onLine}),
   latinPlace:x=>x,placeNames,searchNearby:async(...args)=>{queries++;return search(...args);},
   SURROUNDINGS_URL:'/api/surroundings',SATELLITE_TILES:'https://tiles.test/{z}/{y}/{x}',SATELLITE_ATTRIBUTION:'Test imagery',
   createTileLayer:options=>{const layer=createTileLayer({...options,load:(url,done)=>{tileRequests.push(url);queueMicrotask(()=>done(true));return {url};}});return layer;},
@@ -110,7 +123,7 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},requestAnimationFrame:fn=>queueMicrotask(fn),
   document:{getElementById:element,querySelectorAll:()=>[],body:{append(){}},createElement:tag=>{const e={tag,style:{},dataset:{},children:[],classList:{add(){},remove(){},toggle(){}},append(...items){this.children.push(...items);},replaceChildren(){},setAttribute(name,value){this[name]=value;},addEventListener(){},click(){this.clicked=true;},remove(){}};created.push(e);return e;},addEventListener(){}},navigator:{onLine:true,permissions:{query:async()=>permissionState},geolocation:{watchPosition(fn,error){gpsCallback=fn;gpsFailure=error;return 1;},getCurrentPosition(){reads++;},clearWatch(){}}},
   indexedDB:{open(){const request={};queueMicrotask(()=>request.onerror());return request;}},
-  ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(){},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
+  ResizeObserver:class{constructor(fn){this.fn=fn;resize=fn;}observe(){queueMicrotask(this.fn);}},structuredClone,innerWidth:800,devicePixelRatio:1,addEventListener(type,fn){(windowListeners[type]||=[]).push(fn);},setInterval(fn){interval=fn;},console,Date:class extends Date{static now(){return time;}},Map,Math,setTimeout,clearTimeout,
   URLSearchParams,location:{search:url,pathname:'/teren.html',origin:'https://test.local'},history:{replaceState(){}},...extra};
  vm.createContext(scope);
  const source=fs.readFileSync('public/teren.js','utf8').replace(/^import .*;\n/gm,'').replace('await boot();','boot();').split('if(document.modelContext?.registerTool)')[0];
@@ -119,6 +132,10 @@ async function appHarness(search=async()=>({records:[fixture.record],total:1}),s
   async setPermission(state){permissionState.state=state;for(const fn of permissionState.listeners)fn();await flush();},get reads(){return reads;},get queries(){return queries;},get strokes(){return strokes;},
   async emit(accuracy,coords=[20.4604,44.8178]){gpsCallback({coords:{latitude:coords[1],longitude:coords[0],accuracy},timestamp:time});await flush();},
   async tick(ms){time+=ms;interval();await flush();},
+  // The map comes to rest: run the pending load for the view and let the requests finish.
+  async area(){const fn=areaTask;areaTask=null;fn?.();for(let i=0;i<30;i++)await flush();},
+  get areaWaiting(){return areaTask!==null;},
+  async fire(type,event={}){for(const fn of windowListeners[type]||[])await fn(event);await flush();},
   async fail(code){gpsFailure({code});await flush();},
   compass(event){compassHandlers.deviceorientationabsolute?.(event);},
   run(code){return vm.runInContext(code,scope);},scope};
@@ -252,7 +269,7 @@ test('a quick tap beside parcels keeps them and never queries; a long press or r
  const queries=app.queries;
  tapAt(app,457395,4962815);await flush();
  assert.equal(app.queries,queries);assert.equal(app.run('nearby.length'),2);assert.equal(app.run('mapPin'),null);
- assert.match(app.element('message').textContent,/držite prst/);
+ assert.match(app.element('message').textContent,/Držite prst na tom mestu/);
  tapAt(app,457315,4962815);assert.equal(app.run('current.record.title'),'A');
  const view=app.run('JSON.stringify(view)');
  tapAt(app,457395,4962815);await flush();
@@ -826,4 +843,109 @@ test('saved parcels group by place or by own groups; a group heading shows that 
  assert.deepEqual(headings().map(h=>h.split(' · ')[0]),['Brat','Komšija'],'the new group appears at once');
  group.value='';group.dispatch('change');await flush();await flush();await flush();
  assert.equal(app.run("stores.parcels.get('B').group"),undefined,'a cleared group stays cleared');
+});
+
+// Each queried map cell answers with one 30 m parcel at its centre, named after the cell.
+const cellParcel=(east,north)=>squareRecord(`C${Math.floor(east/CELL)}_${Math.floor(north/CELL)}`,east-15,north-15);
+function drag(app,from,to){pointer(app,'pointerdown',from);pointer(app,'pointermove',[(from[0]+to[0])/2,(from[1]+to[1])/2]);pointer(app,'pointermove',to);pointer(app,'pointerup',to);}
+
+test('moving or zooming the map loads the parcels it shows, once per area, without a long press',async()=>{
+ const calls=[];
+ const app=await appHarness(async(east,north,radius)=>{calls.push([east,north,radius]);return radius===CELL_RADIUS?{records:[cellParcel(east,north)],total:1}:{records:[squareRecord('mine',457300,4962800)],total:1};});
+ await app.emit(9,geo.utm34ToWgs84(457315,4962815));
+ assert.equal(calls.length,1,'first the 150 m around the phone');assert(app.areaWaiting,'then the resting map asks for its whole view');
+ await app.area();
+ const first=calls.slice(1);assert.equal(first.length,9);assert(first.every(c=>c[2]===CELL_RADIUS));
+ assert.equal(app.run('areaParcels.length'),9);assert(app.labels.includes('C1829_19851'));
+ tapAt(app,457375,4962875);assert.equal(app.run('current.record.title'),'C1829_19851','a parcel loaded for the view is selectable');
+ drag(app,[500,300],[200,300]);await flush();await app.area();
+ assert.equal(calls.length,1+12,'300 px to the east loads only the new strip of cells');
+ assert.equal(new Set(calls.slice(1).map(c=>c.join())).size,12,'no cell is requested twice');
+ assert.equal(app.run('current.record.title'),'C1829_19851','moving the map keeps the selection');
+ drag(app,[200,300],[500,300]);await flush();await app.area();assert.equal(calls.length,13,'panning back needs no request');
+ for(let i=0;i<6;i++)app.element('zoomOut').onclick();
+ await app.area();assert.equal(calls.length,13,'zoomed far out nothing is downloaded');
+ assert.equal(app.element('mapStatus').hidden,false);assert.match(app.element('mapStatusText').textContent,/Uvećajte mapu/);
+ for(let i=0;i<6;i++)app.element('zoomIn').onclick();
+ await app.area();assert.equal(calls.length,13,'zooming back in finds the cells still in memory');assert.equal(app.element('mapStatus').hidden,true);
+});
+
+test('offline, parcels seen on an earlier visit show around the phone and missing areas are named',async()=>{
+ const app=await appHarness(async()=>{throw Error('No network should be needed');});
+ // The device copy holds every other column of cells.
+ app.scope.cachedCell=key=>{const [e,n]=cellCenter(key);return Math.floor(e/CELL)%2?{key,records:[cellParcel(e,n)],total:1,downloadedAt:new Date(Date.now()).toISOString()}:undefined;};
+ app.run('cellStore.get=async key=>cachedCell(key)');
+ app.scope.navigator.onLine=false;
+ await app.emit(8,geo.utm34ToWgs84(457315,4962815));await app.area();
+ assert.equal(app.queries,0);assert(app.run('areaParcels.length')>0);assert(app.labels.includes('C1829_19851'));
+ tapAt(app,457375,4962875);assert.equal(app.run('current.record.title'),'C1829_19851');
+ app.run('renderMapStatus()');assert.match(app.element('mapStatusText').textContent,/Bez mreže · prikazane su samo ranije učitane parcele/);
+});
+
+test('the start view loads nothing; a pin starts loading its area and a failure offers a retry over the map',async()=>{
+ let fail=true;const calls=[];
+ const app=await appHarness(async(east,north,radius)=>{calls.push(radius);if(radius===CELL_RADIUS&&fail)throw Error('HTTP 503');return {records:[radius===CELL_RADIUS?cellParcel(east,north):squareRecord('pin',433000,4909700)],total:1};},new Map(),'',{permission:'prompt'});
+ app.scope.innerWidth=390;app.element('app').dataset.view='map';
+ app.run('view.origin='+JSON.stringify(geo.utm34ToWgs84(433015,4909745))+';view.center=[0,0];view.scale=2;draw()');
+ await app.area();assert.deepEqual(calls,[],'an arbitrary start point is not a place the user chose');
+ await holdAt(app,433015,4909745);assert.deepEqual(calls,[150]);
+ assert.equal(app.element('mapStatus').hidden,false,'on a phone the message shows over the map, not in the hidden panel');
+ assert.match(app.element('mapStatusText').textContent,/parcela oko pina/);
+ await app.area();assert(calls.filter(r=>r===CELL_RADIUS).length>0);
+ app.run('toast=null;renderMapStatus()');
+ assert.match(app.element('mapStatusText').textContent,/GeoSrbija ne odgovara/);assert.equal(app.element('mapStatus').classList.error,true);
+ assert.equal(app.element('mapStatusAction').hidden,false);assert.equal(app.element('mapStatusAction').textContent,'Pokušaj ponovo');
+ app.run(`message('Veza sa GeoSrbija servisom nije uspela. Otvorite https://a3.geosrbija.rs/ u običnom Chrome tabu. Ako ni tamo ne radi, proverite vezu ili pokušajte kasnije.',true)`);
+ assert.equal(app.element('mapStatusText').textContent,'Veza sa GeoSrbija servisom nije uspela.','a long message shows its first sentence over the map');
+ assert.match(app.element('message').textContent,/Chrome tabu/,'the panel keeps the whole text');
+ assert.equal(app.element('mapStatusAction').hidden,false,'an error message keeps the retry within reach');
+ app.element('mapStatusText').onclick();
+ fail=false;const before=app.run('areaParcels.length');app.element('mapStatusAction').onclick();for(let i=0;i<30;i++)await flush();
+ assert(app.run('areaParcels.length')>before);assert.equal(app.element('mapStatus').hidden,true,'everything loaded, nothing to report');
+});
+
+test('searching needs only the number: the place comes from the map, else from the last search',async()=>{
+ const app=await appHarness(async()=>({records:[fixture.record],total:1}));await app.emit(9);
+ for(const id of ['ko','municipality','number'])app.element(id).value='';
+ app.element('number').dispatch('focus');
+ await until(()=>app.element('ko').value==='Stari Grad');
+ assert.equal(app.element('municipality').value,'Stari Grad');assert.equal(app.element('searchHint').hidden,false);assert.match(app.element('searchHint').textContent,/sa mape/);
+ app.element('ko').dispatch('input');assert.equal(app.element('searchHint').hidden,true,'editing the place removes the note');
+ app.element('ko').value='Nešto';app.element('number').dispatch('focus');await flush();assert.equal(app.element('ko').value,'Nešto','a typed place is never replaced');
+ app.scope.liveSearch=async()=>[fixture.record];
+ await app.run("searchParcel('1','Stari Grad','Beograd')");
+ assert.deepEqual(JSON.parse(app.stored.get('lastPlace')),{ko:'Stari Grad',municipality:'Beograd'});
+ const fresh=await appHarness(undefined,app.stored,'',{permission:'prompt'});
+ for(const id of ['ko','municipality'])fresh.element(id).value='';
+ fresh.element('navSearch').onclick();await flush();
+ assert.equal(fresh.element('ko').value,'Stari Grad');assert.equal(fresh.element('municipality').value,'Beograd');assert.match(fresh.element('searchHint').textContent,/Poslednje/);
+});
+
+test('without a network the app opens the parcel shown last',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0}));
+ fakeStorage(app,[{...fixture,id:'A',record:squareRecord('A',433000,4909700)},{...fixture,id:'B',record:squareRecord('B',443000,4919700)}]);
+ app.run("show(saved.find(x=>x.id==='B'))");assert.equal(app.stored.get('lastParcel'),'B');
+ app.element('clearSelection').onclick();app.run('openOffline()');assert.equal(app.run('current.record.title'),'B');
+ app.stored.set('lastParcel','deleted');app.run('openOffline()');assert.equal(app.run('current.record.title'),'A','a parcel no longer saved falls back to the first one');
+});
+
+test('a new version offers a reload over the map; the first install does not',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0})),listeners={};let reloads=0;
+ app.element('placing').hidden=true;// as in the page: the point-placing bar starts hidden
+ app.scope.navigator.serviceWorker={controller:{},addEventListener:(type,fn)=>listeners[type]=fn};app.scope.location.reload=()=>reloads++;
+ app.run('watchUpdates()');listeners.controllerchange();
+ assert.equal(app.element('mapStatus').hidden,false);assert.match(app.element('mapStatusText').textContent,/Nova verzija/);
+ app.element('mapStatusAction').onclick();assert.equal(reloads,1);
+ const first=await appHarness(async()=>({records:[],total:0})),events={};
+ first.scope.navigator.serviceWorker={controller:null,addEventListener:(type,fn)=>events[type]=fn};
+ first.run('watchUpdates()');events.controllerchange();assert.equal(first.run('toast'),null,'the first worker taking control is not an update');
+});
+
+test('where the browser offers installation, one tap installs the app',async()=>{
+ const app=await appHarness(async()=>({records:[],total:0}));
+ let prompted=0;const event={preventDefault(){this.prevented=true;},prompt(){prompted++;},userChoice:Promise.resolve({outcome:'accepted'})};
+ app.element('install').hidden=true;await app.fire('beforeinstallprompt',event);
+ assert(event.prevented,'the browser banner waits for our button');assert.equal(app.element('install').hidden,false);
+ await app.element('install').onclick();assert.equal(prompted,1);assert.equal(app.element('install').hidden,true);
+ await app.fire('beforeinstallprompt',event);await app.fire('appinstalled');assert.equal(app.element('install').hidden,true);
 });
